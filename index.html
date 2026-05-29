@@ -192,24 +192,9 @@ input[type=text]::placeholder{color:var(--muted)}
   <div id="resultWrap" style="display:none"></div>
 </div>
 
-<script>
-// Load docx library dynamically with fallback CDNs
-(function(){
-  var urls=[
-    'https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.umd.js',
-    'https://unpkg.com/docx@7.8.2/build/index.umd.js'
-  ];
-  function tryLoad(i){
-    if(i>=urls.length) return;
-    var s=document.createElement('script');
-    s.src=urls[i];
-    s.onload=function(){ window._docxReady=true; };
-    s.onerror=function(){ tryLoad(i+1); };
-    document.head.appendChild(s);
-  }
-  tryLoad(0);
-})();
-</script>
+
+<script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>
+
 <script>
 // ── Screenshot state ───────────────────────────────────
 var screenshots = []; // [{base64, mediaType, name}]
@@ -473,15 +458,7 @@ function renderReport(r){
   window._report=r;
   $('btnPlain').addEventListener('click',copyPlain);
   $('btnMd').addEventListener('click',copyMd);
-  $('btnWord').addEventListener('click', async function(){
-    // Wait up to 5s for docx library to load
-    var waited=0;
-    while((!window.docx || !window.docx.Document) && waited<5000){
-      await new Promise(function(r){setTimeout(r,300);});
-      waited+=300;
-    }
-    downloadWord();
-  });
+  $('btnWord').addEventListener('click', downloadWord);
   $('btnAzdo').addEventListener('click',downloadAzdoCsv);
 }
 
@@ -490,47 +467,46 @@ async function downloadWord(){
   var r=window._report; if(!r) return;
   var btn=$('btnWord'); btn.textContent='⏳ Building...';
   try{
-    // docx 7.x UMD build exposes window.docx
-    var lib = window.docx;
-    if(!lib || !lib.Document){
-      throw new Error('Word library not loaded yet. Please wait 5 seconds and try again.');
+    if(typeof htmlDocx==='undefined'){
+      throw new Error('Library not loaded. Please refresh the page and try again.');
     }
-    var Document    = lib.Document;
-    var Packer      = lib.Packer;
-    var Paragraph   = lib.Paragraph;
-    var TextRun     = lib.TextRun;
-    var ImageRun    = lib.ImageRun;
-    var Table       = lib.Table;
-    var TableRow    = lib.TableRow;
-    var TableCell   = lib.TableCell;
-    var BorderStyle = lib.BorderStyle;
-    var WidthType   = lib.WidthType;
-    var ShadingType = lib.ShadingType;
 
-    var border  = {style:BorderStyle.SINGLE,size:1,color:'CCCCCC'};
-    var borders = {top:border,bottom:border,left:border,right:border};
-    var cm      = {top:80,bottom:80,left:120,right:120};
-
-    // ── helpers ──────────────────────────────────────────
-    function sectionHead(title, color){
-      return new Paragraph({
-        spacing:{before:220,after:60},
-        border:{bottom:{style:BorderStyle.SINGLE,size:4,color:color||'2E75B6',space:1}},
-        children:[new TextRun({text:title,bold:true,size:26,font:'Arial',color:color||'1F3864'})]
+    // ── Build screenshot img tags (data URIs) ─────────────
+    var ssHtml='';
+    if(screenshots.length>0){
+      ssHtml='<h2 style="color:#1F3864;border-bottom:2px solid #2E75B6;padding-bottom:4px">Screenshots</h2>';
+      screenshots.forEach(function(ss,i){
+        ssHtml+='<p><strong>Screenshot '+(i+1)+': '+ss.name+'</strong></p>';
+        ssHtml+='<p><img src="data:'+ss.mediaType+';base64,'+ss.base64+'" style="max-width:600px;width:100%;border:1px solid #ccc" /></p>';
       });
     }
 
-    function textLines(value, color){
-      return value.split('\n').map(function(line){
-        return new Paragraph({
-          spacing:{before:20,after:20},
-          children:[new TextRun({text:line||' ',size:22,font:'Arial',color:color||undefined})]
-        });
-      });
-    }
+    // ── Steps as numbered list ────────────────────────────
+    var stepsHtml='<ol>';
+    r.stepsToReproduce.split('\n').forEach(function(line){
+      var clean=line.replace(/^\d+\.\s*/,'').trim();
+      if(clean) stepsHtml+='<li>'+clean+'</li>';
+    });
+    stepsHtml+='</ol>';
 
-    function metaTable(){
-      var rows=[
+    // ── Acceptance criteria as numbered list ──────────────
+    var acHtml='<ol>';
+    r.acceptanceCriteria.split('\n').forEach(function(line){
+      var clean=line.replace(/^\d+\.\s*/,'').trim();
+      if(clean) acHtml+='<li>'+clean+'</li>';
+    });
+    acHtml+='</ol>';
+
+    // ── Assemble full HTML document ───────────────────────
+    var html='<!DOCTYPE html><html><head><meta charset="UTF-8"/></head><body style="font-family:Arial,sans-serif;font-size:12pt;margin:40px">'
+
+      +'<h1 style="color:#1F3864;font-size:22pt;margin-bottom:4px">Bug Report</h1>'
+      +'<p style="color:#1F3864;font-size:14pt;font-weight:bold;margin-top:0">'+r.title+'</p>'
+      +'<p style="color:#888;font-size:9pt;font-style:italic">Generated: '+new Date().toLocaleString()+' | QA Bug Reporter</p>'
+
+      +'<h2 style="color:#1F3864;border-bottom:2px solid #2E75B6;padding-bottom:4px">Work Item Classification</h2>'
+      +'<table style="width:100%;border-collapse:collapse;font-size:11pt">'
+      +[
         ['Work Item Type','Bug'],
         ['Priority','P'+r.priority+' — '+r.priorityLabel],
         ['Severity',r.severityLabel],
@@ -540,131 +516,36 @@ async function downloadWord(){
         ['Environment',r.environment||'—'],
         ['Related Story / TC',r.relatedStory||'—'],
         ['Tags',(r.tags||[]).join(', ')]
-      ];
-      return new Table({
-        width:{size:9360,type:WidthType.DXA},
-        columnWidths:[2600,6760],
-        rows:rows.map(function(row){
-          return new TableRow({children:[
-            new TableCell({
-              borders,margins:cm,
-              width:{size:2600,type:WidthType.DXA},
-              shading:{fill:'EBF3FB',type:ShadingType.CLEAR},
-              children:[new Paragraph({children:[new TextRun({text:row[0],bold:true,size:20,font:'Arial'})]})]
-            }),
-            new TableCell({
-              borders,margins:cm,
-              width:{size:6760,type:WidthType.DXA},
-              children:[new Paragraph({children:[new TextRun({text:row[1],size:20,font:'Arial'})]})]
-            })
-          ]});
-        })
-      });
-    }
+      ].map(function(row){
+        return '<tr>'
+          +'<td style="background:#EBF3FB;font-weight:bold;padding:6px 10px;border:1px solid #ccc;width:30%">'+row[0]+'</td>'
+          +'<td style="padding:6px 10px;border:1px solid #ccc">'+row[1]+'</td>'
+          +'</tr>';
+      }).join('')
+      +'</table>'
+      +'<p style="font-style:italic;color:#555;font-size:10pt"><strong>Priority Justification:</strong> '+r.priorityReason+'</p>'
 
-    // ── convert base64 → Uint8Array for ImageRun ─────────
-    function b64ToUint8(b64){
-      var binary=atob(b64);
-      var arr=new Uint8Array(binary.length);
-      for(var i=0;i<binary.length;i++) arr[i]=binary.charCodeAt(i);
-      return arr;
-    }
+      +'<h2 style="color:#1F3864;border-bottom:2px solid #2E75B6;padding-bottom:4px">Description</h2>'
+      +'<p>'+r.description.replace(/\n/g,'<br/>')+'</p>'
 
-    // ── get image type string for docx ───────────────────
-    function imgType(mediaType){
-      var map={'image/png':'png','image/jpeg':'jpg','image/jpg':'jpg','image/gif':'gif','image/webp':'webp'};
-      return map[mediaType]||'png';
-    }
+      +'<h2 style="color:#1F3864;border-bottom:2px solid #2E75B6;padding-bottom:4px">Steps to Reproduce</h2>'
+      +stepsHtml
 
-    // ── get image dimensions from base64 ─────────────────
-    function getImgSize(ss){
-      return new Promise(function(resolve){
-        var img=new Image();
-        img.onload=function(){
-          // max width 8640 EMUs = 6 inches in docx (1 inch = 914400 EMU)
-          var maxW=5486400; // 6 inches
-          var ratio=img.naturalWidth/img.naturalHeight;
-          var w=Math.min(img.naturalWidth*9144, maxW); // px to EMU
-          var h=Math.round(w/ratio);
-          resolve({w:w,h:h});
-        };
-        img.onerror=function(){ resolve({w:4572000,h:2743200}); }; // fallback 5x3 inches
-        img.src=ss.src;
-      });
-    }
+      +'<h2 style="color:#2E7D32;border-bottom:2px solid #2E7D32;padding-bottom:4px">Expected Result</h2>'
+      +'<p style="color:#2E7D32">'+r.expectedResult.replace(/\n/g,'<br/>')+'</p>'
 
-    // ── build screenshot paragraphs ───────────────────────
-    var ssChildren=[];
-    if(screenshots.length>0){
-      ssChildren.push(sectionHead('Screenshots ('+screenshots.length+')'));
-      for(var si=0;si<screenshots.length;si++){
-        var ss=screenshots[si];
-        ssChildren.push(new Paragraph({
-          spacing:{before:160,after:40},
-          children:[new TextRun({text:'Screenshot '+(si+1)+': '+ss.name,bold:true,size:20,font:'Arial',color:'444444'})]
-        }));
-        try{
-          var dims=await getImgSize(ss);
-          ssChildren.push(new Paragraph({
-            spacing:{before:40,after:120},
-            children:[new ImageRun({
-              data:b64ToUint8(ss.base64),
-              transformation:{width:Math.round(dims.w/9144),height:Math.round(dims.h/9144)},
-              type:imgType(ss.mediaType)
-            })]
-          }));
-        }catch(imgErr){
-          ssChildren.push(new Paragraph({
-            children:[new TextRun({text:'[Screenshot could not be embedded: '+ss.name+']',size:20,font:'Arial',color:'888888',italics:true})]
-          }));
-        }
-      }
-    }
+      +'<h2 style="color:#C00000;border-bottom:2px solid #C00000;padding-bottom:4px">Actual Result</h2>'
+      +'<p style="color:#C00000">'+r.actualResult.replace(/\n/g,'<br/>')+'</p>'
 
-    // ── assemble document ─────────────────────────────────
-    var children=[
-      // Title block
-      new Paragraph({spacing:{before:0,after:100},children:[new TextRun({text:'Bug Report',bold:true,size:44,font:'Arial',color:'1F3864'})]}),
-      new Paragraph({spacing:{before:0,after:40},children:[new TextRun({text:r.title,size:26,font:'Arial',bold:true})]}),
-      new Paragraph({spacing:{before:0,after:280},children:[new TextRun({text:'Generated: '+new Date().toLocaleString()+' | QA Bug Reporter',size:18,font:'Arial',color:'888888',italics:true})]}),
+      +'<h2 style="color:#1F3864;border-bottom:2px solid #2E75B6;padding-bottom:4px">Acceptance Criteria</h2>'
+      +acHtml
 
-      // Classification table
-      sectionHead('Work Item Classification'),
-      metaTable(),
-      new Paragraph({spacing:{before:80,after:40},children:[
-        new TextRun({text:'Priority Justification: ',bold:true,size:20,font:'Arial'}),
-        new TextRun({text:r.priorityReason,size:20,font:'Arial',italics:true})
-      ]}),
-    ];
+      +ssHtml
 
-    // Text sections
-    children.push(sectionHead('Description'));
-    textLines(r.description).forEach(function(p){children.push(p);});
+      +'</body></html>';
 
-    children.push(sectionHead('Steps to Reproduce'));
-    textLines(r.stepsToReproduce).forEach(function(p){children.push(p);});
-
-    children.push(sectionHead('Expected Result','2E7D32'));
-    textLines(r.expectedResult,'2E7D32').forEach(function(p){children.push(p);});
-
-    children.push(sectionHead('Actual Result','C00000'));
-    textLines(r.actualResult,'C00000').forEach(function(p){children.push(p);});
-
-    children.push(sectionHead('Acceptance Criteria'));
-    textLines(r.acceptanceCriteria).forEach(function(p){children.push(p);});
-
-    // Screenshots section
-    ssChildren.forEach(function(p){children.push(p);});
-
-    var doc=new Document({
-      styles:{default:{document:{run:{font:'Arial',size:22}}}},
-      sections:[{
-        properties:{page:{size:{width:12240,height:15840},margin:{top:1440,right:1440,bottom:1440,left:1440}}},
-        children:children
-      }]
-    });
-
-    var blob=await Packer.toBlob(doc);
+    // ── Convert HTML → DOCX blob ──────────────────────────
+    var blob=htmlDocx.asBlob(html, {orientation:'portrait', margins:{top:720,right:720,bottom:720,left:720}});
     var url=URL.createObjectURL(blob);
     var a=document.createElement('a');
     a.href=url;
