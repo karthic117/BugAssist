@@ -123,9 +123,8 @@ textarea::placeholder{color:var(--muted)}
     <div class="model-row">
       <label>Model:</label>
       <select id="modelSelect">
-        <option value="SmolLM2-360M-Instruct-q4f32_1-MLC" selected>SmolLM2-360M q4f32 (~580 MB) — Fastest, no shader-f16 needed ✓</option>
-        <option value="SmolLM2-1.7B-Instruct-q4f32_1-MLC">SmolLM2-1.7B q4f32 (~2.7 GB) — Better quality ✓</option>
-        <option value="Llama-3.2-1B-Instruct-q4f32_1-MLC">Llama-3.2-1B q4f32 (~1.1 GB) ✓</option>
+        <option value="Llama-3.2-1B-Instruct-q4f32_1-MLC" selected>Llama-3.2-1B q4f32 (~1.1 GB) — Recommended ✓</option>
+        <option value="SmolLM2-360M-Instruct-q4f32_1-MLC">SmolLM2-360M q4f32 (~580 MB) — Fastest ✓</option>
         <option value="Llama-3.2-3B-Instruct-q4f32_1-MLC">Llama-3.2-3B q4f32 (~3 GB) — Best quality ✓</option>
       </select>
       <button class="load-btn" id="loadBtn">⚡ Load AI Model</button>
@@ -134,10 +133,10 @@ textarea::placeholder{color:var(--muted)}
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
       <div class="progress-label"><span id="progressMsg">Initializing...</span><span id="progressPct">0%</span></div>
     </div>
-    <div class="info-note" id="infoNote">
-      <strong>Requirements:</strong> Chrome 113+ or Edge 113+ (latest). All models are <strong>q4f32</strong> — no shader-f16 GPU feature needed.<br/>
-      <strong>First load:</strong> downloads to browser cache (~580 MB for fastest model). After that, loads instantly offline.<br/>
-      <strong>If load fails:</strong> open <code>chrome://flags</code> → search <strong>WebGPU</strong> → enable it → relaunch Chrome.
+    <div class="info-note">
+      <strong>Requirements:</strong> Chrome 113+ or Edge 113+ (latest). Models use q4f32 — no special GPU features needed.<br/>
+      <strong>First load:</strong> downloads model from HuggingFace to browser cache. After that, loads offline instantly.<br/>
+      <strong>If it keeps failing:</strong> try <code>chrome://flags</code> → search <strong>WebGPU</strong> → enable → relaunch Chrome.
     </div>
   </div>
 
@@ -181,50 +180,50 @@ textarea::placeholder{color:var(--muted)}
 </div>
 
 <script type="module">
-// Pin to a specific stable version to avoid CDN resolution failures
-import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm@0.2.79";
+import * as webllm from "https://esm.run/@mlc-ai/web-llm@0.2.79";
 
 let engine = null;
 let modelLoaded = false;
 let imageFileName = '';
 
 function $(id){ return document.getElementById(id); }
-
-function showError(html){
-  $('errorMsg').innerHTML = html;
-  $('errorMsg').style.display = 'block';
-}
-function hideError(){ $('errorMsg').style.display = 'none'; }
+function showError(html){ $('errorMsg').innerHTML=html; $('errorMsg').style.display='block'; }
+function hideError(){ $('errorMsg').style.display='none'; }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
-function setStatus(state, text){ $('aiDot').className='dot '+state; $('aiStatusText').textContent=text; }
-function setProgress(pct, msg){
+function setStatus(state,text){ $('aiDot').className='dot '+state; $('aiStatusText').textContent=text; }
+function setProgress(pct,msg){
   $('progressWrap').classList.add('visible');
-  $('progressFill').style.width = Math.min(pct,100)+'%';
-  $('progressMsg').textContent = msg;
-  $('progressPct').textContent = Math.round(pct)+'%';
+  $('progressFill').style.width=Math.min(pct,100)+'%';
+  $('progressMsg').textContent=msg;
+  $('progressPct').textContent=Math.round(pct)+'%';
 }
 
-// ── Detect WebGPU and show appropriate message ─────────
-async function checkWebGPU(){
-  if (!navigator.gpu){
-    showError('⚠️ <strong>WebGPU not available.</strong> Please use <strong>Chrome 113+</strong> or <strong>Edge 113+</strong>.<br/>If on Chrome: go to <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:3px">chrome://flags</code> → enable <strong>Unsafe WebGPU Support</strong> → relaunch.');
-    return false;
-  }
-  try {
-    const adapter = await navigator.gpu.requestAdapter();
-    if (!adapter){
-      showError('⚠️ <strong>No WebGPU adapter found.</strong> Update your Chrome/Edge to the latest version and update your GPU drivers, then refresh.');
-      return false;
-    }
-  } catch(e){
-    showError('⚠️ WebGPU check failed: ' + e.message);
-    return false;
-  }
-  return true;
-}
+// ── Model configs — explicit appConfig bypasses any CDN config fetch issues ──
+const MODEL_LIB_BASE = webllm.modelLibURLPrefix + webllm.modelVersion;
 
-// Run check on page load
-checkWebGPU();
+const MODEL_CONFIGS = {
+  "Llama-3.2-1B-Instruct-q4f32_1-MLC": {
+    model: "https://huggingface.co/mlc-ai/Llama-3.2-1B-Instruct-q4f32_1-MLC",
+    model_id: "Llama-3.2-1B-Instruct-q4f32_1-MLC",
+    model_lib: MODEL_LIB_BASE + "/Llama-3.2-1B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+    low_resource_required: true,
+    overrides: { context_window_size: 4096 }
+  },
+  "SmolLM2-360M-Instruct-q4f32_1-MLC": {
+    model: "https://huggingface.co/mlc-ai/SmolLM2-360M-Instruct-q4f32_1-MLC",
+    model_id: "SmolLM2-360M-Instruct-q4f32_1-MLC",
+    model_lib: MODEL_LIB_BASE + "/SmolLM2-360M-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+    low_resource_required: true,
+    overrides: { context_window_size: 4096 }
+  },
+  "Llama-3.2-3B-Instruct-q4f32_1-MLC": {
+    model: "https://huggingface.co/mlc-ai/Llama-3.2-3B-Instruct-q4f32_1-MLC",
+    model_id: "Llama-3.2-3B-Instruct-q4f32_1-MLC",
+    model_lib: MODEL_LIB_BASE + "/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
+    low_resource_required: true,
+    overrides: { context_window_size: 4096 }
+  }
+};
 
 // ── Load Model ─────────────────────────────────────────
 $('loadBtn').addEventListener('click', async () => {
@@ -236,94 +235,100 @@ $('loadBtn').addEventListener('click', async () => {
   setProgress(0, 'Starting...');
   hideError();
 
-  const gpuOk = await checkWebGPU();
-  if (!gpuOk){
-    setStatus('error', 'WebGPU unavailable');
-    btn.disabled = false;
-    btn.innerHTML = '⚡ Retry Load';
+  // WebGPU check
+  if (!navigator.gpu) {
+    setStatus('error','WebGPU not available');
+    btn.disabled=false; btn.innerHTML='⚡ Retry Load';
+    showError('❌ <strong>WebGPU not available.</strong> Use Chrome 113+ or Edge 113+. Go to <code>chrome://flags</code> → enable <strong>Unsafe WebGPU</strong> → relaunch.');
     return;
   }
 
   try {
-    engine = await CreateMLCEngine(modelId, {
+    // Explicit appConfig — avoids HuggingFace config fetch redirect issues
+    const appConfig = {
+      useIndexedDBCache: true,   // use IndexedDB so model survives page reload
+      model_list: [ MODEL_CONFIGS[modelId] ]
+    };
+
+    engine = await webllm.CreateMLCEngine(modelId, {
+      appConfig,
       initProgressCallback: (p) => {
-        const pct = Math.round((p.progress || 0) * 100);
+        const pct = Math.round((p.progress||0)*100);
         setProgress(pct, p.text || 'Loading...');
       }
     });
+
     modelLoaded = true;
-    setStatus('ready', 'Model ready ✓');
-    setProgress(100, '✓ Loaded and cached');
+    setStatus('ready','Model ready ✓');
+    setProgress(100,'✓ Loaded and cached');
     btn.innerHTML = '✅ Model Loaded';
     btn.style.cssText = 'background:rgba(46,216,122,0.15);color:#2ed87a;border:1px solid rgba(46,216,122,0.3);cursor:default';
-  } catch(err){
-    setStatus('error', 'Load failed');
-    btn.disabled = false;
-    btn.innerHTML = '⚡ Retry Load';
-    let msg = String(err.message || err);
+  } catch(err) {
+    setStatus('error','Load failed');
+    btn.disabled=false; btn.innerHTML='⚡ Retry Load';
+    let msg = String(err.message||err);
     let hint = '';
-    if (msg.includes('shader-f16') || msg.includes('f16')){
-      hint = '<br/>💡 <strong>Fix:</strong> Select <strong>SmolLM2-360M q4f32</strong> from the model dropdown — it does not require shader-f16.';
-    } else if (msg.includes('No URL found') || msg.includes('model ID')){
-      hint = '<br/>💡 Model ID not found in registry. Try selecting a different model.';
-    } else if (msg.includes('fetch') || msg.includes('network') || msg.includes('Failed')){
-      hint = '<br/>💡 Network error downloading model weights. Check your internet connection and retry.';
-    } else {
-      hint = '<br/>💡 Try: update Chrome/Edge to latest version, or open chrome://flags and enable WebGPU.';
-    }
-    showError('❌ <strong>Load failed:</strong> ' + esc(msg) + hint);
+    if (msg.includes('shader-f16')||msg.includes('f16'))
+      hint='<br/>💡 GPU does not support shader-f16. Select <strong>SmolLM2-360M q4f32</strong> or <strong>Llama-3.2-1B q4f32</strong> and retry.';
+    else if (msg.includes('fetch')||msg.includes('Failed to fetch')||msg.includes('NetworkError'))
+      hint='<br/>💡 Network error. Check internet connection and retry. HuggingFace may be temporarily slow.';
+    else if (msg.includes('WebGPU')||msg.includes('webgpu'))
+      hint='<br/>💡 Update Chrome/Edge to latest version. Go to <code>chrome://flags</code> and enable WebGPU.';
+    else
+      hint='<br/>💡 Open Chrome DevTools → Console tab → share the full error message for more help.';
+    showError('❌ <strong>Load failed:</strong> '+esc(msg)+hint);
   }
 });
 
 // ── File Upload ────────────────────────────────────────
 const dropZone = $('dropZone');
 $('fileInput').addEventListener('change', e => handleFile(e.target.files[0]));
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
-dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
-$('removeImg').addEventListener('click', () => {
-  imageFileName = '';
-  $('previewArea').style.display = 'none';
-  dropZone.style.display = 'block';
-  $('fileInput').value = '';
+dropZone.addEventListener('dragover', e=>{e.preventDefault();dropZone.classList.add('drag');});
+dropZone.addEventListener('dragleave', ()=>dropZone.classList.remove('drag'));
+dropZone.addEventListener('drop', e=>{e.preventDefault();dropZone.classList.remove('drag');handleFile(e.dataTransfer.files[0]);});
+$('removeImg').addEventListener('click', ()=>{
+  imageFileName='';
+  $('previewArea').style.display='none';
+  dropZone.style.display='block';
+  $('fileInput').value='';
 });
 function handleFile(file){
-  if (!file || !file.type.startsWith('image/')) return;
-  imageFileName = file.name;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    $('previewImg').src = ev.target.result;
-    $('previewArea').style.display = 'inline-block';
-    dropZone.style.display = 'none';
+  if(!file||!file.type.startsWith('image/')) return;
+  imageFileName=file.name;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    $('previewImg').src=ev.target.result;
+    $('previewArea').style.display='inline-block';
+    dropZone.style.display='none';
   };
   reader.readAsDataURL(file);
 }
 
 // ── Generate ───────────────────────────────────────────
-$('generateBtn').addEventListener('click', async () => {
-  const desc = $('descInput').value.trim();
-  const mod  = $('moduleInput').value.trim();
-  const env  = $('envInput').value.trim();
+$('generateBtn').addEventListener('click', async ()=>{
+  const desc=$('descInput').value.trim();
+  const mod=$('moduleInput').value.trim();
+  const env=$('envInput').value.trim();
   hideError();
 
-  if (!modelLoaded){ showError('⚠️ Please load the AI model first — click <strong>Load AI Model</strong> above.'); return; }
-  if (!desc){ showError('⚠️ Please enter a bug description.'); return; }
+  if(!modelLoaded){showError('⚠️ Please load the AI model first — click <strong>Load AI Model</strong> above.');return;}
+  if(!desc){showError('⚠️ Please enter a bug description.');return;}
 
-  const btn = $('generateBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Generating report...';
-  $('resultWrap').style.display = 'none';
+  const btn=$('generateBtn');
+  btn.disabled=true;
+  btn.innerHTML='<div class="spinner"></div> Generating report...';
+  $('resultWrap').style.display='none';
 
-  const prompt =
+  const prompt=
 `You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only.
 No markdown fences, no explanation. Return ONLY the raw JSON object.
 
 Bug Description: ${desc}
-${mod  ? 'Module: '+mod  : ''}
-${env  ? 'Environment: '+env : ''}
-${imageFileName ? 'Screenshot filename: '+imageFileName : ''}
+${mod?'Module: '+mod:''}
+${env?'Environment: '+env:''}
+${imageFileName?'Screenshot: '+imageFileName:''}
 
-Return ONLY this JSON object:
+Return ONLY this JSON:
 {
   "title": "[${mod||'Module'}] Short bug title under 80 chars",
   "description": "2-3 sentence professional description of the bug and its impact",
@@ -341,31 +346,31 @@ Return ONLY this JSON object:
 }
 Priority: 1=Critical(crash/login/data loss), 2=High(feature broken), 3=Medium(workaround exists), 4=Low(cosmetic)`;
 
-  try {
-    const reply = await engine.chat.completions.create({
-      messages: [{ role:'user', content: prompt }],
-      temperature: 0.1,
-      max_tokens: 900
+  try{
+    const reply=await engine.chat.completions.create({
+      messages:[{role:'user',content:prompt}],
+      temperature:0.1,
+      max_tokens:900
     });
-    const raw = reply.choices[0].message.content || '';
-    const match = raw.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('AI returned unexpected format. Please try again.');
+    const raw=reply.choices[0].message.content||'';
+    const match=raw.match(/\{[\s\S]*\}/);
+    if(!match) throw new Error('AI returned unexpected format. Please try again.');
     renderReport(JSON.parse(match[0]));
-  } catch(err){
-    showError('❌ Generation failed: ' + esc(String(err.message || err)));
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '🪄 Generate AZDO Bug Report';
+  }catch(err){
+    showError('❌ Generation failed: '+esc(String(err.message||err)));
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='🪄 Generate AZDO Bug Report';
   }
 });
 
 // ── Render ─────────────────────────────────────────────
 function renderReport(r){
-  const pClass = {'1':'p1','2':'p2','3':'p3','4':'p4'}[String(r.priority)]||'p3';
-  const sClass = {'critical':'sc','high':'sh','medium':'sm','low':'sl'}[String(r.severityLabel||'').toLowerCase()]||'sm';
-  const tags = (r.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+  const pClass={'1':'p1','2':'p2','3':'p3','4':'p4'}[String(r.priority)]||'p3';
+  const sClass={'critical':'sc','high':'sh','medium':'sm','low':'sl'}[String(r.severityLabel||'').toLowerCase()]||'sm';
+  const tags=(r.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
 
-  $('resultWrap').innerHTML = `
+  $('resultWrap').innerHTML=`
   <div class="result-wrap">
     <div class="result-header">
       <span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>
@@ -396,16 +401,16 @@ function renderReport(r){
     </div>
   </div>`;
 
-  $('resultWrap').style.display = 'block';
-  $('resultWrap').scrollIntoView({ behavior:'smooth', block:'start' });
-  window._report = r;
-  $('btnMd').addEventListener('click', copyMd);
-  $('btnPlain').addEventListener('click', copyPlain);
+  $('resultWrap').style.display='block';
+  $('resultWrap').scrollIntoView({behavior:'smooth',block:'start'});
+  window._report=r;
+  $('btnMd').addEventListener('click',copyMd);
+  $('btnPlain').addEventListener('click',copyPlain);
 }
 
 // ── Copy ───────────────────────────────────────────────
 function copyPlain(){
-  const r = window._report; if(!r) return;
+  const r=window._report; if(!r) return;
   copyText(
 `BUG REPORT — AZURE DEVOPS
 ==============================================
@@ -431,11 +436,11 @@ ${r.actualResult}
 ACCEPTANCE CRITERIA
 ${r.acceptanceCriteria}
 
-TAGS: ${(r.tags||[]).join(', ')}`, 'btnPlain', '📄 Copy Plain Text');
+TAGS: ${(r.tags||[]).join(', ')}`, 'btnPlain','📄 Copy Plain Text');
 }
 
 function copyMd(){
-  const r = window._report; if(!r) return;
+  const r=window._report; if(!r) return;
   copyText(
 `## 🐞 ${r.title}
 
@@ -461,14 +466,14 @@ ${r.actualResult}
 ### ✔️ Acceptance Criteria
 ${r.acceptanceCriteria}
 
-**Tags:** ${(r.tags||[]).join(', ')}`, 'btnMd', '📋 Copy Markdown');
+**Tags:** ${(r.tags||[]).join(', ')}`, 'btnMd','📋 Copy Markdown');
 }
 
-function copyText(text, id, label){
+function copyText(text,id,label){
   navigator.clipboard.writeText(text).then(()=>{
     const b=$(id);
     b.classList.add('copied'); b.textContent='✅ Copied!';
-    setTimeout(()=>{ b.classList.remove('copied'); b.textContent=label; },2500);
+    setTimeout(()=>{b.classList.remove('copied');b.textContent=label;},2500);
   });
 }
 </script>
