@@ -289,6 +289,10 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
       <button class="modal-save" id="saveKeyBtn">Save key</button>
     </div>
     <div class="modal-note">Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></div>
+    <div id="keyTestResult" style="display:none;margin-top:10px;padding:9px 12px;border-radius:8px;font-size:12.5px;line-height:1.6"></div>
+    <div style="margin-top:10px">
+      <button onclick="testApiKey()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--r2);padding:7px 14px;font-size:12.5px;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">🔍 Test API Key</button>
+    </div>
     <div class="modal-footer"><button class="modal-close" onclick="closeModal()">Close</button></div>
   </div>
 </div>
@@ -471,8 +475,37 @@ $('keyModal').addEventListener('click', function(e){ if(e.target===this) closeMo
 function updateKeyStatus(){
   var key=localStorage.getItem('gemini_api_key');
   var dot=$('keyDot'); var label=$('keyLabel');
-  if(key){ dot.classList.add('active'); label.textContent='API Key saved'; }
-  else { dot.classList.remove('active'); label.textContent='Add API Key'; }
+  if(key){ dot.classList.add('on'); label.textContent='API Key saved'; }
+  else { dot.classList.remove('on'); label.textContent='Set API Key'; }
+}
+
+async function testApiKey(){
+  var key=($('keyInput').value.trim())||localStorage.getItem('gemini_api_key')||'';
+  var res=$('keyTestResult');
+  if(!key){
+    res.style.cssText='display:block;background:var(--amber-bg);border:1px solid var(--amber-bd);color:var(--amber)';
+    res.innerHTML='⚠️ Paste your API key first.'; return;
+  }
+  res.style.cssText='display:block;background:var(--s2);border:1px solid var(--border);color:var(--muted)';
+  res.innerHTML='🔄 Testing connection...';
+  try{
+    var r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key='+key,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({contents:[{parts:[{text:'Reply with just the word OK'}]}]})
+    });
+    var body=await r.json();
+    if(r.ok){
+      res.style.cssText='display:block;background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green)';
+      res.innerHTML='✅ <strong>API key works!</strong> Gemini responded successfully. You can close this and generate reports.';
+    } else {
+      var msg=(body.error&&body.error.message)||'HTTP '+r.status;
+      res.style.cssText='display:block;background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red)';
+      res.innerHTML='❌ <strong>Error '+r.status+':</strong> '+msg;
+    }
+  }catch(e){
+    res.style.cssText='display:block;background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red)';
+    res.innerHTML='❌ <strong>Network blocked:</strong> '+e.message+'<br/><span style="font-size:11px;opacity:.85">The Gemini API is unreachable from this network. Try on mobile hotspot or personal WiFi.</span>';
+  }
 }
 
 window.addEventListener('DOMContentLoaded', function(){
@@ -673,10 +706,11 @@ $('generateBtn').addEventListener('click', async function(){
 
   try{
     var MODELS=['gemini-2.5-flash','gemini-2.0-flash','gemini-2.0-flash-lite'];
-    var data=null, lastErr='';
+    var data=null, lastErr='', lastStatus=0;
     for(var mi=0;mi<MODELS.length;mi++){
       var model=MODELS[mi];
       btn.innerHTML='<div class="spin"></div> Trying '+model+'...';
+      console.log('[BugAssist] Trying model:', model);
       var resp;
       try{
         resp = await fetch(
@@ -699,18 +733,23 @@ $('generateBtn').addEventListener('click', async function(){
         }
         throw new Error('Request failed: '+msg);
       }
-      if(resp.ok){ data=await resp.json(); break; }
+      if(resp.ok){ data=await resp.json(); console.log('[BugAssist] Success with', model); break; }
       var eBody=await resp.json().catch(function(){return {};});
+      lastStatus=resp.status;
       lastErr=(eBody.error&&eBody.error.message)?eBody.error.message:'HTTP '+resp.status;
-      if(resp.status===400) throw new Error('Invalid API key or request. Please re-enter your Gemini API key.');
-      if(resp.status===403) throw new Error('API key rejected (403). Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#60a5fa">aistudio.google.com/app/apikey</a>');
+      console.warn('[BugAssist] Model', model, 'failed — status:', resp.status, '— message:', lastErr);
+      if(resp.status===400) throw new Error('Invalid API key or request (400): '+lastErr);
+      if(resp.status===401) throw new Error('Unauthorized (401) — API key is invalid or expired. Please re-enter it.');
+      if(resp.status===403) throw new Error('Forbidden (403) — API key rejected. Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#60a5fa">aistudio.google.com/app/apikey</a>');
+      if(resp.status===404) throw new Error('Model not found (404): '+lastErr);
+      // Only retry on 429 or 503
       if(resp.status===429||resp.status===503){
-        if(mi<MODELS.length-1) continue; // try next model
-        throw new Error('All Gemini models are currently overloaded. Please wait a minute and try again.');
+        if(mi<MODELS.length-1){ continue; }
       }
-      throw new Error('Gemini error ('+resp.status+'): '+lastErr);
+      // All other status codes — stop and show real error
+      throw new Error('Gemini API error (HTTP '+resp.status+'): '+lastErr);
     }
-    if(!data) throw new Error('No response received. Please try again.');
+    if(!data) throw new Error('All models failed. Last response — HTTP '+lastStatus+': '+lastErr);
     var raw=data&&data.candidates&&data.candidates[0]&&data.candidates[0].content
       ?data.candidates[0].content.parts.map(function(p){return p.text||'';}).join(''):'';
     raw=raw.replace(/```json|```/g,'').trim();
