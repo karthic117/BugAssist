@@ -78,7 +78,7 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
 .dz{border:2px dashed var(--border2);border-radius:var(--r2);padding:20px 14px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--s2)}
 .dz:hover,.dz.drag{border-color:var(--accent);background:var(--accent-bg)}
 .dz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.dz-icon{width:30px;height:30px;margin:0 auto 8px;opacity:0.35}
+.dz-icon{width:30px;height:30px;margin:0 auto 8px;opacity:0.35;fill:var(--muted);display:block}
 .dz p{font-size:12.5px;color:var(--muted)}
 .dz span{color:var(--accent);font-weight:500}
 .dz small{font-size:11px;color:var(--subtle);display:block;margin-top:3px}
@@ -531,12 +531,12 @@ function renderScreenshots(){
     var item=document.createElement('div');
     item.className='ss-item';
     item.innerHTML='<img src="'+ss.src+'" alt="Screenshot '+(idx+1)+'">'
-      +'<div class="ss-item-label">'+(idx+1)+'. '+esc(ss.name)+'</div>'
-      +'<button class="ss-remove" data-idx="'+idx+'" title="Remove">✕</button>';
+      +'<div class="ss-lbl">'+(idx+1)+'. '+esc(ss.name)+'</div>'
+      +'<button class="ss-del" data-idx="'+idx+'" title="Remove">✕</button>';
     grid.appendChild(item);
   });
 
-  grid.querySelectorAll('.ss-remove').forEach(function(btn){
+  grid.querySelectorAll('.ss-del').forEach(function(btn){
     btn.addEventListener('click', function(){
       screenshots.splice(parseInt(this.dataset.idx),1);
       renderScreenshots();
@@ -698,7 +698,7 @@ function renderReport(r){
 
   var EDIT_ICON='<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
 
-  function editBtn(field){ return '<button class="edit-btn" onclick="startEdit(''+field+'')">'+EDIT_ICON+'Edit</button>'; }
+  function editBtn(field){ return '<button class="eb" data-field="'+field+'" onclick="startEdit(this.dataset.field)">'+EDIT_ICON+'Edit</button>'; }
 
   var html=
     '<div class="rc">'
@@ -814,8 +814,8 @@ function startEdit(field){
 
   wrap.innerHTML=inputHtml
     +'<div class="edit-actions">'
-    +'<button class="edit-cancel" onclick="cancelEdit(\''+field+'')">Cancel</button>'
-    +'<button class="edit-save" onclick="saveEdit(\''+field+'')">Save changes</button>'
+    +'<button class="e-cancel" data-field="'+field+'" onclick="cancelEdit(this.dataset.field)">Cancel</button>'
+    +'<button class="e-save" data-field="'+field+'" onclick="saveEdit(this.dataset.field)">Save changes</button>'
     +'</div>';
 
   var inp=$('edit-input');
@@ -849,7 +849,7 @@ function saveEdit(field){
     : '<div class="'+secClass+' field-edited" id="val-'+field+'">'+esc(newVal)+'</div>';
 
   wrap.innerHTML=valHtml
-    +'<button class="edit-btn" onclick="startEdit(''+field+'')">'+EDIT_ICON+'Edit</button>';
+  +'<button class="eb" data-field="'+field+'" onclick="startEdit(this.dataset.field)">'+EDIT_ICON+'Edit</button>';
 
   // Flash save confirmation
   var vEl=$('val-'+field);
@@ -873,7 +873,7 @@ function cancelEdit(field){
   wrap.innerHTML=(isTitle
     ? '<div class="rc-title" id="val-'+field+'">'+esc(r[field])+'</div>'
     : '<div class="'+secClass+'" id="val-'+field+'">'+esc(r[field])+'</div>')
-    +'<button class="edit-btn" onclick="startEdit(''+field+'')">'+EDIT_ICON+'Edit</button>';
+  +'<button class="eb" data-field="'+field+'" onclick="startEdit(this.dataset.field)">'+EDIT_ICON+'Edit</button>';
 }
 
 // ── Word Download ──────────────────────────────────────
@@ -1192,8 +1192,7 @@ function calcScore(r){
   var checks=[
     {key:'title',label:'Title',pass:!!(r.title&&r.title.length>10)},
     {key:'description',label:'Description',pass:!!(r.description&&r.description.length>30)},
-    {key:'stepsToReproduce',label:'Steps',pass:!!(r.stepsToReproduce&&r.stepsToReproduce.split('
-').length>=3)},
+    {key:'stepsToReproduce',label:'Steps',pass:!!(r.stepsToReproduce&&r.stepsToReproduce.split('\n').length>=3)},
     {key:'expectedResult',label:'Expected',pass:!!(r.expectedResult&&r.expectedResult.length>10)},
     {key:'actualResult',label:'Actual',pass:!!(r.actualResult&&r.actualResult.length>10)},
     {key:'acceptanceCriteria',label:'Criteria',pass:!!(r.acceptanceCriteria&&r.acceptanceCriteria.length>10)},
