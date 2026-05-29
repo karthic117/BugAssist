@@ -24,24 +24,20 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .header p{font-size:12px;color:var(--muted);margin-top:3px}
 .badge{display:inline-flex;align-items:center;background:rgba(0,120,212,0.18);color:#60aaff;border:1px solid rgba(0,120,212,0.3);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:8px;vertical-align:middle}
 .free-badge{background:rgba(46,216,122,0.12);color:#2ed87a;border:1px solid rgba(46,216,122,0.25);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle;display:inline-flex;align-items:center}
-
-/* KEY PANEL */
 .key-panel{background:var(--surface);border:1px solid rgba(79,127,255,0.25);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
 .key-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
-.key-panel-head h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px}
+.key-panel-head h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
 .key-saved-badge{display:none;align-items:center;gap:5px;background:rgba(46,216,122,0.12);color:#2ed87a;border:1px solid rgba(46,216,122,0.25);border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:600}
 .key-row{display:flex;gap:8px;align-items:center}
-.key-row input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;padding:9px 12px;outline:none;transition:border-color 0.15s}
+.key-row input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:13px;padding:9px 12px;outline:none;transition:border-color 0.15s}
 .key-row input:focus{border-color:var(--accent)}
-.key-row input::placeholder{color:var(--muted);font-family:'Inter',sans-serif}
-.save-key-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background 0.15s;font-family:'Inter',sans-serif}
+.key-row input::placeholder{color:var(--muted)}
+.save-key-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:background 0.15s}
 .save-key-btn:hover{background:var(--accent2)}
 .key-hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6}
 .key-hint a{color:var(--accent);text-decoration:none}
-.key-hint a:hover{text-decoration:underline}
-
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
-.panel-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:10px}
+.panel-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
 textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;resize:vertical;min-height:90px;outline:none;transition:border-color 0.15s}
 textarea:focus{border-color:var(--accent)}
 textarea::placeholder{color:var(--muted)}
@@ -51,16 +47,25 @@ input[type=text]::placeholder{color:var(--muted)}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media(max-width:600px){.two-col{grid-template-columns:1fr}}
 .field-group label{font-size:11.5px;color:var(--muted);margin-bottom:5px;display:block;font-weight:500}
-.drop-zone{border:2px dashed var(--border2);border-radius:var(--rs);padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2)}
+
+/* MULTI SCREENSHOT */
+.drop-zone{border:2px dashed var(--border2);border-radius:var(--rs);padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2)}
 .drop-zone:hover,.drop-zone.drag{border-color:var(--accent);background:rgba(79,127,255,0.06)}
 .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.dz-icon{font-size:28px;display:block;margin-bottom:6px}
+.dz-icon{font-size:26px;display:block;margin-bottom:5px}
 .drop-zone p{font-size:13px;color:var(--muted)}
 .drop-zone p span{color:var(--accent)}
 .drop-zone small{font-size:11px;color:var(--muted);opacity:0.6;display:block;margin-top:3px}
-.preview-area{margin-top:10px;position:relative;display:inline-block}
-.preview-area img{max-width:100%;max-height:220px;border-radius:var(--rs);border:1px solid var(--border2);display:block}
-.remove-btn{position:absolute;top:-8px;right:-8px;background:var(--red);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.screenshots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
+.ss-item{position:relative;border-radius:var(--rs);overflow:hidden;border:1px solid var(--border2);background:var(--surface2)}
+.ss-item img{width:100%;height:100px;object-fit:cover;display:block}
+.ss-item-label{font-size:10px;color:var(--muted);padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface)}
+.ss-remove{position:absolute;top:4px;right:4px;background:rgba(255,92,92,0.85);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.ss-count{font-size:12px;color:var(--accent);font-weight:600}
+.add-more-btn{background:transparent;border:1px dashed var(--border2);border-radius:var(--rs);padding:6px 12px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;position:relative;overflow:hidden}
+.add-more-btn:hover{border-color:var(--accent);color:var(--accent)}
+.add-more-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+
 .generate-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background 0.15s,transform 0.1s;margin-bottom:1.5rem}
 .generate-btn:hover{background:var(--accent2)}
 .generate-btn:active{transform:scale(0.99)}
@@ -68,13 +73,17 @@ input[type=text]::placeholder{color:var(--muted)}
 .spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .error-msg{background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.25);color:#ff7b7b;border-radius:var(--rs);padding:11px 15px;font-size:13px;margin-bottom:1rem;line-height:1.8}
-.result-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.result-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1rem}
 .result-header{background:var(--surface2);padding:11px 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
 .result-header-left{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px}
-.copy-btns{display:flex;gap:8px;flex-wrap:wrap}
-.copy-btn{background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--rs);padding:5px 11px;font-size:12px;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif}
-.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
-.copy-btn.copied{border-color:var(--green);color:var(--green)}
+.action-btns{display:flex;gap:7px;flex-wrap:wrap}
+.action-btn{background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--rs);padding:5px 11px;font-size:12px;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif}
+.action-btn:hover{border-color:var(--accent);color:var(--accent)}
+.action-btn.copied,.action-btn.done{border-color:var(--green);color:var(--green)}
+.action-btn.dl-word{border-color:rgba(79,127,255,0.4);color:#8ab4ff}
+.action-btn.dl-word:hover{border-color:var(--accent);background:rgba(79,127,255,0.1)}
+.action-btn.dl-azdo{border-color:rgba(0,120,212,0.4);color:#60aaff}
+.action-btn.dl-azdo:hover{border-color:#60aaff;background:rgba(0,120,212,0.1)}
 .report-body{padding:1.25rem}
 .field-row{margin-bottom:1.1rem}
 .field-key{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.7px;color:var(--muted);margin-bottom:5px}
@@ -106,58 +115,73 @@ input[type=text]::placeholder{color:var(--muted)}
     <div class="logo">🐞</div>
     <div>
       <h1>QA Bug Reporter <span class="badge">🔷 AZDO</span><span class="free-badge">✅ Free</span></h1>
-      <p>Upload screenshot + describe bug → AI generates complete AZDO work item instantly</p>
+      <p>Upload screenshots + describe bug → AI generates complete AZDO work item → Download Word / CSV</p>
     </div>
   </div>
 
-  <!-- API KEY PANEL -->
+  <!-- API KEY -->
   <div class="key-panel">
     <div class="key-panel-head">
       <h2>🔑 Gemini API Key <span style="font-size:11px;color:var(--muted);font-weight:400">(free — saved in your browser only)</span></h2>
       <div class="key-saved-badge" id="keySavedBadge">✅ Key saved</div>
     </div>
     <div class="key-row">
-      <input type="password" id="keyInput" placeholder="Paste your Gemini API key here — AIza..." autocomplete="off"/>
+      <input type="password" id="keyInput" placeholder="Paste your Gemini API key — AIza..." autocomplete="off"/>
       <button class="save-key-btn" id="saveKeyBtn">Save Key</button>
     </div>
     <div class="key-hint">
-      Get a <strong>free key</strong> (no credit card) at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a> — 1,500 requests/day free.
-      Your key is stored only in <strong>your browser's localStorage</strong> — never sent anywhere except Google's API.
+      Free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a> — 250 requests/day. Stored only in your browser.
     </div>
   </div>
 
-  <!-- SCREENSHOT -->
+  <!-- MULTI SCREENSHOT -->
   <div class="panel">
-    <div class="panel-label">📷 Screenshot (optional — AI will analyze it)</div>
+    <div class="panel-label">
+      <span>📷 Screenshots <span class="ss-count" id="ssCount"></span></span>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:11px;color:var(--muted)">Up to 8 images — AI analyzes all</span>
+        <button class="add-more-btn" id="addMoreBtn" style="display:none">
+          + Add more
+          <input type="file" id="addMoreInput" accept="image/*" multiple/>
+        </button>
+      </div>
+    </div>
     <div class="drop-zone" id="dropZone">
-      <input type="file" id="fileInput" accept="image/*"/>
+      <input type="file" id="fileInput" accept="image/*" multiple/>
       <span class="dz-icon">📁</span>
-      <p>Drag &amp; drop screenshot here, or <span>click to browse</span></p>
-      <small>PNG, JPG, GIF, WEBP — AI reads the screenshot automatically</small>
+      <p>Drag &amp; drop screenshots here, or <span>click to browse</span></p>
+      <small>PNG, JPG, GIF, WEBP · Select multiple files at once · AI reads all screenshots</small>
     </div>
-    <div id="previewArea" style="display:none" class="preview-area">
-      <img id="previewImg" alt="Screenshot preview"/>
-      <button class="remove-btn" id="removeImg">✕</button>
-    </div>
+    <div class="screenshots-grid" id="ssGrid"></div>
   </div>
 
   <!-- DESCRIPTION -->
   <div class="panel">
     <div class="panel-label">📝 Bug Description *</div>
-    <textarea id="descInput" placeholder="Describe the bug — what you were doing, what went wrong, what you expected. AI generates all report fields from this." rows="5"></textarea>
+    <textarea id="descInput" placeholder="Describe the bug — what you were doing, what went wrong, what error appeared, what you expected. AI generates all report fields from this + your screenshots." rows="5"></textarea>
   </div>
 
-  <!-- OPTIONAL HINTS -->
+  <!-- HINTS -->
   <div class="panel">
-    <div class="panel-label">⚙️ Optional Hints</div>
+    <div class="panel-label">⚙️ Application Context</div>
     <div class="two-col">
+      <div class="field-group">
+        <label>Application Name</label>
+        <input type="text" id="appInput" placeholder="e.g. Trizetto MRF Portal, TriZetto Connect"/>
+      </div>
       <div class="field-group">
         <label>Module / Feature Area</label>
         <input type="text" id="moduleInput" placeholder="e.g. Login, MRF Ingestion, Dashboard"/>
       </div>
+    </div>
+    <div class="two-col" style="margin-top:10px">
       <div class="field-group">
         <label>Environment</label>
         <input type="text" id="envInput" placeholder="e.g. Chrome 124, Windows 11, QA env"/>
+      </div>
+      <div class="field-group">
+        <label>Test Case / Story ID (optional)</label>
+        <input type="text" id="storyInput" placeholder="e.g. TC-1042, US-234"/>
       </div>
     </div>
   </div>
@@ -168,95 +192,159 @@ input[type=text]::placeholder{color:var(--muted)}
   <div id="resultWrap" style="display:none"></div>
 </div>
 
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 <script>
-var imageBase64=null, imageMediaType=null;
+// ── Screenshot state ───────────────────────────────────
+var screenshots = []; // [{base64, mediaType, name}]
+var MAX_SS = 8;
+
 function $(id){ return document.getElementById(id); }
 function showError(m){ $('errorMsg').innerHTML=m; $('errorMsg').style.display='block'; }
 function hideError(){ $('errorMsg').style.display='none'; }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
 
-// ── Key management ─────────────────────────────────────
+// ── Key ────────────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', function(){
-  var saved = localStorage.getItem('gemini_api_key');
-  if(saved){
-    $('keyInput').value = saved;
-    $('keySavedBadge').style.display = 'inline-flex';
-  }
+  var saved=localStorage.getItem('gemini_api_key');
+  if(saved){ $('keyInput').value=saved; $('keySavedBadge').style.display='inline-flex'; }
 });
-
 $('saveKeyBtn').addEventListener('click', function(){
-  var key = $('keyInput').value.trim();
-  if(!key){ showError('⚠️ Please paste your Gemini API key first.'); return; }
+  var key=$('keyInput').value.trim();
+  if(!key){ showError('⚠️ Please paste your Gemini API key.'); return; }
   localStorage.setItem('gemini_api_key', key);
-  $('keySavedBadge').style.display = 'inline-flex';
+  $('keySavedBadge').style.display='inline-flex';
   hideError();
 });
+function getKey(){ return localStorage.getItem('gemini_api_key')||$('keyInput').value.trim(); }
 
-function getKey(){
-  return localStorage.getItem('gemini_api_key') || $('keyInput').value.trim();
+// ── File handling ──────────────────────────────────────
+function readFileAsBase64(file){
+  return new Promise(function(resolve){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      resolve({base64:ev.target.result.split(',')[1], mediaType:file.type, name:file.name, src:ev.target.result});
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
-// ── File Upload ────────────────────────────────────────
+async function addFiles(files){
+  var remaining = MAX_SS - screenshots.length;
+  if(remaining<=0){ showError('⚠️ Maximum '+MAX_SS+' screenshots allowed.'); return; }
+  var toAdd = Array.from(files).filter(function(f){ return f.type.startsWith('image/'); }).slice(0, remaining);
+  for(var i=0;i<toAdd.length;i++){
+    var ss = await readFileAsBase64(toAdd[i]);
+    screenshots.push(ss);
+  }
+  renderScreenshots();
+}
+
+function renderScreenshots(){
+  var grid=$('ssGrid');
+  var count=$('ssCount');
+  var addMore=$('addMoreBtn');
+  var dropZone=$('dropZone');
+
+  count.textContent = screenshots.length>0 ? '('+screenshots.length+'/'+MAX_SS+')' : '';
+  dropZone.style.display = screenshots.length>0 ? 'none' : 'block';
+  addMore.style.display = screenshots.length>0 && screenshots.length<MAX_SS ? 'inline-flex' : 'none';
+
+  grid.innerHTML='';
+  screenshots.forEach(function(ss, idx){
+    var item=document.createElement('div');
+    item.className='ss-item';
+    item.innerHTML='<img src="'+ss.src+'" alt="Screenshot '+(idx+1)+'">'
+      +'<div class="ss-item-label">📷 '+(idx+1)+'. '+esc(ss.name)+'</div>'
+      +'<button class="ss-remove" data-idx="'+idx+'" title="Remove">✕</button>';
+    grid.appendChild(item);
+  });
+
+  // remove buttons
+  grid.querySelectorAll('.ss-remove').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      screenshots.splice(parseInt(this.dataset.idx),1);
+      renderScreenshots();
+    });
+  });
+}
+
+// Drop zone
 var dropZone=$('dropZone');
-$('fileInput').addEventListener('change', function(e){ handleFile(e.target.files[0]); });
+$('fileInput').addEventListener('change', function(e){ addFiles(e.target.files); this.value=''; });
 dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.classList.add('drag'); });
 dropZone.addEventListener('dragleave', function(){ dropZone.classList.remove('drag'); });
-dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
-$('removeImg').addEventListener('click', function(){
-  imageBase64=null; imageMediaType=null;
-  $('previewArea').style.display='none';
-  dropZone.style.display='block';
-  $('fileInput').value='';
-});
-function handleFile(file){
-  if(!file||!file.type.startsWith('image/')) return;
-  imageMediaType=file.type;
-  var reader=new FileReader();
-  reader.onload=function(ev){
-    imageBase64=ev.target.result.split(',')[1];
-    $('previewImg').src=ev.target.result;
-    $('previewArea').style.display='inline-block';
-    dropZone.style.display='none';
-  };
-  reader.readAsDataURL(file);
-}
+dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.classList.remove('drag'); addFiles(e.dataTransfer.files); });
+
+// Add more button
+$('addMoreInput').addEventListener('change', function(e){ addFiles(e.target.files); this.value=''; });
 
 // ── Generate ───────────────────────────────────────────
 $('generateBtn').addEventListener('click', async function(){
   var desc=$('descInput').value.trim();
+  var app=$('appInput').value.trim();
   var module=$('moduleInput').value.trim();
   var env=$('envInput').value.trim();
+  var story=$('storyInput').value.trim();
   var key=getKey();
   hideError();
 
   if(!key){
-    showError('⚠️ Please paste your Gemini API key above and click <strong>Save Key</strong>. Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#8ab4ff">aistudio.google.com/app/apikey</a>');
+    showError('⚠️ Please paste your Gemini API key and click <strong>Save Key</strong>. Get free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#8ab4ff">aistudio.google.com/app/apikey</a>');
     return;
   }
-  if(!desc&&!imageBase64){
-    showError('⚠️ Please enter a bug description or upload a screenshot.');
-    return;
-  }
+  if(!desc&&screenshots.length===0){ showError('⚠️ Please enter a bug description or upload at least one screenshot.'); return; }
 
   var btn=$('generateBtn');
   btn.disabled=true;
-  btn.innerHTML='<div class="spinner"></div> AI is analyzing...';
+  var ssLabel = screenshots.length>0 ? ' ('+screenshots.length+' screenshot'+(screenshots.length>1?'s':'')+')' : '';
+  btn.innerHTML='<div class="spinner"></div> AI is analyzing'+ssLabel+'...';
   $('resultWrap').style.display='none';
 
-  var prompt='You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only.\nNo markdown fences, no explanation. Return ONLY the raw JSON object.\n\nBug Description: '+(desc||'See screenshot')
-    +(module?'\nModule: '+module:'')
-    +(env?'\nEnvironment: '+env:'')
-    +(!desc&&imageBase64?'\nAnalyze the screenshot to identify the bug and fill all fields.':'')
-    +'\n\nReturn ONLY this JSON:\n{\n  "title": "'+(module?'['+module+'] ':'')+'Short bug title under 80 chars",\n  "description": "2-3 sentence professional description of the bug and its impact",\n  "stepsToReproduce": "1. Step one\\n2. Step two\\n3. Step three",\n  "expectedResult": "What should happen",\n  "actualResult": "What actually happened",\n  "priority": "2",\n  "priorityLabel": "High",\n  "severityLabel": "High",\n  "priorityReason": "One sentence justifying priority and severity",\n  "reproRate": "Always",\n  "workItemType": "Bug",\n  "acceptanceCriteria": "What must be verified to close this bug",\n  "tags": ["tag1","tag2","tag3"]\n}\nPriority: 1=Critical(crash/auth/data loss), 2=High(feature broken), 3=Medium(workaround exists), 4=Low(cosmetic)';
+  var prompt='You are a senior QA engineer writing a formal bug report for Azure DevOps.\n'
+    +'Generate a detailed, professional bug report as strict JSON only — no markdown fences, no explanation.\n\n'
+    +(app?'Application: '+app+'\n':'')
+    +(module?'Module/Feature: '+module+'\n':'')
+    +(env?'Environment: '+env+'\n':'')
+    +(story?'Related Test Case / Story: '+story+'\n':'')
+    +'Bug Description: '+(desc||'See attached screenshots')+'\n'
+    +(screenshots.length>0?'Number of screenshots provided: '+screenshots.length+'. Analyze ALL screenshots carefully — they may show different steps or states of the bug.\n':'')
+    +'\nRULES:\n'
+    +'- Title must mention the SPECIFIC application ("'+(app||'the application')+'") and EXACT issue. Format: ['+(app||'AppName')+'] - ['+(module||'Module')+'] - Specific issue\n'
+    +'- Steps to Reproduce: MINIMUM 6 detailed steps. Include exact navigation paths, button names, field values, URLs visible in screenshots.\n'
+    +'- If multiple screenshots are provided, reference them in steps (e.g. "As shown in screenshot 1...")\n'
+    +'- Expected and Actual results must be precise and technical.\n'
+    +'\nReturn ONLY this JSON:\n'
+    +'{\n'
+    +'  "title": "['+(app||'ApplicationName')+'] - ['+(module||'Module')+'] - Specific issue under 80 chars",\n'
+    +'  "description": "3-4 sentence professional description: what the bug is, which application and module, business impact, error messages observed.",\n'
+    +'  "stepsToReproduce": "1. Launch '+(app||'the application')+' and navigate to [URL]\\n2. Log in as [role]\\n3. Navigate to [exact path]\\n4. [Exact action]\\n5. [Exact action]\\n6. Observe the error",\n'
+    +'  "expectedResult": "Specific expected behavior with technical detail",\n'
+    +'  "actualResult": "Specific actual behavior with exact error messages",\n'
+    +'  "priority": "2",\n'
+    +'  "priorityLabel": "High",\n'
+    +'  "severityLabel": "High",\n'
+    +'  "priorityReason": "Specific reason tied to business impact",\n'
+    +'  "reproRate": "Always",\n'
+    +'  "workItemType": "Bug",\n'
+    +'  "acceptanceCriteria": "1. [Verification step]\\n2. [Verification step]\\n3. No regression in related functionality",\n'
+    +'  "tags": ["'+(app||'App')+'","'+(module||'Module')+'","Bug","Functional"],\n'
+    +'  "relatedStory": "'+(story||'')+'",\n'
+    +'  "application": "'+(app||'')+'",\n'
+    +'  "module": "'+(module||'')+'",\n'
+    +'  "environment": "'+(env||'')+'"\n'
+    +'}';
 
+  // Build parts — add ALL screenshots
   var parts=[];
-  if(imageBase64) parts.push({inlineData:{mimeType:imageMediaType,data:imageBase64}});
+  screenshots.forEach(function(ss, idx){
+    parts.push({inlineData:{mimeType:ss.mediaType, data:ss.base64}});
+  });
   parts.push({text:prompt});
 
   try{
     var resp=await fetch(
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+key,
-      { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({contents:[{parts:parts}]}) }
+      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:parts}]})}
     );
     if(!resp.ok){
       var e=await resp.json();
@@ -267,6 +355,7 @@ $('generateBtn').addEventListener('click', async function(){
     var data=await resp.json();
     var raw=data.candidates&&data.candidates[0]&&data.candidates[0].content
       ?data.candidates[0].content.parts.map(function(p){return p.text||'';}).join(''):'';
+    raw=raw.replace(/```json|```/g,'').trim();
     var match=raw.match(/\{[\s\S]*\}/);
     if(!match) throw new Error('Unexpected AI response. Please try again.');
     renderReport(JSON.parse(match[0]));
@@ -286,8 +375,14 @@ function renderReport(r){
 
   $('resultWrap').innerHTML=
     '<div class="result-wrap">'
-    +'<div class="result-header"><span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>'
-    +'<div class="copy-btns"><button class="copy-btn" id="btnMd">📋 Copy Markdown</button><button class="copy-btn" id="btnPlain">📄 Copy Plain Text</button></div></div>'
+    +'<div class="result-header">'
+    +'<span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>'
+    +'<div class="action-btns">'
+    +'<button class="action-btn" id="btnPlain">📄 Copy Text</button>'
+    +'<button class="action-btn" id="btnMd">📋 Copy Markdown</button>'
+    +'<button class="action-btn dl-word" id="btnWord">⬇️ Download Word</button>'
+    +'<button class="action-btn dl-azdo" id="btnAzdo">⬇️ Download AZDO CSV</button>'
+    +'</div></div>'
     +'<div class="report-body">'
     +'<div class="field-row"><div class="field-key">🏷️ Title</div><div class="field-val title-val">'+esc(r.title)+'</div></div>'
     +'<div class="meta-row">'
@@ -295,6 +390,7 @@ function renderReport(r){
     +'<div class="meta-col"><div class="field-key">Severity</div><span class="badge-pill '+sClass+'">⚠️ '+esc(r.severityLabel)+'</span></div>'
     +'<div class="meta-col"><div class="field-key">Work Item</div><span class="badge-pill p1">🐞 '+esc(r.workItemType||'Bug')+'</span></div>'
     +'<div class="meta-col"><div class="field-key">Repro Rate</div><span class="badge-pill p3">🔁 '+esc(r.reproRate||'Always')+'</span></div>'
+    +(r.relatedStory?'<div class="meta-col"><div class="field-key">Related</div><span class="badge-pill p3">🔗 '+esc(r.relatedStory)+'</span></div>':'')
     +'</div>'
     +'<p class="reason-text">💡 '+esc(r.priorityReason)+'</p>'
     +'<hr class="divider"/>'
@@ -303,27 +399,128 @@ function renderReport(r){
     +'<div class="two-col">'
     +'<div class="field-row"><div class="field-key">✅ Expected Result</div><div class="field-val exp-val">'+esc(r.expectedResult)+'</div></div>'
     +'<div class="field-row"><div class="field-key">❌ Actual Result</div><div class="field-val act-val">'+esc(r.actualResult)+'</div></div>'
-    +'</div>'
-    +'<hr class="divider"/>'
-    +'<div class="field-row"><div class="field-key">✔️ Acceptance Criteria</div><div class="field-val">'+esc(r.acceptanceCriteria)+'</div></div>'
+    +'</div><hr class="divider"/>'
+    +'<div class="field-row"><div class="field-key">✔️ Acceptance Criteria</div><div class="field-val steps-val">'+esc(r.acceptanceCriteria)+'</div></div>'
     +(tags?'<div class="field-row"><div class="field-key">🏷️ Tags</div><div style="margin-top:5px">'+tags+'</div></div>':'')
     +'</div></div>';
 
   $('resultWrap').style.display='block';
   $('resultWrap').scrollIntoView({behavior:'smooth',block:'start'});
   window._report=r;
-  $('btnMd').addEventListener('click',copyMd);
   $('btnPlain').addEventListener('click',copyPlain);
+  $('btnMd').addEventListener('click',copyMd);
+  $('btnWord').addEventListener('click',downloadWord);
+  $('btnAzdo').addEventListener('click',downloadAzdoCsv);
+}
+
+// ── Word Download ──────────────────────────────────────
+async function downloadWord(){
+  var r=window._report; if(!r) return;
+  var btn=$('btnWord'); btn.textContent='⏳ Building...';
+  try{
+    var docx=window.docx;
+    var {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
+         BorderStyle,WidthType,ShadingType}=docx;
+    var border={style:BorderStyle.SINGLE,size:1,color:'CCCCCC'};
+    var borders={top:border,bottom:border,left:border,right:border};
+    var cm={top:80,bottom:80,left:120,right:120};
+
+    function metaTable(r){
+      var rows=[
+        ['Work Item Type','Bug'],['Priority','P'+r.priority+' — '+r.priorityLabel],
+        ['Severity',r.severityLabel],['Repro Rate',r.reproRate||'Always'],
+        ['Application',r.application||'—'],['Module',r.module||'—'],
+        ['Environment',r.environment||'—'],['Related Story',r.relatedStory||'—'],
+        ['Tags',(r.tags||[]).join(', ')]
+      ];
+      return new Table({
+        width:{size:9360,type:WidthType.DXA},columnWidths:[2800,6560],
+        rows:rows.map(function(row){
+          return new TableRow({children:[
+            new TableCell({borders,margins:cm,width:{size:2800,type:WidthType.DXA},
+              shading:{fill:'EBF3FB',type:ShadingType.CLEAR},
+              children:[new Paragraph({children:[new TextRun({text:row[0],bold:true,size:20,font:'Arial'})]})]
+            }),
+            new TableCell({borders,margins:cm,width:{size:6560,type:WidthType.DXA},
+              children:[new Paragraph({children:[new TextRun({text:row[1],size:20,font:'Arial'})]})]
+            })
+          ]});
+        })
+      });
+    }
+
+    function section(title, value, color){
+      var paras=[new Paragraph({spacing:{before:200,after:60},children:[new TextRun({text:title,bold:true,size:24,font:'Arial',color:color||'1F3864'})]})];
+      value.split('\n').forEach(function(line){
+        paras.push(new Paragraph({spacing:{before:20,after:20},children:[new TextRun({text:line,size:22,font:'Arial',color:color&&color!=='1F3864'?color:undefined})]}));
+      });
+      return paras;
+    }
+
+    var children=[
+      new Paragraph({spacing:{before:0,after:120},children:[new TextRun({text:'Bug Report',bold:true,size:40,font:'Arial',color:'1F3864'})]}),
+      new Paragraph({spacing:{before:0,after:40},children:[new TextRun({text:'Title: ',bold:true,size:24,font:'Arial'}),new TextRun({text:r.title,size:24,font:'Arial'})]}),
+      new Paragraph({spacing:{before:0,after:240},children:[new TextRun({text:'Generated by QA Bug Reporter | '+new Date().toLocaleDateString(),size:18,font:'Arial',color:'888888',italics:true})]}),
+      new Paragraph({spacing:{before:0,after:80},children:[new TextRun({text:'Work Item Classification',bold:true,size:26,font:'Arial',color:'1F3864'})]}),
+      metaTable(r),
+      new Paragraph({spacing:{before:60,after:40},children:[new TextRun({text:'Priority Justification: ',bold:true,size:20,font:'Arial'}),new TextRun({text:r.priorityReason,size:20,font:'Arial',italics:true})]}),
+    ];
+
+    section('Description',r.description).forEach(function(p){children.push(p);});
+    section('Steps to Reproduce',r.stepsToReproduce).forEach(function(p){children.push(p);});
+    section('Expected Result',r.expectedResult,'2E7D32').forEach(function(p){children.push(p);});
+    section('Actual Result',r.actualResult,'C00000').forEach(function(p){children.push(p);});
+    section('Acceptance Criteria',r.acceptanceCriteria).forEach(function(p){children.push(p);});
+
+    var doc=new Document({
+      styles:{default:{document:{run:{font:'Arial',size:22}}}},
+      sections:[{
+        properties:{page:{size:{width:12240,height:15840},margin:{top:1440,right:1440,bottom:1440,left:1440}}},
+        children:children
+      }]
+    });
+    var blob=await Packer.toBlob(doc);
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url;
+    a.download=(r.application||'Bug').replace(/\s+/g,'_')+'_BugReport_'+Date.now()+'.docx';
+    a.click(); URL.revokeObjectURL(url);
+    btn.classList.add('done'); btn.textContent='✅ Downloaded!';
+    setTimeout(function(){btn.classList.remove('done');btn.textContent='⬇️ Download Word';},3000);
+  }catch(err){
+    showError('❌ Word download failed: '+err.message);
+    btn.textContent='⬇️ Download Word';
+  }
+}
+
+// ── AZDO CSV Download ──────────────────────────────────
+function downloadAzdoCsv(){
+  var r=window._report; if(!r) return;
+  var headers=['Work Item Type','Title','Description','Repro Steps','System Info','Severity','Priority','Tags','Acceptance Criteria','State','Reason'];
+  function cell(v){
+    v=String(v||'').replace(/\r\n|\n/g,' | ');
+    return (v.indexOf(',')>-1||v.indexOf('"')>-1)?'"'+v.replace(/"/g,'""')+'"':v;
+  }
+  var stepsHtml='<ol>'+r.stepsToReproduce.split('\n').map(function(s){return '<li>'+s.replace(/^\d+\.\s*/,'')+'</li>';}).join('')+'</ol>';
+  var row=['Bug',r.title,r.description,stepsHtml,r.environment||'',r.severityLabel,r.priority,(r.tags||[]).join('; '),r.acceptanceCriteria,'New','New'];
+  var csv=[headers.map(cell).join(','),row.map(cell).join(',')].join('\r\n');
+  var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url;
+  a.download=(r.application||'Bug').replace(/\s+/g,'_')+'_AZDO_'+Date.now()+'.csv';
+  a.click(); URL.revokeObjectURL(url);
+  var btn=$('btnAzdo');
+  btn.classList.add('done'); btn.textContent='✅ Downloaded!';
+  setTimeout(function(){btn.classList.remove('done');btn.textContent='⬇️ Download AZDO CSV';},3000);
 }
 
 // ── Copy ───────────────────────────────────────────────
 function copyPlain(){
   var r=window._report; if(!r) return;
-  copyText('BUG REPORT — AZURE DEVOPS\n==============================================\nTitle        : '+r.title+'\nWork Item    : '+(r.workItemType||'Bug')+'\nPriority     : P'+r.priority+' — '+r.priorityLabel+'\nSeverity     : '+r.severityLabel+'\nRepro Rate   : '+(r.reproRate||'Always')+'\n==============================================\n\nDESCRIPTION\n'+r.description+'\n\nSTEPS TO REPRODUCE\n'+r.stepsToReproduce+'\n\nEXPECTED RESULT\n'+r.expectedResult+'\n\nACTUAL RESULT\n'+r.actualResult+'\n\nACCEPTANCE CRITERIA\n'+r.acceptanceCriteria+'\n\nTAGS: '+(r.tags||[]).join(', '),'btnPlain','📄 Copy Plain Text');
+  copyText('BUG REPORT — AZURE DEVOPS\n==============================================\nTitle        : '+r.title+'\nApplication  : '+(r.application||'—')+'\nModule       : '+(r.module||'—')+'\nPriority     : P'+r.priority+' — '+r.priorityLabel+'\nSeverity     : '+r.severityLabel+'\nRepro Rate   : '+(r.reproRate||'Always')+'\nEnvironment  : '+(r.environment||'—')+'\nRelated Story: '+(r.relatedStory||'—')+'\n==============================================\n\nDESCRIPTION\n'+r.description+'\n\nSTEPS TO REPRODUCE\n'+r.stepsToReproduce+'\n\nEXPECTED RESULT\n'+r.expectedResult+'\n\nACTUAL RESULT\n'+r.actualResult+'\n\nACCEPTANCE CRITERIA\n'+r.acceptanceCriteria+'\n\nTAGS: '+(r.tags||[]).join(', '),'btnPlain','📄 Copy Text');
 }
 function copyMd(){
   var r=window._report; if(!r) return;
-  copyText('## 🐞 '+r.title+'\n\n| Field | Value |\n|---|---|\n| **Work Item** | '+(r.workItemType||'Bug')+' |\n| **Priority** | P'+r.priority+' — '+r.priorityLabel+' |\n| **Severity** | '+r.severityLabel+' |\n| **Repro Rate** | '+(r.reproRate||'Always')+' |\n\n### 📋 Description\n'+r.description+'\n\n### 🔢 Steps to Reproduce\n'+r.stepsToReproduce+'\n\n### ✅ Expected Result\n'+r.expectedResult+'\n\n### ❌ Actual Result\n'+r.actualResult+'\n\n### ✔️ Acceptance Criteria\n'+r.acceptanceCriteria+'\n\n**Tags:** '+(r.tags||[]).join(', '),'btnMd','📋 Copy Markdown');
+  copyText('## 🐞 '+r.title+'\n\n| Field | Value |\n|---|---|\n| **Application** | '+(r.application||'—')+' |\n| **Module** | '+(r.module||'—')+' |\n| **Priority** | P'+r.priority+' — '+r.priorityLabel+' |\n| **Severity** | '+r.severityLabel+' |\n| **Repro Rate** | '+(r.reproRate||'Always')+' |\n| **Environment** | '+(r.environment||'—')+' |\n\n### 📋 Description\n'+r.description+'\n\n### 🔢 Steps to Reproduce\n'+r.stepsToReproduce+'\n\n### ✅ Expected Result\n'+r.expectedResult+'\n\n### ❌ Actual Result\n'+r.actualResult+'\n\n### ✔️ Acceptance Criteria\n'+r.acceptanceCriteria+'\n\n**Tags:** '+(r.tags||[]).join(', '),'btnMd','📋 Copy Markdown');
 }
 function copyText(text,id,label){
   navigator.clipboard.writeText(text).then(function(){
