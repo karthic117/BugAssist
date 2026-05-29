@@ -47,6 +47,8 @@ select:focus{border-color:var(--accent)}
 .load-btn:disabled{opacity:0.45;cursor:not-allowed}
 .info-note{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px}
 .info-note strong{color:var(--text)}
+.warn-box{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.25);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:#f5c86a;line-height:1.7;margin-top:10px;display:none}
+.warn-box strong{color:var(--amber)}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
 .panel-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:10px}
 textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;resize:vertical;min-height:90px;outline:none;transition:border-color 0.15s}
@@ -116,16 +118,16 @@ textarea::placeholder{color:var(--muted)}
 
   <div class="ai-panel">
     <div class="ai-panel-head">
-      <h2>🤖 Browser AI Engine &nbsp;<span style="font-size:11px;color:var(--muted);font-weight:400">(WebLLM — runs locally, no server)</span></h2>
+      <h2>🤖 Browser AI Engine &nbsp;<span style="font-size:11px;color:var(--muted);font-weight:400">(WebLLM — no server, no key)</span></h2>
       <div class="ai-status"><span class="dot" id="aiDot"></span><span id="aiStatusText">Not loaded</span></div>
     </div>
     <div class="model-row">
       <label>Model:</label>
       <select id="modelSelect">
-        <option value="SmolLM2-1.7B-Instruct-q4f16_1-MLC" selected>SmolLM2-1.7B (~1 GB) — Recommended</option>
-        <option value="SmolLM2-360M-Instruct-q4f16_1-MLC">SmolLM2-360M (~400 MB) — Fastest</option>
-        <option value="Llama-3.2-1B-Instruct-q4f16_1-MLC">Llama-3.2-1B (~700 MB)</option>
-        <option value="Phi-3.5-mini-instruct-q4f16_1-MLC">Phi-3.5-mini (~2.4 GB) — Best quality</option>
+        <option value="SmolLM2-1.7B-Instruct-q4f32_1-MLC" selected>SmolLM2-1.7B q4f32 (~1.1 GB) — Recommended ✓</option>
+        <option value="SmolLM2-360M-Instruct-q4f32_1-MLC">SmolLM2-360M q4f32 (~450 MB) — Fastest ✓</option>
+        <option value="Llama-3.2-1B-Instruct-q4f32_1-MLC">Llama-3.2-1B q4f32 (~800 MB) ✓</option>
+        <option value="Phi-3.5-mini-instruct-q4f32_1-MLC">Phi-3.5-mini q4f32 (~2.8 GB) — Best quality ✓</option>
       </select>
       <button class="load-btn" id="loadBtn">⚡ Load AI Model</button>
     </div>
@@ -133,9 +135,10 @@ textarea::placeholder{color:var(--muted)}
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
       <div class="progress-label"><span id="progressMsg">Initializing...</span><span id="progressPct">0%</span></div>
     </div>
+    <div class="warn-box" id="warnBox"></div>
     <div class="info-note">
-      <strong>First time only:</strong> model downloads to your browser cache. After that it loads instantly offline.
-      Requires <strong>Chrome or Edge</strong> with WebGPU support.
+      <strong>First time only:</strong> model downloads to your browser cache (~450 MB–2.8 GB). After that loads instantly offline.
+      Requires <strong>Chrome or Edge</strong> (latest version). All models use <strong>q4f32</strong> — compatible with all GPUs.
     </div>
   </div>
 
@@ -151,7 +154,7 @@ textarea::placeholder{color:var(--muted)}
       <img id="previewImg" alt="Screenshot preview"/>
       <button class="remove-btn" id="removeImg">✕</button>
     </div>
-    <div class="img-note">⚠️ Browser AI is text-only. Describe what you see in the screenshot in the description below.</div>
+    <div class="img-note">⚠️ Browser AI is text-only. Describe what you see in the screenshot in the Bug Description below.</div>
   </div>
 
   <div class="panel">
@@ -178,30 +181,40 @@ textarea::placeholder{color:var(--muted)}
   <div id="resultWrap" style="display:none"></div>
 </div>
 
-<!-- KEY FIX: type="module" for WebLLM import, all handlers via addEventListener, globals via window.X -->
 <script type="module">
-import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
+import { CreateMLCEngine, hasModelInCache, prebuiltAppConfig } from "https://esm.run/@mlc-ai/web-llm";
 
 let engine = null;
 let modelLoaded = false;
 let imageFileName = '';
 
-// ── Helpers ────────────────────────────────────────────
-function $(id) { return document.getElementById(id); }
-function showError(m) { $('errorText').textContent = m; $('errorMsg').style.display = 'flex'; }
-function hideError() { $('errorMsg').style.display = 'none'; }
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
-
-function setStatus(state, text) {
-  $('aiDot').className = 'dot ' + state;
-  $('aiStatusText').textContent = text;
-}
-function setProgress(pct, msg) {
+function $(id){ return document.getElementById(id); }
+function showError(m){ $('errorText').textContent = m; $('errorMsg').style.display = 'flex'; }
+function hideError(){ $('errorMsg').style.display = 'none'; }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
+function setStatus(state, text){ $('aiDot').className='dot '+state; $('aiStatusText').textContent=text; }
+function setProgress(pct, msg){
   $('progressWrap').classList.add('visible');
-  $('progressFill').style.width = Math.min(pct, 100) + '%';
+  $('progressFill').style.width = Math.min(pct,100)+'%';
   $('progressMsg').textContent = msg;
-  $('progressPct').textContent = Math.round(pct) + '%';
+  $('progressPct').textContent = Math.round(pct)+'%';
 }
+function showWarn(msg){ $('warnBox').style.display='block'; $('warnBox').innerHTML=msg; }
+
+// ── Check WebGPU on load ───────────────────────────────
+async function checkWebGPU(){
+  if (!navigator.gpu) {
+    showWarn('⚠️ <strong>WebGPU not detected.</strong> Please use <strong>Chrome 113+</strong> or <strong>Edge 113+</strong>. If you are on Chrome, go to <code>chrome://flags</code> and enable <strong>Unsafe WebGPU</strong>.');
+    return false;
+  }
+  const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) {
+    showWarn('⚠️ <strong>WebGPU adapter not found.</strong> Your GPU may not be supported. Try updating your Chrome/Edge browser and GPU drivers.');
+    return false;
+  }
+  return true;
+}
+checkWebGPU();
 
 // ── Load Model ─────────────────────────────────────────
 $('loadBtn').addEventListener('click', async () => {
@@ -212,23 +225,40 @@ $('loadBtn').addEventListener('click', async () => {
   setStatus('loading', 'Downloading & initializing...');
   setProgress(0, 'Starting download...');
   hideError();
+  $('warnBox').style.display = 'none';
+
+  const gpuOk = await checkWebGPU();
+  if (!gpuOk) {
+    setStatus('error', 'WebGPU not available');
+    btn.disabled = false;
+    btn.innerHTML = '⚡ Retry Load';
+    return;
+  }
+
   try {
     engine = await CreateMLCEngine(modelId, {
       initProgressCallback: (p) => {
         const pct = Math.round((p.progress || 0) * 100);
-        setProgress(pct, p.text || 'Loading model...');
+        setProgress(pct, p.text || 'Loading...');
       }
     });
     modelLoaded = true;
     setStatus('ready', 'Model ready ✓');
-    setProgress(100, 'Loaded successfully');
+    setProgress(100, 'Loaded successfully ✓');
     btn.innerHTML = '✅ Model Loaded';
-    btn.style.cssText = 'background:rgba(46,216,122,0.15);color:#2ed87a;border:1px solid rgba(46,216,122,0.3)';
+    btn.style.cssText = 'background:rgba(46,216,122,0.15);color:#2ed87a;border:1px solid rgba(46,216,122,0.3);cursor:default';
   } catch(err) {
     setStatus('error', 'Load failed');
     btn.disabled = false;
     btn.innerHTML = '⚡ Retry Load';
-    showError('Model load failed: ' + err.message + ' — use Chrome or Edge with WebGPU enabled.');
+    // Give a specific hint for the shader-f16 error
+    let msg = err.message || String(err);
+    if (msg.includes('shader-f16') || msg.includes('f16')) {
+      msg = 'Your GPU does not support shader-f16. The q4f32 models should fix this — make sure you selected a "q4f32" model from the dropdown and retry.';
+    } else if (msg.includes('WebGPU') || msg.includes('webgpu')) {
+      msg = 'WebGPU error: ' + msg + '. Try updating Chrome/Edge to the latest version.';
+    }
+    showError(msg);
   }
 });
 
@@ -244,8 +274,7 @@ $('removeImg').addEventListener('click', () => {
   dropZone.style.display = 'block';
   $('fileInput').value = '';
 });
-
-function handleFile(file) {
+function handleFile(file){
   if (!file || !file.type.startsWith('image/')) return;
   imageFileName = file.name;
   const reader = new FileReader();
@@ -260,55 +289,57 @@ function handleFile(file) {
 // ── Generate ───────────────────────────────────────────
 $('generateBtn').addEventListener('click', async () => {
   const desc = $('descInput').value.trim();
-  const mod = $('moduleInput').value.trim();
-  const env = $('envInput').value.trim();
+  const mod  = $('moduleInput').value.trim();
+  const env  = $('envInput').value.trim();
   hideError();
 
-  if (!modelLoaded) { showError('Load the AI model first — click "Load AI Model" above.'); return; }
-  if (!desc) { showError('Please enter a bug description.'); return; }
+  if (!modelLoaded){ showError('Load the AI model first — click "Load AI Model" above.'); return; }
+  if (!desc){ showError('Please enter a bug description.'); return; }
 
   const btn = $('generateBtn');
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Generating report...';
   $('resultWrap').style.display = 'none';
 
-  const prompt = `You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only.
-No markdown fences, no explanation. Return only the raw JSON object.
+  const prompt =
+`You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only.
+No markdown, no explanation, no code fences. Return only the raw JSON object.
 
 Bug Description: ${desc}
-${mod ? 'Module: ' + mod : ''}
-${env ? 'Environment: ' + env : ''}
-${imageFileName ? 'Screenshot filename: ' + imageFileName : ''}
+${mod  ? 'Module: '+mod : ''}
+${env  ? 'Environment: '+env : ''}
+${imageFileName ? 'Screenshot: '+imageFileName : ''}
 
 Return ONLY this JSON:
 {
-  "title": "[${mod||'Module'}] Bug title under 80 chars",
-  "description": "2-3 sentence professional description",
-  "stepsToReproduce": "1. Step one\\n2. Step two\\n3. Step three",
+  "title": "[${mod||'Module'}] Short bug title under 80 chars",
+  "description": "2-3 sentence professional description of the bug and its impact",
+  "stepsToReproduce": "1. First step\\n2. Second step\\n3. Third step",
   "expectedResult": "What should happen",
   "actualResult": "What actually happened",
   "priority": "2",
   "priorityLabel": "High",
   "severityLabel": "High",
-  "priorityReason": "One sentence justification",
+  "priorityReason": "One sentence justifying priority and severity",
   "reproRate": "Always",
   "workItemType": "Bug",
-  "acceptanceCriteria": "What must pass to close this bug",
+  "acceptanceCriteria": "What must be verified to close this bug",
   "tags": ["tag1","tag2","tag3"]
 }
-Priority: 1=Critical(crash/auth/data loss), 2=High(broken feature), 3=Medium(workaround exists), 4=Low(cosmetic)`;
+Priority guide: 1=Critical(crash/auth/data loss), 2=High(feature broken), 3=Medium(workaround exists), 4=Low(cosmetic)
+Return ONLY the JSON. Nothing else.`;
 
   try {
     const reply = await engine.chat.completions.create({
-      messages: [{ role: 'user', content: prompt }],
+      messages: [{ role:'user', content: prompt }],
       temperature: 0.1,
       max_tokens: 900
     });
     const raw = reply.choices[0].message.content || '';
     const match = raw.match(/\{[\s\S]*\}/);
-    if (!match) throw new Error('Unexpected AI response format. Try again.');
+    if (!match) throw new Error('AI returned unexpected format. Please try again.');
     renderReport(JSON.parse(match[0]));
-  } catch(err) {
+  } catch(err){
     showError('Generation failed: ' + err.message);
   } finally {
     btn.disabled = false;
@@ -317,10 +348,10 @@ Priority: 1=Critical(crash/auth/data loss), 2=High(broken feature), 3=Medium(wor
 });
 
 // ── Render ─────────────────────────────────────────────
-function renderReport(r) {
-  const pClass = {'1':'p1','2':'p2','3':'p3','4':'p4'}[String(r.priority)] || 'p3';
-  const sClass = {'critical':'sc','high':'sh','medium':'sm','low':'sl'}[String(r.severityLabel||'').toLowerCase()] || 'sm';
-  const tags = (r.tags||[]).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+function renderReport(r){
+  const pClass = {'1':'p1','2':'p2','3':'p3','4':'p4'}[String(r.priority)]||'p3';
+  const sClass = {'critical':'sc','high':'sh','medium':'sm','low':'sl'}[String(r.severityLabel||'').toLowerCase()]||'sm';
+  const tags = (r.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
 
   $('resultWrap').innerHTML = `
   <div class="result-wrap">
@@ -349,22 +380,20 @@ function renderReport(r) {
       </div>
       <hr class="divider"/>
       <div class="field-row"><div class="field-key">✔️ Acceptance Criteria</div><div class="field-val">${esc(r.acceptanceCriteria)}</div></div>
-      ${tags ? `<div class="field-row"><div class="field-key">🏷️ Tags</div><div style="margin-top:5px">${tags}</div></div>` : ''}
+      ${tags?`<div class="field-row"><div class="field-key">🏷️ Tags</div><div style="margin-top:5px">${tags}</div></div>`:''}
     </div>
   </div>`;
 
   $('resultWrap').style.display = 'block';
   $('resultWrap').scrollIntoView({ behavior:'smooth', block:'start' });
   window._report = r;
-
-  // Attach copy button listeners AFTER rendering
   $('btnMd').addEventListener('click', copyMd);
   $('btnPlain').addEventListener('click', copyPlain);
 }
 
 // ── Copy ───────────────────────────────────────────────
-function copyPlain() {
-  const r = window._report; if (!r) return;
+function copyPlain(){
+  const r = window._report; if(!r) return;
   copyText(
 `BUG REPORT — AZURE DEVOPS
 ==============================================
@@ -393,8 +422,8 @@ ${r.acceptanceCriteria}
 TAGS: ${(r.tags||[]).join(', ')}`, 'btnPlain', '📄 Copy Plain Text');
 }
 
-function copyMd() {
-  const r = window._report; if (!r) return;
+function copyMd(){
+  const r = window._report; if(!r) return;
   copyText(
 `## 🐞 ${r.title}
 
@@ -423,11 +452,11 @@ ${r.acceptanceCriteria}
 **Tags:** ${(r.tags||[]).join(', ')}`, 'btnMd', '📋 Copy Markdown');
 }
 
-function copyText(text, id, label) {
-  navigator.clipboard.writeText(text).then(() => {
-    const b = $(id);
-    b.classList.add('copied'); b.textContent = '✅ Copied!';
-    setTimeout(() => { b.classList.remove('copied'); b.textContent = label; }, 2500);
+function copyText(text, id, label){
+  navigator.clipboard.writeText(text).then(()=>{
+    const b=$(id);
+    b.classList.add('copied'); b.textContent='✅ Copied!';
+    setTimeout(()=>{ b.classList.remove('copied'); b.textContent=label; }, 2500);
   });
 }
 </script>
