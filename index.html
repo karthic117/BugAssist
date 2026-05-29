@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>QA Bug Reporter — AZDO Format</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0f11;--surface:#16181c;--surface2:#1e2126;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.16);
+  --text:#f0f0f0;--muted:#8a8f9a;
+  --accent:#4f7fff;--accent2:#2d5be3;
+  --green:#2ed87a;--red:#ff5c5c;--amber:#f5a623;
+  --tag-bg:rgba(79,127,255,0.12);--tag-text:#8ab4ff;
+  --r:10px;--rs:6px;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
+.app{max-width:880px;margin:0 auto;padding:2rem 1.5rem 5rem}
+.header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:1.5rem}
+.logo{width:44px;height:44px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.header h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.3px}
+.header p{font-size:12px;color:var(--muted);margin-top:3px}
+.badge{display:inline-flex;align-items:center;background:rgba(0,120,212,0.18);color:#60aaff;border:1px solid rgba(0,120,212,0.3);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:8px;vertical-align:middle}
+.free-badge{background:rgba(46,216,122,0.12);color:#2ed87a;border:1px solid rgba(46,216,122,0.25);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle;display:inline-flex;align-items:center}
+.ai-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
+.ai-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.ai-panel-head h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.ai-status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s}
+.dot.loading{background:var(--amber);animation:pulse 0.9s ease-in-out infinite}
+.dot.ready{background:var(--green)}
+.dot.error{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
+.progress-wrap{margin-top:10px;display:none}
+.progress-wrap.visible{display:block}
+.progress-bar-bg{background:var(--surface2);border-radius:20px;height:6px;overflow:hidden;margin-bottom:6px}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:20px;width:0%;transition:width 0.4s ease}
+.progress-label{font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between}
+.model-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.model-row label{font-size:12px;color:var(--muted);white-space:nowrap}
+select{background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:var(--rs);padding:7px 10px;font-size:12.5px;outline:none;cursor:pointer;font-family:'Inter',sans-serif}
+select:focus{border-color:var(--accent)}
+.load-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s;display:inline-flex;align-items:center;gap:7px}
+.load-btn:hover{background:var(--accent2)}
+.load-btn:disabled{opacity:0.45;cursor:not-allowed}
+.info-note{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px}
+.info-note strong{color:var(--text)}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
+.panel-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:10px}
+textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;resize:vertical;min-height:90px;outline:none;transition:border-color 0.15s}
+textarea:focus{border-color:var(--accent)}
+textarea::placeholder{color:var(--muted)}
+.drop-zone{border:2px dashed var(--border2);border-radius:var(--rs);padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2)}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--accent);background:rgba(79,127,255,0.06)}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-icon{font-size:30px;display:block;margin-bottom:8px}
+.drop-zone p{font-size:13px;color:var(--muted)}
+.drop-zone p span{color:var(--accent)}
+.drop-zone small{font-size:11px;color:var(--muted);opacity:0.6;display:block;margin-top:4px}
+.preview-area{margin-top:12px;position:relative;display:inline-block}
+.preview-area img{max-width:100%;max-height:240px;border-radius:var(--rs);border:1px solid var(--border2);display:block}
+.remove-btn{position:absolute;top:-9px;right:-9px;background:var(--red);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.img-note{font-size:11.5px;color:var(--amber);margin-top:8px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+.generate-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background 0.15s,transform 0.1s;margin-bottom:1.5rem}
+.generate-btn:hover{background:var(--accent2)}
+.generate-btn:active{transform:scale(0.99)}
+.generate-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none}
+.spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.error-msg{background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.25);color:#ff7b7b;border-radius:var(--rs);padding:11px 15px;font-size:13px;margin-bottom:1rem;display:flex;align-items:flex-start;gap:8px;line-height:1.7}
+.result-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.result-header{background:var(--surface2);padding:11px 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
+.result-header-left{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px}
+.copy-btns{display:flex;gap:8px;flex-wrap:wrap}
+.copy-btn{background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--rs);padding:5px 11px;font-size:12px;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.copy-btn.copied{border-color:var(--green);color:var(--green)}
+.report-body{padding:1.25rem}
+.field-row{margin-bottom:1.1rem}
+.field-key{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.7px;color:var(--muted);margin-bottom:5px}
+.field-val{font-size:13.5px;color:var(--text);line-height:1.7;background:var(--surface2);border-radius:var(--rs);padding:9px 13px;white-space:pre-wrap;border-left:3px solid transparent}
+.field-val.title-val{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;border-left-color:var(--accent);background:rgba(79,127,255,0.07)}
+.field-val.steps-val{border-left-color:var(--amber)}
+.field-val.exp-val{border-left-color:var(--green)}
+.field-val.act-val{border-left-color:var(--red)}
+.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem}
+.meta-col .field-key{margin-bottom:5px}
+.badge-pill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:4px 12px;font-size:12.5px;font-weight:600}
+.p1{background:rgba(255,92,92,0.15);color:#ff7b7b;border:1px solid rgba(255,92,92,0.3)}
+.p2{background:rgba(245,166,35,0.15);color:#f5c86a;border:1px solid rgba(245,166,35,0.3)}
+.p3{background:rgba(79,127,255,0.15);color:#8ab4ff;border:1px solid rgba(79,127,255,0.3)}
+.p4{background:rgba(138,143,154,0.15);color:#b0b5c0;border:1px solid rgba(138,143,154,0.3)}
+.sc{background:rgba(255,92,92,0.15);color:#ff7b7b;border:1px solid rgba(255,92,92,0.3)}
+.sh{background:rgba(245,166,35,0.15);color:#f5c86a;border:1px solid rgba(245,166,35,0.3)}
+.sm{background:rgba(79,127,255,0.15);color:#8ab4ff;border:1px solid rgba(79,127,255,0.3)}
+.sl{background:rgba(138,143,154,0.15);color:#b0b5c0;border:1px solid rgba(138,143,154,0.3)}
+.reason-text{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:1rem}
+.divider{border:none;border-top:1px solid var(--border);margin:1rem 0}
+.tag{display:inline-flex;align-items:center;background:var(--tag-bg);color:var(--tag-text);border:1px solid rgba(79,127,255,0.2);border-radius:20px;padding:2px 9px;font-size:11.5px;font-weight:500;margin:2px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="logo">🐞</div>
+    <div>
+      <h1>QA Bug Reporter <span class="badge">🔷 AZDO</span><span class="free-badge">✅ Free</span></h1>
+      <p>No API key &nbsp;·&nbsp; No install &nbsp;·&nbsp; AI runs in your browser &nbsp;·&nbsp; GitHub Pages ready</p>
+    </div>
+  </div>
+
+  <div class="ai-panel">
+    <div class="ai-panel-head">
+      <h2>🤖 Browser AI Engine &nbsp;<span style="font-size:11px;color:var(--muted);font-weight:400">(WebLLM — runs locally, no server)</span></h2>
+      <div class="ai-status"><span class="dot" id="aiDot"></span><span id="aiStatusText">Not loaded</span></div>
+    </div>
+    <div class="model-row">
+      <label>Model:</label>
+      <select id="modelSelect">
+        <option value="SmolLM2-1.7B-Instruct-q4f16_1-MLC" selected>SmolLM2-1.7B (~1 GB) — Recommended</option>
+        <option value="SmolLM2-360M-Instruct-q4f16_1-MLC">SmolLM2-360M (~400 MB) — Fastest</option>
+        <option value="Llama-3.2-1B-Instruct-q4f16_1-MLC">Llama-3.2-1B (~700 MB)</option>
+        <option value="Phi-3.5-mini-instruct-q4f16_1-MLC">Phi-3.5-mini (~2.4 GB) — Best quality</option>
+      </select>
+      <button class="load-btn" id="loadBtn">⚡ Load AI Model</button>
+    </div>
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+      <div class="progress-label"><span id="progressMsg">Initializing...</span><span id="progressPct">0%</span></div>
+    </div>
+    <div class="info-note">
+      <strong>First time only:</strong> model downloads to your browser cache. After that it loads instantly offline.
+      Requires <strong>Chrome or Edge</strong> with WebGPU support.
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">📷 Screenshot (optional)</div>
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="image/*"/>
+      <span class="dz-icon">📁</span>
+      <p>Drag &amp; drop screenshot here, or <span>click to browse</span></p>
+      <small>PNG, JPG, GIF, WEBP</small>
+    </div>
+    <div id="previewArea" style="display:none" class="preview-area">
+      <img id="previewImg" alt="Screenshot preview"/>
+      <button class="remove-btn" id="removeImg">✕</button>
+    </div>
+    <div class="img-note">⚠️ Browser AI is text-only. Describe what you see in the screenshot in the description below.</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label">📝 Bug Description *</div>
+    <textarea id="descInput" placeholder="Describe the bug — what you did, what happened, what you expected, any error messages..." rows="5"></textarea>
+  </div>
+
+  <div class="panel">
+    <div class="two-col">
+      <div>
+        <div class="panel-label" style="margin-bottom:8px">🧩 Module / Feature Area</div>
+        <textarea id="moduleInput" placeholder="e.g. Login, MRF Ingestion, Dashboard..." style="min-height:52px;resize:none" rows="2"></textarea>
+      </div>
+      <div>
+        <div class="panel-label" style="margin-bottom:8px">💻 Environment</div>
+        <textarea id="envInput" placeholder="e.g. Chrome 124, Windows 11, QA env..." style="min-height:52px;resize:none" rows="2"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <button class="generate-btn" id="generateBtn">🪄 Generate AZDO Bug Report</button>
+
+  <div id="errorMsg" class="error-msg" style="display:none"><span>⚠️</span><span id="errorText"></span></div>
+  <div id="resultWrap" style="display:none"></div>
+</div>
+
+<!-- KEY FIX: type="module" for WebLLM import, all handlers via addEventListener, globals via window.X -->
+<script type="module">
+import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm";
+
+let engine = null;
+let modelLoaded = false;
+let imageFileName = '';
+
+// ── Helpers ────────────────────────────────────────────
+function $(id) { return document.getElementById(id); }
+function showError(m) { $('errorText').textContent = m; $('errorMsg').style.display = 'flex'; }
+function hideError() { $('errorMsg').style.display = 'none'; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
+
+function setStatus(state, text) {
+  $('aiDot').className = 'dot ' + state;
+  $('aiStatusText').textContent = text;
+}
+function setProgress(pct, msg) {
+  $('progressWrap').classList.add('visible');
+  $('progressFill').style.width = Math.min(pct, 100) + '%';
+  $('progressMsg').textContent = msg;
+  $('progressPct').textContent = Math.round(pct) + '%';
+}
+
+// ── Load Model ─────────────────────────────────────────
+$('loadBtn').addEventListener('click', async () => {
+  const btn = $('loadBtn');
+  const modelId = $('modelSelect').value;
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Loading...';
+  setStatus('loading', 'Downloading & initializing...');
+  setProgress(0, 'Starting download...');
+  hideError();
+  try {
+    engine = await CreateMLCEngine(modelId, {
+      initProgressCallback: (p) => {
+        const pct = Math.round((p.progress || 0) * 100);
+        setProgress(pct, p.text || 'Loading model...');
+      }
+    });
+    modelLoaded = true;
+    setStatus('ready', 'Model ready ✓');
+    setProgress(100, 'Loaded successfully');
+    btn.innerHTML = '✅ Model Loaded';
+    btn.style.cssText = 'background:rgba(46,216,122,0.15);color:#2ed87a;border:1px solid rgba(46,216,122,0.3)';
+  } catch(err) {
+    setStatus('error', 'Load failed');
+    btn.disabled = false;
+    btn.innerHTML = '⚡ Retry Load';
+    showError('Model load failed: ' + err.message + ' — use Chrome or Edge with WebGPU enabled.');
+  }
+});
+
+// ── File Upload ────────────────────────────────────────
+const dropZone = $('dropZone');
+$('fileInput').addEventListener('change', e => handleFile(e.target.files[0]));
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
+$('removeImg').addEventListener('click', () => {
+  imageFileName = '';
+  $('previewArea').style.display = 'none';
+  dropZone.style.display = 'block';
+  $('fileInput').value = '';
+});
+
+function handleFile(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  imageFileName = file.name;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    $('previewImg').src = ev.target.result;
+    $('previewArea').style.display = 'inline-block';
+    dropZone.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Generate ───────────────────────────────────────────
+$('generateBtn').addEventListener('click', async () => {
+  const desc = $('descInput').value.trim();
+  const mod = $('moduleInput').value.trim();
+  const env = $('envInput').value.trim();
+  hideError();
+
+  if (!modelLoaded) { showError('Load the AI model first — click "Load AI Model" above.'); return; }
+  if (!desc) { showError('Please enter a bug description.'); return; }
+
+  const btn = $('generateBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Generating report...';
+  $('resultWrap').style.display = 'none';
+
+  const prompt = `You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only.
+No markdown fences, no explanation. Return only the raw JSON object.
+
+Bug Description: ${desc}
+${mod ? 'Module: ' + mod : ''}
+${env ? 'Environment: ' + env : ''}
+${imageFileName ? 'Screenshot filename: ' + imageFileName : ''}
+
+Return ONLY this JSON:
+{
+  "title": "[${mod||'Module'}] Bug title under 80 chars",
+  "description": "2-3 sentence professional description",
+  "stepsToReproduce": "1. Step one\\n2. Step two\\n3. Step three",
+  "expectedResult": "What should happen",
+  "actualResult": "What actually happened",
+  "priority": "2",
+  "priorityLabel": "High",
+  "severityLabel": "High",
+  "priorityReason": "One sentence justification",
+  "reproRate": "Always",
+  "workItemType": "Bug",
+  "acceptanceCriteria": "What must pass to close this bug",
+  "tags": ["tag1","tag2","tag3"]
+}
+Priority: 1=Critical(crash/auth/data loss), 2=High(broken feature), 3=Medium(workaround exists), 4=Low(cosmetic)`;
+
+  try {
+    const reply = await engine.chat.completions.create({
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.1,
+      max_tokens: 900
+    });
+    const raw = reply.choices[0].message.content || '';
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('Unexpected AI response format. Try again.');
+    renderReport(JSON.parse(match[0]));
+  } catch(err) {
+    showError('Generation failed: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🪄 Generate AZDO Bug Report';
+  }
+});
+
+// ── Render ─────────────────────────────────────────────
+function renderReport(r) {
+  const pClass = {'1':'p1','2':'p2','3':'p3','4':'p4'}[String(r.priority)] || 'p3';
+  const sClass = {'critical':'sc','high':'sh','medium':'sm','low':'sl'}[String(r.severityLabel||'').toLowerCase()] || 'sm';
+  const tags = (r.tags||[]).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+
+  $('resultWrap').innerHTML = `
+  <div class="result-wrap">
+    <div class="result-header">
+      <span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>
+      <div class="copy-btns">
+        <button class="copy-btn" id="btnMd">📋 Copy Markdown</button>
+        <button class="copy-btn" id="btnPlain">📄 Copy Plain Text</button>
+      </div>
+    </div>
+    <div class="report-body">
+      <div class="field-row"><div class="field-key">🏷️ Title</div><div class="field-val title-val">${esc(r.title)}</div></div>
+      <div class="meta-row">
+        <div class="meta-col"><div class="field-key">Priority</div><span class="badge-pill ${pClass}">🚩 P${r.priority} — ${esc(r.priorityLabel)}</span></div>
+        <div class="meta-col"><div class="field-key">Severity</div><span class="badge-pill ${sClass}">⚠️ ${esc(r.severityLabel)}</span></div>
+        <div class="meta-col"><div class="field-key">Work Item</div><span class="badge-pill p1">🐞 ${esc(r.workItemType||'Bug')}</span></div>
+        <div class="meta-col"><div class="field-key">Repro Rate</div><span class="badge-pill p3">🔁 ${esc(r.reproRate||'Always')}</span></div>
+      </div>
+      <p class="reason-text">💡 ${esc(r.priorityReason)}</p>
+      <hr class="divider"/>
+      <div class="field-row"><div class="field-key">📋 Description</div><div class="field-val">${esc(r.description)}</div></div>
+      <div class="field-row"><div class="field-key">🔢 Steps to Reproduce</div><div class="field-val steps-val">${esc(r.stepsToReproduce)}</div></div>
+      <div class="two-col">
+        <div class="field-row"><div class="field-key">✅ Expected Result</div><div class="field-val exp-val">${esc(r.expectedResult)}</div></div>
+        <div class="field-row"><div class="field-key">❌ Actual Result</div><div class="field-val act-val">${esc(r.actualResult)}</div></div>
+      </div>
+      <hr class="divider"/>
+      <div class="field-row"><div class="field-key">✔️ Acceptance Criteria</div><div class="field-val">${esc(r.acceptanceCriteria)}</div></div>
+      ${tags ? `<div class="field-row"><div class="field-key">🏷️ Tags</div><div style="margin-top:5px">${tags}</div></div>` : ''}
+    </div>
+  </div>`;
+
+  $('resultWrap').style.display = 'block';
+  $('resultWrap').scrollIntoView({ behavior:'smooth', block:'start' });
+  window._report = r;
+
+  // Attach copy button listeners AFTER rendering
+  $('btnMd').addEventListener('click', copyMd);
+  $('btnPlain').addEventListener('click', copyPlain);
+}
+
+// ── Copy ───────────────────────────────────────────────
+function copyPlain() {
+  const r = window._report; if (!r) return;
+  copyText(
+`BUG REPORT — AZURE DEVOPS
+==============================================
+Title        : ${r.title}
+Work Item    : ${r.workItemType||'Bug'}
+Priority     : P${r.priority} — ${r.priorityLabel}
+Severity     : ${r.severityLabel}
+Repro Rate   : ${r.reproRate||'Always'}
+==============================================
+
+DESCRIPTION
+${r.description}
+
+STEPS TO REPRODUCE
+${r.stepsToReproduce}
+
+EXPECTED RESULT
+${r.expectedResult}
+
+ACTUAL RESULT
+${r.actualResult}
+
+ACCEPTANCE CRITERIA
+${r.acceptanceCriteria}
+
+TAGS: ${(r.tags||[]).join(', ')}`, 'btnPlain', '📄 Copy Plain Text');
+}
+
+function copyMd() {
+  const r = window._report; if (!r) return;
+  copyText(
+`## 🐞 ${r.title}
+
+| Field | Value |
+|---|---|
+| **Work Item** | ${r.workItemType||'Bug'} |
+| **Priority** | P${r.priority} — ${r.priorityLabel} |
+| **Severity** | ${r.severityLabel} |
+| **Repro Rate** | ${r.reproRate||'Always'} |
+
+### 📋 Description
+${r.description}
+
+### 🔢 Steps to Reproduce
+${r.stepsToReproduce}
+
+### ✅ Expected Result
+${r.expectedResult}
+
+### ❌ Actual Result
+${r.actualResult}
+
+### ✔️ Acceptance Criteria
+${r.acceptanceCriteria}
+
+**Tags:** ${(r.tags||[]).join(', ')}`, 'btnMd', '📋 Copy Markdown');
+}
+
+function copyText(text, id, label) {
+  navigator.clipboard.writeText(text).then(() => {
+    const b = $(id);
+    b.classList.add('copied'); b.textContent = '✅ Copied!';
+    setTimeout(() => { b.classList.remove('copied'); b.textContent = label; }, 2500);
+  });
+}
+</script>
+</body>
+</html>
