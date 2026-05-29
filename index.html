@@ -120,7 +120,9 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
 .gen-hint kbd{background:var(--s2);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10.5px}
 
 /* ERROR */
-.err{background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red);border-radius:var(--r2);padding:9px 12px;font-size:12.5px;margin-top:8px;line-height:1.65;display:none}
+.err{background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red);border-radius:var(--r2);padding:10px 13px;font-size:12.5px;margin-top:8px;line-height:1.7;display:none}
+.err ul{margin-left:4px;padding-left:16px}
+.err li{margin-top:3px}
 
 /* RESULT */
 .result-area{display:flex;flex-direction:column;gap:14px}
@@ -306,40 +308,42 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
 </div>
 <!-- AZDO Push Modal -->
 <div class="overlay" id="azdoModal">
-  <div class="modal" style="width:520px">
-    <div class="modal-icon" style="background:#e8f0fe"><svg viewBox="0 0 24 24" style="fill:#2563eb"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
-    <h3>Push to Azure DevOps</h3>
-    <p>Creates a Bug work item directly in your AZDO project using the REST API. Your credentials are saved in your browser only.</p>
-    <div style="display:grid;gap:9px;margin-bottom:14px">
+  <div class="modal" style="width:500px">
+    <div class="modal-icon" style="background:#e8f0fe">
+      <svg viewBox="0 0 24 24" style="fill:#2563eb"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+    </div>
+    <h3>Open in Azure DevOps</h3>
+    <p>Opens a pre-filled Bug creation form directly in your Azure DevOps project. No PAT or API key needed — just your normal AZDO login.</p>
+    <div style="display:grid;gap:10px;margin-bottom:16px">
       <div>
-        <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:4px">Organization URL</label>
-        <input type="text" id="azdoOrg" placeholder="https://dev.azure.com/yourorg" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:inherit;font-size:13px;padding:8px 11px;outline:none"/>
+        <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:4px">Organization URL <span style="color:var(--red)">*</span></label>
+        <input type="text" id="azdoOrg" placeholder="https://dev.azure.com/yourorg"
+          style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:inherit;font-size:13px;padding:9px 12px;outline:none"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
       </div>
       <div>
-        <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:4px">Project Name</label>
-        <input type="text" id="azdoProject" placeholder="MyProject" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:inherit;font-size:13px;padding:8px 11px;outline:none"/>
-      </div>
-      <div>
-        <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:4px">
-          Personal Access Token (PAT)
-          <a href="https://dev.azure.com/_usersSettings/tokens" target="_blank" style="color:var(--accent);font-weight:400;margin-left:6px;font-size:11px">Get PAT →</a>
-        </label>
-        <input type="password" id="azdoPat" placeholder="PAT with Work Items Read &amp; Write scope" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:'DM Mono',monospace;font-size:12.5px;padding:8px 11px;outline:none"/>
+        <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:4px">Project Name <span style="color:var(--red)">*</span></label>
+        <input type="text" id="azdoProject" placeholder="MyProject"
+          style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:inherit;font-size:13px;padding:9px 12px;outline:none"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"/>
       </div>
     </div>
-    <div style="background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);padding:10px 13px;font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.65">
-      <strong style="color:var(--text2)">PAT Scope needed:</strong> Work Items → Read &amp; Write. Go to <a href="https://dev.azure.com/_usersSettings/tokens" target="_blank" style="color:var(--accent)">dev.azure.com/_usersSettings/tokens</a> → New Token → select Work Items (Read &amp; Write).
+    <div style="background:var(--accent-bg);border:1px solid #bfdbfe;border-radius:var(--r2);padding:10px 13px;font-size:12px;color:#1e40af;margin-bottom:16px;line-height:1.65;display:flex;gap:8px">
+      <span style="font-size:16px;flex-shrink:0">ℹ️</span>
+      <span>A new browser tab will open with your bug details pre-filled. Just review, make any edits, and click <strong>Save</strong> inside AZDO to create the work item.</span>
     </div>
-    <div id="azdoPushStatus" style="display:none;margin-bottom:12px"></div>
+    <div id="azdoPushStatus" style="display:none;margin-bottom:12px;padding:10px 13px;border-radius:8px;font-size:12.5px;line-height:1.65"></div>
     <div style="display:flex;gap:8px;justify-content:space-between;align-items:center">
       <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer">
-        <input type="checkbox" id="azdoSaveCreds" style="accent-color:var(--accent)"/> Save credentials in browser
+        <input type="checkbox" id="azdoSaveCreds" checked style="accent-color:var(--accent)"/> Remember org &amp; project
       </label>
       <div style="display:flex;gap:7px">
         <button class="modal-close" onclick="closeAzdoModal()">Cancel</button>
-        <button id="azdoPushBtn" onclick="pushToAzdo()" style="background:var(--accent);color:#fff;border:none;border-radius:var(--r2);padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-          Create Bug in AZDO
+        <button id="azdoPushBtn" onclick="pushToAzdo()"
+          style="background:var(--accent);color:#fff;border:none;border-radius:var(--r2);padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:7px;transition:background .15s"
+          onmouseover="this.style.background='var(--accent-d)'" onmouseout="this.style.background='var(--accent)'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+          Open in Azure DevOps
         </button>
       </div>
     </div>
@@ -455,7 +459,7 @@ var screenshots = []; // [{base64, mediaType, name}]
 var MAX_SS = 8;
 
 function $(id){ return document.getElementById(id); }
-function showError(m){ var e=$('errorMsg'); e.innerHTML=m; e.style.display='block'; }
+function showError(m){ var e=$('errorMsg'); e.innerHTML=m; e.style.display='block'; e.scrollIntoView({behavior:'smooth',block:'nearest'}); }
 function hideError(){ $('errorMsg').style.display='none'; }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
 
@@ -657,33 +661,64 @@ $('generateBtn').addEventListener('click', async function(){
   });
   parts.push({text:prompt});
 
+  // Check payload size — large screenshots can exceed limits
+  var payloadStr = JSON.stringify({contents:[{parts:parts}]});
+  var payloadMB = (payloadStr.length / 1024 / 1024).toFixed(1);
+  if(payloadStr.length > 18 * 1024 * 1024){
+    showError('⚠️ Screenshots are too large ('+payloadMB+'MB). Please reduce to fewer or smaller images (max ~15MB total).');
+    btn.disabled=false;
+    btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate Bug Report';
+    return;
+  }
+
   try{
-    // Try models in order — fallback if one is overloaded
     var MODELS=['gemini-2.5-flash','gemini-2.0-flash','gemini-2.0-flash-lite'];
     var data=null, lastErr='';
     for(var mi=0;mi<MODELS.length;mi++){
       var model=MODELS[mi];
-      btn.innerHTML='<div class="spinner"></div> Trying '+model+'...';
-      var resp=await fetch(
-        'https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+key,
-        {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:parts}]})}
-      );
+      btn.innerHTML='<div class="spin"></div> Trying '+model+'...';
+      var resp;
+      try{
+        resp = await fetch(
+          'https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+key,
+          {method:'POST',headers:{'Content-Type':'application/json'},body:payloadStr}
+        );
+      }catch(netErr){
+        // Network-level failure — fetch itself threw
+        var msg = netErr.message||String(netErr);
+        if(msg.toLowerCase().indexOf('fetch')!==-1 || msg.toLowerCase().indexOf('network')!==-1 || msg.toLowerCase().indexOf('failed')!==-1){
+          throw new Error(
+            'Network request blocked. Possible causes:<br/>'
+            +'<ul style="margin:6px 0 0 16px;line-height:1.9">'
+            +'<li><strong>API key missing or invalid</strong> — click <em>API Key</em> in the top bar and re-enter your key</li>'
+            +'<li><strong>Corporate/VPN network</strong> — Google APIs may be blocked on your network. Try on a personal hotspot or WiFi</li>'
+            +'<li><strong>Browser extension</strong> — an ad-blocker or security extension may be blocking the request. Try in incognito mode</li>'
+            +'<li><strong>No internet</strong> — check your connection</li>'
+            +'</ul>'
+          );
+        }
+        throw new Error('Request failed: '+msg);
+      }
       if(resp.ok){ data=await resp.json(); break; }
-      var eBody=await resp.json();
+      var eBody=await resp.json().catch(function(){return {};});
       lastErr=(eBody.error&&eBody.error.message)?eBody.error.message:'HTTP '+resp.status;
-      if(resp.status===400||resp.status===403) throw new Error('Invalid API key. Get a free key at aistudio.google.com/app/apikey');
-      // 429 or 503 = overloaded, try next model
-      if(resp.status!==429&&resp.status!==503) throw new Error('Gemini error: '+lastErr);
+      if(resp.status===400) throw new Error('Invalid API key or request. Please re-enter your Gemini API key.');
+      if(resp.status===403) throw new Error('API key rejected (403). Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#60a5fa">aistudio.google.com/app/apikey</a>');
+      if(resp.status===429||resp.status===503){
+        if(mi<MODELS.length-1) continue; // try next model
+        throw new Error('All Gemini models are currently overloaded. Please wait a minute and try again.');
+      }
+      throw new Error('Gemini error ('+resp.status+'): '+lastErr);
     }
-    if(!data) throw new Error('All models are currently busy. Please try again in a minute.');
+    if(!data) throw new Error('No response received. Please try again.');
     var raw=data&&data.candidates&&data.candidates[0]&&data.candidates[0].content
       ?data.candidates[0].content.parts.map(function(p){return p.text||'';}).join(''):'';
     raw=raw.replace(/```json|```/g,'').trim();
     var match=raw.match(/\{[\s\S]*\}/);
-    if(!match) throw new Error('Unexpected AI response. Please try again.');
+    if(!match) throw new Error('AI returned an unexpected format. Please try again.');
     renderReport(JSON.parse(match[0]));
   }catch(err){
-    showError('❌ '+esc(err.message||String(err)));
+    showError('❌ '+(err.message||String(err)));
   }finally{
     btn.disabled=false;
     btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate Bug Report';
@@ -988,111 +1023,70 @@ function copyText(text,id,label){
 
 // ── Azure DevOps Push ──────────────────────────────────
 function openAzdoModal(){
-  var r=window._report; if(!r){ alert('Generate a report first.'); return; }
-  // Restore saved creds
+  var r=window._report;
+  if(!r){ alert('Generate a report first.'); return; }
   try{
     var saved=JSON.parse(localStorage.getItem('azdo_creds')||'{}');
     if(saved.org)  document.getElementById('azdoOrg').value=saved.org;
     if(saved.proj) document.getElementById('azdoProject').value=saved.proj;
-    if(saved.pat)  document.getElementById('azdoPat').value=saved.pat;
-    if(saved.org)  document.getElementById('azdoSaveCreds').checked=true;
   }catch(e){}
   document.getElementById('azdoPushStatus').style.display='none';
+  document.getElementById('azdoPushBtn').innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg> Open in Azure DevOps';
+  document.getElementById('azdoPushBtn').disabled=false;
+  document.getElementById('azdoPushBtn').style.background='var(--accent)';
   document.getElementById('azdoModal').classList.add('open');
 }
 function closeAzdoModal(){ document.getElementById('azdoModal').classList.remove('open'); }
 document.getElementById('azdoModal').addEventListener('click',function(e){ if(e.target===this) closeAzdoModal(); });
 
-function setAzdoStatus(msg, type){
-  var el=document.getElementById('azdoPushStatus');
-  var colors={info:'var(--accent-bg);border:1px solid #bfdbfe;color:var(--accent)',
-              success:'var(--green-bg);border:1px solid var(--green-bd);color:var(--green)',
-              error:'var(--red-bg);border:1px solid var(--red-bd);color:var(--red)',
-              loading:'var(--s2);border:1px solid var(--border);color:var(--muted)'};
-  el.style.cssText='display:block;padding:10px 13px;border-radius:8px;font-size:12.5px;line-height:1.6;background:'+colors[type];
-  el.innerHTML=msg;
-}
-
-async function pushToAzdo(){
+function pushToAzdo(){
   var r=window._report; if(!r) return;
-  var org    = document.getElementById('azdoOrg').value.trim().replace(/\/$/, '');
-  var proj   = document.getElementById('azdoProject').value.trim();
-  var pat    = document.getElementById('azdoPat').value.trim();
-  var save   = document.getElementById('azdoSaveCreds').checked;
+  var org  = document.getElementById('azdoOrg').value.trim().replace(/\/$/, '');
+  var proj = document.getElementById('azdoProject').value.trim();
+  var save = document.getElementById('azdoSaveCreds').checked;
 
-  if(!org||!proj||!pat){
-    setAzdoStatus('Please fill in all three fields — Organization URL, Project Name, and PAT.','error');
+  if(!org||!proj){
+    var el=document.getElementById('azdoPushStatus');
+    el.style.cssText='display:block;padding:10px 13px;border-radius:8px;font-size:12.5px;line-height:1.6;background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red)';
+    el.innerHTML='Please enter your Organization URL and Project Name.';
     return;
   }
 
   if(save){
-    try{ localStorage.setItem('azdo_creds', JSON.stringify({org,proj,pat})); }catch(e){}
+    try{ localStorage.setItem('azdo_creds', JSON.stringify({org:org,proj:proj})); }catch(e){}
   }
+
+  // Build the AZDO "create work item" deep-link URL with pre-filled fields
+  // AZDO supports: [System.Title], [System.Description], [Microsoft.VSTS.TCM.ReproSteps] etc via query params
+  var fields = {
+    '[System.WorkItemType]': 'Bug',
+    '[System.Title]': r.title||'',
+    '[System.Description]': (r.description||'').split('\n').join(' '),
+
+    '[Microsoft.VSTS.TCM.ReproSteps]': (r.stepsToReproduce||'').split('\n').join(' | '),
+
+    '[Microsoft.VSTS.Common.Priority]': String(r.priority||2),
+    '[System.Tags]': (r.tags||[]).join('; '),
+  };
+
+  var params = Object.keys(fields).map(function(k){
+    return encodeURIComponent(k)+'='+encodeURIComponent(fields[k]);
+  }).join('&');
+
+  var url = org+'/'+encodeURIComponent(proj)+'/_workitems/create/Bug?'+params;
+
+  // Open in new tab
+  window.open(url, '_blank');
+
+  // Show success in modal
+  var el=document.getElementById('azdoPushStatus');
+  el.style.cssText='display:block;padding:10px 13px;border-radius:8px;font-size:12.5px;line-height:1.65;background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green)';
+  el.innerHTML='✅ <strong>Opened in Azure DevOps!</strong> A new tab has opened with the bug pre-filled. Review and click <strong>Save</strong> inside AZDO to create the work item.';
 
   var btn=document.getElementById('azdoPushBtn');
+  btn.innerHTML='↗ Opened in AZDO';
+  btn.style.background='var(--green)';
   btn.disabled=true;
-  btn.innerHTML='<div class="spin" style="width:13px;height:13px;border-width:2px"></div> Creating...';
-  setAzdoStatus('Connecting to Azure DevOps...','loading');
-
-  // Build steps as HTML for AZDO repro steps field
-  var stepsHtml='<ol>'+r.stepsToReproduce.split('\n').map(function(s){
-    var clean=s.replace(/^\d+\.\s*/,'').trim();
-    return clean?'<li>'+clean+'</li>':'';
-  }).join('')+'</ol>';
-
-  // AZDO REST API patch document
-  var patchDoc=[
-    {op:'add',path:'/fields/System.Title',value:r.title},
-    {op:'add',path:'/fields/System.Description',value:'<p>'+r.description.replace(/\n/g,'<br/>')+'</p>'},
-    {op:'add',path:'/fields/Microsoft.VSTS.TCM.ReproSteps',value:stepsHtml},
-    {op:'add',path:'/fields/Microsoft.VSTS.Common.AcceptanceCriteria',value:'<p>'+r.acceptanceCriteria.replace(/\n/g,'<br/>')+'</p>'},
-    {op:'add',path:'/fields/Microsoft.VSTS.Common.Priority',value:parseInt(r.priority)||2},
-    {op:'add',path:'/fields/Microsoft.VSTS.Common.Severity',value:r.severityLabel+' '+r.priority},
-    {op:'add',path:'/fields/System.Tags',value:(r.tags||[]).join('; ')},
-    {op:'add',path:'/fields/Microsoft.VSTS.TCM.SystemInfo',value:r.environment||''},
-    {op:'add',path:'/fields/System.History',value:'<p><b>Expected:</b> '+r.expectedResult+'</p><p><b>Actual:</b> '+r.actualResult+'</p><p><b>Repro Rate:</b> '+r.reproRate+'</p><p>Created via BugAssist</p>'},
-  ];
-
-  var url=org+'/'+encodeURIComponent(proj)+'/_apis/wit/workitems/$Bug?api-version=7.0';
-
-  try{
-    var resp=await fetch(url,{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json-patch+json',
-        'Authorization':'Basic '+btoa(':'+pat)
-      },
-      body:JSON.stringify(patchDoc)
-    });
-
-    if(!resp.ok){
-      var errBody=await resp.json().catch(function(){return {};});
-      var errMsg=(errBody.message||errBody.value&&errBody.value.Message||'HTTP '+resp.status);
-      if(resp.status===401||resp.status===403)
-        throw new Error('Authentication failed. Check your PAT has Work Items (Read & Write) scope.');
-      if(resp.status===404)
-        throw new Error('Project not found. Check your Organization URL and Project Name.');
-      throw new Error(errMsg);
-    }
-
-    var item=await resp.json();
-    var itemId=item.id;
-    var itemUrl=org+'/'+encodeURIComponent(proj)+'/_workitems/edit/'+itemId;
-
-    setAzdoStatus(
-      '✅ <strong>Bug created successfully!</strong><br/>'
-      +'Work Item ID: <strong>#'+itemId+'</strong> &nbsp;·&nbsp; '
-      +'<a href="'+itemUrl+'" target="_blank" style="color:var(--green);font-weight:600">Open in Azure DevOps →</a>',
-      'success'
-    );
-    btn.innerHTML='✅ Created #'+itemId;
-    btn.style.background='var(--green)';
-
-  }catch(err){
-    setAzdoStatus('❌ <strong>Failed:</strong> '+err.message,'error');
-    btn.disabled=false;
-    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg> Retry';
-  }
 }
 
 document.addEventListener('keydown', function(e){
