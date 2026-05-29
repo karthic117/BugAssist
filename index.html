@@ -118,6 +118,9 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
 @keyframes spin{to{transform:rotate(360deg)}}
 .gen-hint{font-size:11px;color:var(--subtle);text-align:center;margin-top:7px}
 .gen-hint kbd{background:var(--s2);border:1px solid var(--border2);border-radius:4px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10.5px}
+.prov-tab{border:2px solid var(--border);border-radius:var(--r2);padding:8px 10px;cursor:pointer;transition:all .15s;text-align:center;background:var(--s2);color:var(--muted);user-select:none}
+.prov-tab:hover{border-color:var(--border2);color:var(--text2)}
+.prov-active{border-color:var(--accent)!important;background:var(--accent-bg)!important;color:var(--accent)!important}
 
 /* ERROR */
 .err{background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red);border-radius:var(--r2);padding:10px 13px;font-size:12.5px;margin-top:8px;line-height:1.7;display:none}
@@ -282,16 +285,51 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
 <div class="overlay" id="keyModal">
   <div class="modal">
     <div class="modal-icon"><svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg></div>
-    <h3>Gemini API Key</h3>
-    <p>Your key is saved only in your browser — never sent anywhere except Google's Gemini API. Free tier: 250 requests/day, no credit card needed.</p>
-    <div class="modal-row">
-      <input type="password" id="keyInput" placeholder="AIzaSy..." autocomplete="off"/>
-      <button class="modal-save" id="saveKeyBtn">Save key</button>
+    <h3>API Key</h3>
+    <p>Your keys are saved only in your browser — never shared with anyone.</p>
+
+    <!-- Provider tabs in modal -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px">
+      <div id="modalProvGemini" onclick="setModalProvider('gemini')" class="prov-tab prov-active" style="padding:10px">
+        <div style="font-weight:600;font-size:13px">Gemini</div>
+        <div style="font-size:11px;opacity:.75">aistudio.google.com</div>
+      </div>
+      <div id="modalProvOpenrouter" onclick="setModalProvider('openrouter')" class="prov-tab" style="padding:10px">
+        <div style="font-weight:600;font-size:13px">OpenRouter</div>
+        <div style="font-size:11px;opacity:.75">openrouter.ai · more free models</div>
+      </div>
     </div>
-    <div class="modal-note">Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></div>
+
+    <div id="geminiKeyWrap">
+      <div class="modal-row">
+        <input type="password" id="keyInput" placeholder="AIzaSy..." autocomplete="off"/>
+        <button class="modal-save" id="saveKeyBtn">Save</button>
+      </div>
+      <div class="modal-note">Free key (250 req/day) at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></div>
+    </div>
+
+    <div id="openrouterKeyWrap" style="display:none">
+      <div class="modal-row">
+        <input type="password" id="orKeyInput" placeholder="sk-or-v1-..." autocomplete="off"/>
+        <button class="modal-save" id="saveOrKeyBtn">Save</button>
+      </div>
+      <div style="margin-bottom:8px">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px">Model</label>
+        <select id="orModelSelect" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:inherit;font-size:13px;padding:8px 11px;outline:none">
+          <option value="google/gemini-2.0-flash-exp:free">Google Gemini 2.0 Flash (free)</option>
+          <option value="google/gemma-3-27b-it:free">Google Gemma 3 27B (free)</option>
+          <option value="meta-llama/llama-4-scout:free">Meta Llama 4 Scout (free)</option>
+          <option value="mistralai/mistral-small-3.2-24b-instruct:free">Mistral Small 3.2 (free)</option>
+          <option value="deepseek/deepseek-r1-0528:free">DeepSeek R1 (free)</option>
+          <option value="qwen/qwen3-235b-a22b:free">Qwen3 235B (free)</option>
+        </select>
+      </div>
+      <div class="modal-note">Free key at <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> — no daily hard limit, many free models. <a href="https://openrouter.ai/models?q=free" target="_blank">Browse all free models →</a></div>
+    </div>
+
     <div id="keyTestResult" style="display:none;margin-top:10px;padding:9px 12px;border-radius:8px;font-size:12.5px;line-height:1.6"></div>
     <div style="margin-top:10px">
-      <button onclick="testApiKey()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--r2);padding:7px 14px;font-size:12.5px;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">🔍 Test API Key</button>
+      <button onclick="testApiKey()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--r2);padding:7px 14px;font-size:12.5px;cursor:pointer;font-family:inherit;transition:all .15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--muted)'">🔍 Test Key</button>
     </div>
     <div class="modal-footer"><button class="modal-close" onclick="closeModal()">Close</button></div>
   </div>
@@ -431,6 +469,21 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
             </select>
           </div>
         </div>
+
+        <!-- AI Provider selector -->
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--subtle);margin-bottom:6px">AI Provider</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+            <div id="provGemini" onclick="setProvider('gemini')" class="prov-tab prov-active">
+              <div style="font-size:12.5px;font-weight:600">Gemini</div>
+              <div style="font-size:10.5px;opacity:.7">Google · Free key</div>
+            </div>
+            <div id="provOpenrouter" onclick="setProvider('openrouter')" class="prov-tab">
+              <div style="font-size:12.5px;font-weight:600">OpenRouter</div>
+              <div style="font-size:10.5px;opacity:.7">Multi-model · Free tier</div>
+            </div>
+          </div>
+        </div>
         <button class="gen-btn" id="generateBtn">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           Generate Bug Report
@@ -473,15 +526,41 @@ function openModal(){ $('keyModal').classList.add('open'); }
 function closeModal(){ $('keyModal').classList.remove('open'); }
 $('keyModal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
 
+// ── Provider state ─────────────────────────────────────
+var currentProvider = localStorage.getItem('ba_provider')||'gemini';
+
+function setProvider(p){
+  currentProvider=p;
+  localStorage.setItem('ba_provider',p);
+  document.getElementById('provGemini').className='prov-tab'+(p==='gemini'?' prov-active':'');
+  document.getElementById('provOpenrouter').className='prov-tab'+(p==='openrouter'?' prov-active':'');
+  // sync modal tabs
+  document.getElementById('modalProvGemini').className='prov-tab'+(p==='gemini'?' prov-active':'');
+  document.getElementById('modalProvOpenrouter').className='prov-tab'+(p==='openrouter'?' prov-active':'');
+}
+
+function setModalProvider(p){
+  setProvider(p);
+  document.getElementById('geminiKeyWrap').style.display=p==='gemini'?'block':'none';
+  document.getElementById('openrouterKeyWrap').style.display=p==='openrouter'?'block':'none';
+}
+
 function updateKeyStatus(){
-  var key=localStorage.getItem('gemini_api_key');
+  var gKey=localStorage.getItem('gemini_api_key');
+  var oKey=localStorage.getItem('or_api_key');
+  var hasKey = currentProvider==='gemini' ? !!gKey : !!oKey;
   var dot=$('keyDot'); var label=$('keyLabel');
-  if(key){ dot.classList.add('on'); label.textContent='API Key saved'; }
+  if(hasKey){ dot.classList.add('on'); label.textContent=currentProvider==='openrouter'?'OpenRouter key saved':'API Key saved'; }
   else { dot.classList.remove('on'); label.textContent='Set API Key'; }
 }
 
+function getKey(){
+  if(currentProvider==='openrouter') return localStorage.getItem('or_api_key')||($('orKeyInput')&&$('orKeyInput').value.trim())||'';
+  return localStorage.getItem('gemini_api_key')||($('keyInput')&&$('keyInput').value.trim())||'';
+}
+
 async function testApiKey(){
-  var key=($('keyInput').value.trim())||localStorage.getItem('gemini_api_key')||'';
+  var key=getKey()||($('keyInput')&&$('keyInput').value.trim())||($('orKeyInput')&&$('orKeyInput').value.trim())||'';
   var res=$('keyTestResult');
   if(!key){
     res.style.cssText='display:block;background:var(--amber-bg);border:1px solid var(--amber-bd);color:var(--amber)';
@@ -511,8 +590,17 @@ async function testApiKey(){
 
 window.addEventListener('DOMContentLoaded', function(){
   updateHistCount();
-  var saved=localStorage.getItem('gemini_api_key');
-  if(saved){ $('keyInput').value=saved; }
+  // Restore provider
+  var savedProv=localStorage.getItem('ba_provider')||'gemini';
+  setProvider(savedProv);
+  setModalProvider(savedProv);
+  // Restore keys
+  var gKey=localStorage.getItem('gemini_api_key');
+  if(gKey && $('keyInput')) $('keyInput').value=gKey;
+  var oKey=localStorage.getItem('or_api_key');
+  if(oKey && $('orKeyInput')) $('orKeyInput').value=oKey;
+  var oModel=localStorage.getItem('or_model');
+  if(oModel && $('orModelSelect')) $('orModelSelect').value=oModel;
   updateKeyStatus();
 });
 
@@ -520,9 +608,26 @@ $('saveKeyBtn').addEventListener('click', function(){
   var key=$('keyInput').value.trim();
   if(!key){ showError('Please paste your Gemini API key.'); return; }
   localStorage.setItem('gemini_api_key', key);
+  setProvider('gemini');
   updateKeyStatus();
   closeModal();
   hideError();
+});
+
+// Save OpenRouter key
+document.addEventListener('DOMContentLoaded', function(){
+  var saveOrBtn=$('saveOrKeyBtn');
+  if(saveOrBtn) saveOrBtn.addEventListener('click', function(){
+    var key=$('orKeyInput').value.trim();
+    if(!key){ showError('Please paste your OpenRouter API key.'); return; }
+    localStorage.setItem('or_api_key', key);
+    var model=$('orModelSelect').value;
+    localStorage.setItem('or_model', model);
+    setProvider('openrouter');
+    updateKeyStatus();
+    closeModal();
+    hideError();
+  });
 });
 
 function getKey(){ return localStorage.getItem('gemini_api_key')||$('keyInput').value.trim(); }
@@ -643,10 +748,14 @@ $('generateBtn').addEventListener('click', async function(){
   hideError();
 
   if(!key){
-    showError('⚠️ Please paste your Gemini API key and click <strong>Save Key</strong>. Get free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#8ab4ff">aistudio.google.com/app/apikey</a>');
+    if(currentProvider==='openrouter'){
+      showError('Please set your OpenRouter API key. Click <strong>Set API Key</strong> in the top bar, choose OpenRouter tab, and paste your key from <a href="https://openrouter.ai/keys" target="_blank" style="color:#60a5fa">openrouter.ai/keys</a> (free account).');
+    } else {
+      showError('Please set your Gemini API key. Click <strong>Set API Key</strong> in the top bar. Get free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#60a5fa">aistudio.google.com/app/apikey</a>');
+    }
     return;
   }
-  if(!desc&&screenshots.length===0){ showError('⚠️ Please enter a bug description or upload at least one screenshot.'); return; }
+  if(!desc&&screenshots.length===0){ showError('Please enter a bug description or upload at least one screenshot.'); return; }
 
   var btn=$('generateBtn');
   btn.disabled=true;
@@ -746,6 +855,21 @@ $('generateBtn').addEventListener('click', async function(){
   }
 
   try{
+    // ── Route to correct provider ──────────────────────
+    if(currentProvider==='openrouter'){
+      await generateWithOpenRouter(key, prompt, btn);
+    } else {
+      await generateWithGemini(key, parts, btn);
+    }
+  }catch(err){
+    showError('❌ '+(err.message||String(err)));
+  }finally{
+    btn.disabled=false;
+    btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate Bug Report';
+  }
+});
+
+async function generateWithGemini(key, parts, btn){
     var MODELS=['gemini-2.5-flash','gemini-2.0-flash','gemini-2.0-flash-lite'];
     var data=null, lastErr='', lastStatus=0;
     for(var mi=0;mi<MODELS.length;mi++){
@@ -783,11 +907,28 @@ $('generateBtn').addEventListener('click', async function(){
       if(resp.status===401) throw new Error('Unauthorized (401) — API key is invalid or expired. Please re-enter it.');
       if(resp.status===403) throw new Error('Forbidden (403) — API key rejected. Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#60a5fa">aistudio.google.com/app/apikey</a>');
       if(resp.status===404) throw new Error('Model not found (404): '+lastErr);
-      // Only retry on 429 or 503
-      if(resp.status===429||resp.status===503){
+      if(resp.status===429){
+        var isQuota=lastErr.toLowerCase().indexOf('quota')!==-1||lastErr.toLowerCase().indexOf('exceeded')!==-1||lastErr.indexOf('limit: 0')!==-1;
+        if(isQuota){
+          throw new Error(
+            '<strong>Free tier quota exceeded.</strong> Your API key has hit its daily limit (250 req/day).<br/><br/>'
+            +'<strong>Fix options:</strong>'
+            +'<ul style="margin:6px 0 0 4px;padding-left:16px;line-height:2.1">'
+            +'<li><a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#60a5fa;font-weight:600">Get a new free API key</a> — use a different Google account, each gets 250 req/day free</li>'
+            +'<li><a href="https://ai.dev/rate-limit" target="_blank" style="color:#60a5fa">Check your usage dashboard</a></li>'
+            +'<li><a href="https://ai.google.dev/gemini-api/docs/rate-limits" target="_blank" style="color:#60a5fa">Upgrade to paid tier</a> — removes daily limits, very low cost</li>'
+            +'</ul>'
+          );
+        }
+        // Rate limit (not quota) — retry next model
         if(mi<MODELS.length-1){ continue; }
+        throw new Error('Rate limited on all models (429). Please wait a minute and try again.');
       }
-      // All other status codes — stop and show real error
+      if(resp.status===503){
+        if(mi<MODELS.length-1){ continue; }
+        throw new Error('Gemini is temporarily unavailable (503). Please try again in a moment.');
+      }
+      // All other status codes
       throw new Error('Gemini API error (HTTP '+resp.status+'): '+lastErr);
     }
     if(!data) throw new Error('All models failed. Last response — HTTP '+lastStatus+': '+lastErr);
@@ -797,13 +938,55 @@ $('generateBtn').addEventListener('click', async function(){
     var match=raw.match(/\{[\s\S]*\}/);
     if(!match) throw new Error('AI returned an unexpected format. Please try again.');
     renderReport(JSON.parse(match[0]));
-  }catch(err){
-    showError('❌ '+(err.message||String(err)));
-  }finally{
-    btn.disabled=false;
-    btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate Bug Report';
+}
+
+async function generateWithOpenRouter(key, prompt, btn){
+  var model=localStorage.getItem('or_model')||'google/gemini-2.0-flash-exp:free';
+  btn.innerHTML='<div class="spin"></div> Calling '+model.split('/').pop()+'...';
+
+  var messages=[{role:'user',content:prompt}];
+
+  // If screenshots, prepend them as image messages
+  if(screenshots.length>0){
+    var content=[{type:'text',text:prompt}];
+    screenshots.forEach(function(ss){
+      content.push({type:'image_url',image_url:{url:'data:'+ss.mediaType+';base64,'+ss.base64}});
+    });
+    messages=[{role:'user',content:content}];
   }
-});
+
+  var resp;
+  try{
+    resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+key,
+        'HTTP-Referer':'https://karthic117.github.io/BugAssist/',
+        'X-Title':'BugAssist'
+      },
+      body:JSON.stringify({model:model,messages:messages,max_tokens:2000})
+    });
+  }catch(netErr){
+    throw new Error('Network blocked: '+netErr.message+'. Check your connection or try Gemini provider.');
+  }
+
+  if(!resp.ok){
+    var eb=await resp.json().catch(function(){return {};});
+    var msg=(eb.error&&eb.error.message)||'HTTP '+resp.status;
+    if(resp.status===401) throw new Error('OpenRouter: Invalid API key (401). Check your key at openrouter.ai/keys');
+    if(resp.status===402) throw new Error('OpenRouter: Insufficient credits (402). Add free credits at <a href="https://openrouter.ai/credits" target="_blank" style="color:#60a5fa">openrouter.ai/credits</a>');
+    if(resp.status===429) throw new Error('OpenRouter: Rate limited (429). Try a different free model or wait a moment.');
+    throw new Error('OpenRouter error ('+resp.status+'): '+msg);
+  }
+
+  var data=await resp.json();
+  var raw=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content||'';
+  raw=raw.replace(/```json|```/g,'').trim();
+  var match=raw.match(/\{[\s\S]*\}/);
+  if(!match) throw new Error('Unexpected response from OpenRouter. Try a different model.');
+  renderReport(JSON.parse(match[0]));
+}
 
 // ── Render ─────────────────────────────────────────────
 function renderReport(r){
