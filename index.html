@@ -342,18 +342,25 @@ $('generateBtn').addEventListener('click', async function(){
   parts.push({text:prompt});
 
   try{
-    var resp=await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key='+key,
-      {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:parts}]})}
-    );
-    if(!resp.ok){
-      var e=await resp.json();
-      var msg=(e.error&&e.error.message)?e.error.message:'HTTP '+resp.status;
+    // Try models in order — fallback if one is overloaded
+    var MODELS=['gemini-2.5-flash','gemini-2.0-flash','gemini-1.5-flash'];
+    var data=null, lastErr='';
+    for(var mi=0;mi<MODELS.length;mi++){
+      var model=MODELS[mi];
+      btn.innerHTML='<div class="spinner"></div> Trying '+model+'...';
+      var resp=await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent?key='+key,
+        {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:parts}]})}
+      );
+      if(resp.ok){ data=await resp.json(); break; }
+      var eBody=await resp.json();
+      lastErr=(eBody.error&&eBody.error.message)?eBody.error.message:'HTTP '+resp.status;
       if(resp.status===400||resp.status===403) throw new Error('Invalid API key. Get a free key at aistudio.google.com/app/apikey');
-      throw new Error('Gemini error: '+msg);
+      // 429 or 503 = overloaded, try next model
+      if(resp.status!==429&&resp.status!==503) throw new Error('Gemini error: '+lastErr);
     }
-    var data=await resp.json();
-    var raw=data.candidates&&data.candidates[0]&&data.candidates[0].content
+    if(!data) throw new Error('All models are currently busy. Please try again in a minute.');
+    var raw=data&&data.candidates&&data.candidates[0]&&data.candidates[0].content
       ?data.candidates[0].content.parts.map(function(p){return p.text||'';}).join(''):'';
     raw=raw.replace(/```json|```/g,'').trim();
     var match=raw.match(/\{[\s\S]*\}/);
