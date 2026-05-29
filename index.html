@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>QA Bug Reporter — AZDO Format</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -24,31 +24,33 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .header p{font-size:12px;color:var(--muted);margin-top:3px}
 .badge{display:inline-flex;align-items:center;background:rgba(0,120,212,0.18);color:#60aaff;border:1px solid rgba(0,120,212,0.3);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:8px;vertical-align:middle}
 .free-badge{background:rgba(46,216,122,0.12);color:#2ed87a;border:1px solid rgba(46,216,122,0.25);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle;display:inline-flex;align-items:center}
-.info-panel{background:rgba(79,127,255,0.08);border:1px solid rgba(79,127,255,0.2);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:1rem;font-size:12.5px;color:var(--muted);line-height:1.7}
-.info-panel strong{color:var(--text)}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
 .panel-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:10px}
 textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;resize:vertical;min-height:90px;outline:none;transition:border-color 0.15s}
 textarea:focus{border-color:var(--accent)}
 textarea::placeholder{color:var(--muted)}
-input[type=text],input[type=date],select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:9px 12px;outline:none;transition:border-color 0.15s}
-input:focus,select:focus{border-color:var(--accent)}
-select option{background:var(--surface2)}
+input[type=text]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:9px 12px;outline:none;transition:border-color 0.15s}
+input[type=text]:focus{border-color:var(--accent)}
+input::placeholder{color:var(--muted)}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
-@media(max-width:600px){.two-col,.three-col{grid-template-columns:1fr}}
+@media(max-width:600px){.two-col{grid-template-columns:1fr}}
 .field-group label{font-size:11.5px;color:var(--muted);margin-bottom:5px;display:block;font-weight:500}
-.drop-zone{border:2px dashed var(--border2);border-radius:var(--rs);padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2)}
+.drop-zone{border:2px dashed var(--border2);border-radius:var(--rs);padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2)}
 .drop-zone:hover,.drop-zone.drag{border-color:var(--accent);background:rgba(79,127,255,0.06)}
 .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-icon{font-size:28px;display:block;margin-bottom:6px}
 .drop-zone p{font-size:13px;color:var(--muted)}
 .drop-zone p span{color:var(--accent)}
+.drop-zone small{font-size:11px;color:var(--muted);opacity:0.6;display:block;margin-top:3px}
 .preview-area{margin-top:10px;position:relative;display:inline-block}
-.preview-area img{max-width:100%;max-height:200px;border-radius:var(--rs);border:1px solid var(--border2);display:block}
+.preview-area img{max-width:100%;max-height:220px;border-radius:var(--rs);border:1px solid var(--border2);display:block}
 .remove-btn{position:absolute;top:-8px;right:-8px;background:var(--red);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .generate-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background 0.15s,transform 0.1s;margin-bottom:1.5rem}
 .generate-btn:hover{background:var(--accent2)}
 .generate-btn:active{transform:scale(0.99)}
+.generate-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none}
+.spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 .error-msg{background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.25);color:#ff7b7b;border-radius:var(--rs);padding:11px 15px;font-size:13px;margin-bottom:1rem;line-height:1.8}
 .result-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .result-header{background:var(--surface2);padding:11px 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
@@ -72,6 +74,11 @@ select option{background:var(--surface2)}
 .p2{background:rgba(245,166,35,0.15);color:#f5c86a;border:1px solid rgba(245,166,35,0.3)}
 .p3{background:rgba(79,127,255,0.15);color:#8ab4ff;border:1px solid rgba(79,127,255,0.3)}
 .p4{background:rgba(138,143,154,0.15);color:#b0b5c0;border:1px solid rgba(138,143,154,0.3)}
+.sc{background:rgba(255,92,92,0.15);color:#ff7b7b;border:1px solid rgba(255,92,92,0.3)}
+.sh{background:rgba(245,166,35,0.15);color:#f5c86a;border:1px solid rgba(245,166,35,0.3)}
+.sm{background:rgba(79,127,255,0.15);color:#8ab4ff;border:1px solid rgba(79,127,255,0.3)}
+.sl{background:rgba(138,143,154,0.15);color:#b0b5c0;border:1px solid rgba(138,143,154,0.3)}
+.reason-text{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:1rem}
 .divider{border:none;border-top:1px solid var(--border);margin:1rem 0}
 .tag{display:inline-flex;align-items:center;background:var(--tag-bg);color:var(--tag-text);border:1px solid rgba(79,127,255,0.2);border-radius:20px;padding:2px 9px;font-size:11.5px;font-weight:500;margin:2px}
 </style>
@@ -83,20 +90,18 @@ select option{background:var(--surface2)}
     <div class="logo">🐞</div>
     <div>
       <h1>QA Bug Reporter <span class="badge">🔷 AZDO</span><span class="free-badge">✅ Free</span></h1>
-      <p>No API key &nbsp;·&nbsp; No install &nbsp;·&nbsp; Works on GitHub Pages &nbsp;·&nbsp; Instant generation</p>
+      <p>Upload screenshot + describe bug → AI generates complete AZDO work item instantly</p>
     </div>
-  </div>
-
-  <div class="info-panel">
-    <strong>🚀 Instant mode — no AI download needed.</strong> Fill in the fields below and click Generate. The tool uses smart templates to produce a complete, professional AZDO bug report instantly — no waiting, no model download, works on any browser.
   </div>
 
   <!-- SCREENSHOT -->
   <div class="panel">
-    <div class="panel-label">📷 Screenshot (optional)</div>
+    <div class="panel-label">📷 Screenshot (optional — AI will analyze it)</div>
     <div class="drop-zone" id="dropZone">
       <input type="file" id="fileInput" accept="image/*"/>
-      <p>Drag &amp; drop screenshot, or <span>click to browse</span></p>
+      <span class="dz-icon">📁</span>
+      <p>Drag &amp; drop screenshot here, or <span>click to browse</span></p>
+      <small>PNG, JPG, GIF, WEBP — AI reads the screenshot automatically</small>
     </div>
     <div id="previewArea" style="display:none" class="preview-area">
       <img id="previewImg" alt="Screenshot preview"/>
@@ -104,78 +109,23 @@ select option{background:var(--surface2)}
     </div>
   </div>
 
-  <!-- CORE FIELDS -->
+  <!-- DESCRIPTION -->
   <div class="panel">
-    <div class="panel-label">📝 Bug Details</div>
-    <div class="field-group" style="margin-bottom:12px">
-      <label>Bug Title / Short Description *</label>
-      <input type="text" id="titleInput" placeholder="e.g. Login fails with valid credentials on MRF application"/>
-    </div>
-    <div class="field-group">
-      <label>Detailed Description *</label>
-      <textarea id="descInput" placeholder="Describe what went wrong — what you did, what happened, what error appeared..." rows="4"></textarea>
-    </div>
+    <div class="panel-label">📝 Bug Description *</div>
+    <textarea id="descInput" placeholder="Describe the bug — what you were doing, what went wrong, what you expected. The AI will generate all report fields from this." rows="5"></textarea>
   </div>
 
-  <!-- STEPS + EXPECTED + ACTUAL -->
+  <!-- OPTIONAL HINTS -->
   <div class="panel">
-    <div class="panel-label">🔢 Reproduction Details</div>
-    <div class="field-group" style="margin-bottom:12px">
-      <label>Steps to Reproduce</label>
-      <textarea id="stepsInput" placeholder="1. Navigate to login page&#10;2. Enter valid credentials&#10;3. Click Login button&#10;4. Observe the error" rows="4"></textarea>
-    </div>
+    <div class="panel-label">⚙️ Optional Hints (helps AI be more precise)</div>
     <div class="two-col">
-      <div class="field-group">
-        <label>Expected Result</label>
-        <textarea id="expectedInput" placeholder="User should be logged in and redirected to dashboard" rows="3" style="min-height:70px"></textarea>
-      </div>
-      <div class="field-group">
-        <label>Actual Result</label>
-        <textarea id="actualInput" placeholder="Error message displayed: 'Invalid credentials'" rows="3" style="min-height:70px"></textarea>
-      </div>
-    </div>
-  </div>
-
-  <!-- META -->
-  <div class="panel">
-    <div class="panel-label">⚙️ Classification</div>
-    <div class="three-col" style="margin-bottom:12px">
       <div class="field-group">
         <label>Module / Feature Area</label>
-        <input type="text" id="moduleInput" placeholder="e.g. Login, MRF Ingestion"/>
+        <input type="text" id="moduleInput" placeholder="e.g. Login, MRF Ingestion, Dashboard"/>
       </div>
-      <div class="field-group">
-        <label>Priority</label>
-        <select id="priorityInput">
-          <option value="1-Critical">P1 — Critical</option>
-          <option value="2-High" selected>P2 — High</option>
-          <option value="3-Medium">P3 — Medium</option>
-          <option value="4-Low">P4 — Low</option>
-        </select>
-      </div>
-      <div class="field-group">
-        <label>Severity</label>
-        <select id="severityInput">
-          <option value="Critical">Critical</option>
-          <option value="High" selected>High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
-      </div>
-    </div>
-    <div class="two-col">
       <div class="field-group">
         <label>Environment</label>
         <input type="text" id="envInput" placeholder="e.g. Chrome 124, Windows 11, QA env"/>
-      </div>
-      <div class="field-group">
-        <label>Repro Rate</label>
-        <select id="reproInput">
-          <option value="Always">Always</option>
-          <option value="Intermittent">Intermittent</option>
-          <option value="Rarely">Rarely</option>
-          <option value="Unable to reproduce">Unable to reproduce</option>
-        </select>
       </div>
     </div>
   </div>
@@ -187,6 +137,16 @@ select option{background:var(--surface2)}
 </div>
 
 <script>
+// ─────────────────────────────────────────────────────
+// REPLACE THIS WITH YOUR GEMINI FREE API KEY
+// Get free key at: https://aistudio.google.com/app/apikey
+// ─────────────────────────────────────────────────────
+var GEMINI_KEY = 'AQ.Ab8RN6IOtP70xeBDqxNfVgzSjPRwzJcRW2AVVZMYu1qLo540Lg';
+// ─────────────────────────────────────────────────────
+
+var imageBase64 = null;
+var imageMediaType = null;
+
 function $(id){ return document.getElementById(id); }
 function showError(m){ $('errorMsg').innerHTML=m; $('errorMsg').style.display='block'; }
 function hideError(){ $('errorMsg').style.display='none'; }
@@ -199,14 +159,17 @@ dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.
 dropZone.addEventListener('dragleave', function(){ dropZone.classList.remove('drag'); });
 dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
 $('removeImg').addEventListener('click', function(){
+  imageBase64=null; imageMediaType=null;
   $('previewArea').style.display='none';
   dropZone.style.display='block';
   $('fileInput').value='';
 });
 function handleFile(file){
   if(!file||!file.type.startsWith('image/')) return;
+  imageMediaType = file.type;
   var reader=new FileReader();
   reader.onload=function(ev){
+    imageBase64 = ev.target.result.split(',')[1];
     $('previewImg').src=ev.target.result;
     $('previewArea').style.display='inline-block';
     dropZone.style.display='none';
@@ -214,114 +177,85 @@ function handleFile(file){
   reader.readAsDataURL(file);
 }
 
-// ── Smart report builder ───────────────────────────────
-function inferTags(title, desc, module){
-  var tags = [];
-  var text = (title+' '+desc+' '+module).toLowerCase();
-  if(/login|auth|credential|password|sign.?in/.test(text)) tags.push('Authentication');
-  if(/ui|display|layout|render|screen|visual/.test(text)) tags.push('UI');
-  if(/api|endpoint|request|response|http|rest/.test(text)) tags.push('API');
-  if(/data|database|db|record|save|load|fetch/.test(text)) tags.push('Data');
-  if(/crash|fail|error|exception|500|400/.test(text)) tags.push('Error-Handling');
-  if(/performance|slow|timeout|lag|speed/.test(text)) tags.push('Performance');
-  if(/mrf|ingestion|file|upload/.test(text)) tags.push('MRF');
-  if(/tenant|multi/.test(text)) tags.push('Multitenancy');
-  if(tags.length === 0) tags.push('Bug', 'Functional-Testing');
-  if(module) tags.push(module.replace(/\s+/g,'-'));
-  return [...new Set(tags)].slice(0,4);
-}
-
-function buildTitle(titleInput, module){
-  var t = titleInput.trim();
-  if(!t) return '';
-  var mod = module.trim();
-  if(mod && !t.startsWith('[')) return '['+mod+'] '+t;
-  return t;
-}
-
-function buildSteps(stepsRaw, desc){
-  if(stepsRaw.trim()){
-    var lines = stepsRaw.trim().split('\n').filter(function(l){ return l.trim(); });
-    return lines.map(function(l,i){
-      // if already numbered keep it, else add number
-      return /^\d+\./.test(l.trim()) ? l.trim() : (i+1)+'. '+l.trim();
-    }).join('\n');
-  }
-  // auto-generate basic steps from description
-  return '1. Navigate to the affected module/page\n2. Perform the action described in the bug description\n3. Observe the result';
-}
-
-function buildAcceptanceCriteria(title, expected){
-  var exp = expected.trim();
-  if(exp) return 'Verify that: '+exp+'\nNo error messages are displayed.\nBehavior is consistent across supported browsers/environments.';
-  return 'The reported issue no longer occurs.\nThe feature works as expected per requirements.\nNo regression in related functionality.';
-}
-
-function buildDescription(desc, env, reproRate){
-  var d = desc.trim();
-  var extras = [];
-  if(env) extras.push('Environment: '+env);
-  if(reproRate) extras.push('Repro rate: '+reproRate);
-  return d + (extras.length ? '\n\n'+extras.join(' | ') : '');
-}
-
 // ── Generate ───────────────────────────────────────────
-$('generateBtn').addEventListener('click', function(){
+$('generateBtn').addEventListener('click', async function(){
+  var desc   = $('descInput').value.trim();
+  var module = $('moduleInput').value.trim();
+  var env    = $('envInput').value.trim();
   hideError();
-  var titleRaw = $('titleInput').value.trim();
-  var desc     = $('descInput').value.trim();
-  var steps    = $('stepsInput').value.trim();
-  var expected = $('expectedInput').value.trim();
-  var actual   = $('actualInput').value.trim();
-  var module   = $('moduleInput').value.trim();
-  var env      = $('envInput').value.trim();
-  var priVal   = $('priorityInput').value;
-  var severity = $('severityInput').value;
-  var repro    = $('reproInput').value;
 
-  if(!titleRaw){ showError('⚠️ Please enter a bug title / short description.'); return; }
-  if(!desc){ showError('⚠️ Please enter a detailed description.'); return; }
+  if(!desc && !imageBase64){
+    showError('⚠️ Please enter a bug description or upload a screenshot.');
+    return;
+  }
+  if(GEMINI_KEY === 'AQ.Ab8RN6IOtP70xeBDqxNfVgzSjPRwzJcRW2AVVZMYu1qLo540Lg'){
+    showError('⚠️ Please add your Gemini API key in the HTML file. Open index.html and replace <code>AQ.Ab8RN6IOtP70xeBDqxNfVgzSjPRwzJcRW2AVVZMYu1qLo540Lg</code> with your key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#8ab4ff">aistudio.google.com</a>');
+    return;
+  }
 
-  var priParts = priVal.split('-');
-  var priNum   = priParts[0];
-  var priLabel = priParts[1];
+  var btn=$('generateBtn');
+  btn.disabled=true;
+  btn.innerHTML='<div class="spinner"></div> AI is analyzing...';
+  $('resultWrap').style.display='none';
 
-  var report = {
-    title:              buildTitle(titleRaw, module),
-    description:        buildDescription(desc, env, repro),
-    stepsToReproduce:   buildSteps(steps, desc),
-    expectedResult:     expected || 'The feature works as per requirements without any errors.',
-    actualResult:       actual   || 'The described error or unexpected behavior occurs.',
-    priority:           priNum,
-    priorityLabel:      priLabel,
-    severityLabel:      severity,
-    priorityReason:     getPriorityReason(priNum, priLabel, severity),
-    reproRate:          repro,
-    workItemType:       'Bug',
-    acceptanceCriteria: buildAcceptanceCriteria(titleRaw, expected),
-    tags:               inferTags(titleRaw, desc, module)
-  };
+  var systemPrompt = 'You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only. No markdown fences, no explanation. Return ONLY the raw JSON object.\n\nReturn exactly this JSON:\n{\n  "title": "[Module] Short bug title under 80 chars",\n  "description": "2-3 sentence professional description of the bug and its impact",\n  "stepsToReproduce": "1. Step one\\n2. Step two\\n3. Step three",\n  "expectedResult": "What should happen",\n  "actualResult": "What actually happened",\n  "priority": "2",\n  "priorityLabel": "High",\n  "severityLabel": "High",\n  "priorityReason": "One sentence justifying priority and severity",\n  "reproRate": "Always",\n  "workItemType": "Bug",\n  "acceptanceCriteria": "What must be verified to close this bug",\n  "tags": ["tag1","tag2","tag3"]\n}\nPriority: 1=Critical(crash/auth/data loss), 2=High(feature broken), 3=Medium(workaround exists), 4=Low(cosmetic)';
 
-  renderReport(report);
+  var userText = 'Generate a complete AZDO bug report.\n';
+  if(desc) userText += '\nBug Description:\n' + desc;
+  if(module) userText += '\nModule: ' + module;
+  if(env) userText += '\nEnvironment: ' + env;
+  if(imageBase64 && !desc) userText += '\nAnalyze the screenshot to identify the bug and fill all fields.';
+
+  // Build Gemini request parts
+  var parts = [];
+  if(imageBase64){
+    parts.push({ inlineData: { mimeType: imageMediaType, data: imageBase64 } });
+  }
+  parts.push({ text: systemPrompt + '\n\n' + userText });
+
+  try {
+    var resp = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_KEY,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: parts }] })
+      }
+    );
+
+    if(!resp.ok){
+      var e = await resp.json();
+      var msg = (e.error && e.error.message) ? e.error.message : 'HTTP ' + resp.status;
+      if(resp.status === 400 && msg.includes('API_KEY')){
+        throw new Error('Invalid API key. Get a free key at aistudio.google.com/app/apikey');
+      }
+      throw new Error('Gemini error: ' + msg);
+    }
+
+    var data = await resp.json();
+    var raw = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts
+      ? data.candidates[0].content.parts.map(function(p){ return p.text||''; }).join('')
+      : '';
+
+    var match = raw.match(/\{[\s\S]*\}/);
+    if(!match) throw new Error('AI returned unexpected format. Try again.');
+    renderReport(JSON.parse(match[0]));
+
+  } catch(err){
+    showError('❌ ' + (err.message || String(err)));
+  } finally {
+    btn.disabled=false;
+    btn.innerHTML='🪄 Generate AZDO Bug Report';
+  }
 });
-
-function getPriorityReason(num, label, severity){
-  var reasons = {
-    '1': 'Critical priority assigned as this issue causes complete feature/system failure with no workaround available.',
-    '2': 'High priority as this significantly impacts core functionality and blocks key user workflows.',
-    '3': 'Medium priority since a workaround exists, but the issue degrades user experience.',
-    '4': 'Low priority as this is a cosmetic or minor issue with minimal business impact.'
-  };
-  return reasons[num] || 'Priority set based on functional impact and user-facing severity.';
-}
 
 // ── Render ─────────────────────────────────────────────
 function renderReport(r){
-  var pClass = {'1':'p1','2':'p2','3':'p3','4':'p4'}[r.priority]||'p3';
-  var sClass = {'Critical':'p1','High':'p2','Medium':'p3','Low':'p4'}[r.severityLabel]||'p3';
-  var tags = (r.tags||[]).map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join('');
+  var pClass={'1':'p1','2':'p2','3':'p3','4':'p4'}[String(r.priority)]||'p3';
+  var sClass={'critical':'sc','high':'sh','medium':'sm','low':'sl'}[String(r.severityLabel||'').toLowerCase()]||'sm';
+  var tags=(r.tags||[]).map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join('');
 
-  $('resultWrap').innerHTML =
+  $('resultWrap').innerHTML=
     '<div class="result-wrap">'
     +'<div class="result-header">'
     +'<span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>'
@@ -334,10 +268,10 @@ function renderReport(r){
     +'<div class="meta-row">'
     +'<div class="meta-col"><div class="field-key">Priority</div><span class="badge-pill '+pClass+'">🚩 P'+r.priority+' — '+esc(r.priorityLabel)+'</span></div>'
     +'<div class="meta-col"><div class="field-key">Severity</div><span class="badge-pill '+sClass+'">⚠️ '+esc(r.severityLabel)+'</span></div>'
-    +'<div class="meta-col"><div class="field-key">Work Item</div><span class="badge-pill p1">🐞 Bug</span></div>'
-    +'<div class="meta-col"><div class="field-key">Repro Rate</div><span class="badge-pill p3">🔁 '+esc(r.reproRate)+'</span></div>'
+    +'<div class="meta-col"><div class="field-key">Work Item</div><span class="badge-pill p1">🐞 '+esc(r.workItemType||'Bug')+'</span></div>'
+    +'<div class="meta-col"><div class="field-key">Repro Rate</div><span class="badge-pill p3">🔁 '+esc(r.reproRate||'Always')+'</span></div>'
     +'</div>'
-    +'<p style="font-size:12px;color:var(--muted);font-style:italic;margin-bottom:1rem">💡 '+esc(r.priorityReason)+'</p>'
+    +'<p class="reason-text">💡 '+esc(r.priorityReason)+'</p>'
     +'<hr class="divider"/>'
     +'<div class="field-row"><div class="field-key">📋 Description</div><div class="field-val">'+esc(r.description)+'</div></div>'
     +'<div class="field-row"><div class="field-key">🔢 Steps to Reproduce</div><div class="field-val steps-val">'+esc(r.stepsToReproduce)+'</div></div>'
@@ -352,7 +286,7 @@ function renderReport(r){
 
   $('resultWrap').style.display='block';
   $('resultWrap').scrollIntoView({behavior:'smooth',block:'start'});
-  window._report = r;
+  window._report=r;
   $('btnMd').addEventListener('click', copyMd);
   $('btnPlain').addEventListener('click', copyPlain);
 }
@@ -364,17 +298,17 @@ function copyPlain(){
     'BUG REPORT — AZURE DEVOPS\n'
     +'==============================================\n'
     +'Title        : '+r.title+'\n'
-    +'Work Item    : Bug\n'
+    +'Work Item    : '+(r.workItemType||'Bug')+'\n'
     +'Priority     : P'+r.priority+' — '+r.priorityLabel+'\n'
     +'Severity     : '+r.severityLabel+'\n'
-    +'Repro Rate   : '+r.reproRate+'\n'
+    +'Repro Rate   : '+(r.reproRate||'Always')+'\n'
     +'==============================================\n\n'
     +'DESCRIPTION\n'+r.description+'\n\n'
     +'STEPS TO REPRODUCE\n'+r.stepsToReproduce+'\n\n'
     +'EXPECTED RESULT\n'+r.expectedResult+'\n\n'
     +'ACTUAL RESULT\n'+r.actualResult+'\n\n'
     +'ACCEPTANCE CRITERIA\n'+r.acceptanceCriteria+'\n\n'
-    +'TAGS: '+r.tags.join(', '),
+    +'TAGS: '+(r.tags||[]).join(', '),
     'btnPlain','📄 Copy Plain Text');
 }
 
@@ -383,16 +317,16 @@ function copyMd(){
   copyText(
     '## 🐞 '+r.title+'\n\n'
     +'| Field | Value |\n|---|---|\n'
-    +'| **Work Item** | Bug |\n'
+    +'| **Work Item** | '+(r.workItemType||'Bug')+' |\n'
     +'| **Priority** | P'+r.priority+' — '+r.priorityLabel+' |\n'
     +'| **Severity** | '+r.severityLabel+' |\n'
-    +'| **Repro Rate** | '+r.reproRate+' |\n\n'
+    +'| **Repro Rate** | '+(r.reproRate||'Always')+' |\n\n'
     +'### 📋 Description\n'+r.description+'\n\n'
     +'### 🔢 Steps to Reproduce\n'+r.stepsToReproduce+'\n\n'
     +'### ✅ Expected Result\n'+r.expectedResult+'\n\n'
     +'### ❌ Actual Result\n'+r.actualResult+'\n\n'
     +'### ✔️ Acceptance Criteria\n'+r.acceptanceCriteria+'\n\n'
-    +'**Tags:** '+r.tags.join(', '),
+    +'**Tags:** '+(r.tags||[]).join(', '),
     'btnMd','📋 Copy Markdown');
 }
 
