@@ -695,106 +695,80 @@ function renderReport(r){
   var pPill={'1':'chip chip-r','2':'chip chip-a','3':'chip chip-b','4':'chip chip-g'}[String(r.priority)]||'chip chip-b';
   var sPill={'critical':'chip chip-r','high':'chip chip-a','medium':'chip chip-b','low':'chip chip-g'}[String(r.severityLabel||'').toLowerCase()]||'chip chip-b';
   var tags=(r.tags||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('');
+  var EI='<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+  function eb(f){ return '<button class="eb" data-field="'+f+'" onclick="startEdit(this.dataset.field)">'+EI+'Edit</button>'; }
+  function ew(f,inner){ return '<div class="ew" id="ew-'+f+'">'+inner+eb(f)+'</div>'; }
 
-  var EDIT_ICON='<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+  var html='<div class="rc">'
 
-  function editBtn(field){ return '<button class="eb" data-field="'+field+'" onclick="startEdit(this.dataset.field)">'+EDIT_ICON+'Edit</button>'; }
-
-  var html=
-    '<div class="rc">'
-    +'<div class="rc-header">'
-    +'<div class="rc-badge"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Bug Report — Azure DevOps</span></div>'
-    +'<div class="rc-actions">'
+    +'<div class="rc-hd">'
+    +'<div class="rc-hd-left">'
+    +'<div class="rc-badge2"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Bug Report — Azure DevOps</span></div>'
+    +'</div>'
+    +'<div class="rc-acts">'
     +'<button class="rc-btn" id="btnPlain"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>Copy Text</button>'
     +'<button class="rc-btn" id="btnMd"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Markdown</button>'
-    +'<button class="rc-btn word" id="btnWord"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Word Doc</button>'
-    +'<button class="rc-btn csv" id="btnAzdo"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Import CSV</button>'
-    +'<button class="rc-btn" id="btnPush" style="background:rgba(37,99,235,.25);border-color:rgba(37,99,235,.4);color:#93c5fd"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>Push to AZDO</button>'
+    +'<button class="rc-btn" id="btnWord" style="background:rgba(59,130,246,.2);border-color:rgba(59,130,246,.35);color:#93c5fd"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Word Doc</button>'
+    +'<button class="rc-btn" id="btnAzdo" style="background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.35);color:#c4b5fd"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Import CSV</button>'
+    +'<button class="rc-btn" id="btnPush" style="background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.35);color:#6ee7b7"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>Push to AZDO</button>'
     +'</div></div>'
+
     +'<div class="rc-body">'
 
-    // Title
-    +'<div class="rc-title-wrap">'
-    +'<div class="rc-title-eyebrow">Work Item Title</div>'
-    +'<div class="editable-wrap" id="ew-title">'
-    +'<div class="rc-title" id="val-title">'+esc(r.title)+'</div>'
-    +editBtn('title')
-    +'</div>'
+    +'<div class="rc-title-block">'
+    +'<div class="rc-eyebrow">Work Item Title</div>'
+    +ew('title','<div class="rc-title" id="val-title">'+esc(r.title)+'</div>')
     +'</div>'
 
-    // Meta grid
-    +'<div class="meta">'
-    +'<div class="mc"><div class="mc-label">Priority</div><div class="mc-val"><span class="'+pPill+'">P'+r.priority+' '+esc(r.priorityLabel)+'</span></div></div>'
-    +'<div class="mc"><div class="mc-label">Severity</div><div class="mc-val"><span class="'+sPill+'">'+esc(r.severityLabel)+'</span></div></div>'
-    +'<div class="mc"><div class="mc-label">Repro Rate</div><div class="mc-val">'+esc(r.reproRate||'Always')+'</div></div>'
-    +'<div class="mc"><div class="mc-label">Work Item</div><div class="mc-val">'+esc(r.workItemType||'Bug')+'</div></div>'
-    +(r.application?'<div class="mc"><div class="mc-label">Application</div><div class="mc-val">'+esc(r.application)+'</div></div>':'')
-    +(r.module?'<div class="mc"><div class="mc-label">Module</div><div class="mc-val">'+esc(r.module)+'</div></div>':'')
-    +(r.environment?'<div class="mc"><div class="mc-label">Environment</div><div class="mc-val">'+esc(r.environment)+'</div></div>':'')
-    +(r.relatedStory?'<div class="mc"><div class="mc-label">Story / TC</div><div class="mc-val">'+esc(r.relatedStory)+'</div></div>':'')
+    +'<div class="meta-chips">'
+    +'<div class="mc2"><div class="mc2-label">Priority</div><div class="mc2-val"><span class="'+pPill+'">P'+r.priority+' '+esc(r.priorityLabel)+'</span></div></div>'
+    +'<div class="mc2"><div class="mc2-label">Severity</div><div class="mc2-val"><span class="'+sPill+'">'+esc(r.severityLabel)+'</span></div></div>'
+    +'<div class="mc2"><div class="mc2-label">Repro Rate</div><div class="mc2-val">'+esc(r.reproRate||'Always')+'</div></div>'
+    +'<div class="mc2"><div class="mc2-label">Work Item</div><div class="mc2-val">'+esc(r.workItemType||'Bug')+'</div></div>'
+    +(r.application?'<div class="mc2"><div class="mc2-label">Application</div><div class="mc2-val">'+esc(r.application)+'</div></div>':'')
+    +(r.module?'<div class="mc2"><div class="mc2-label">Module</div><div class="mc2-val">'+esc(r.module)+'</div></div>':'')
+    +(r.environment?'<div class="mc2"><div class="mc2-label">Environment</div><div class="mc2-val">'+esc(r.environment)+'</div></div>':'')
+    +(r.relatedStory?'<div class="mc2"><div class="mc2-label">Story / TC</div><div class="mc2-val">'+esc(r.relatedStory)+'</div></div>':'')
     +'</div>'
 
-    // Justification
-    +'<div class="justif"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><strong>Priority Justification:</strong> '+esc(r.priorityReason)+'</div>'
+    +'<div class="just"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><strong>Priority Justification:</strong> '+esc(r.priorityReason)+'</div>'
 
-    // Description
-    +'<div class="sec">'
-    +'<div class="sec-label">Description</div>'
-    +'<div class="editable-wrap" id="ew-description">'
-    +'<div class="sec-body" id="val-description">'+esc(r.description)+'</div>'
-    +editBtn('description')
-    +'</div>'
+    +'<div class="sec"><div class="sec-label">Description</div>'
+    +ew('description','<div class="sec-body" id="val-description">'+esc(r.description)+'</div>')
     +'</div>'
 
-    // Steps
-    +'<div class="sec">'
-    +'<div class="sec-label">Steps to Reproduce</div>'
-    +'<div class="editable-wrap" id="ew-stepsToReproduce">'
-    +'<div class="sec-body steps" id="val-stepsToReproduce">'+esc(r.stepsToReproduce)+'</div>'
-    +editBtn('stepsToReproduce')
-    +'</div>'
+    +'<div class="sec"><div class="sec-label">Steps to Reproduce</div>'
+    +ew('stepsToReproduce','<div class="sec-body steps" id="val-stepsToReproduce">'+esc(r.stepsToReproduce)+'</div>')
     +'</div>'
 
-    // Expected & Actual
     +'<div class="two-sec">'
     +'<div class="sec"><div class="sec-label">Expected Result</div>'
-    +'<div class="editable-wrap" id="ew-expectedResult">'
-    +'<div class="sec-body expected" id="val-expectedResult">'+esc(r.expectedResult)+'</div>'
-    +editBtn('expectedResult')
-    +'</div></div>'
+    +ew('expectedResult','<div class="sec-body exp" id="val-expectedResult">'+esc(r.expectedResult)+'</div>')
+    +'</div>'
     +'<div class="sec"><div class="sec-label">Actual Result</div>'
-    +'<div class="editable-wrap" id="ew-actualResult">'
-    +'<div class="sec-body actual" id="val-actualResult">'+esc(r.actualResult)+'</div>'
-    +editBtn('actualResult')
-    +'</div></div>'
-    +'</div>'
-
-    // Acceptance Criteria
-    +'<div class="sec">'
-    +'<div class="sec-label">Acceptance Criteria</div>'
-    +'<div class="editable-wrap" id="ew-acceptanceCriteria">'
-    +'<div class="sec-body criteria" id="val-acceptanceCriteria">'+esc(r.acceptanceCriteria)+'</div>'
-    +editBtn('acceptanceCriteria')
+    +ew('actualResult','<div class="sec-body act" id="val-actualResult">'+esc(r.actualResult)+'</div>')
     +'</div>'
     +'</div>'
 
-    // Tags
-    +(tags?'<div class="sec"><div class="sec-label">Tags</div><div class="tags-wrap" id="val-tags">'+tags+'</div></div>':'')
+    +'<div class="sec"><div class="sec-label">Acceptance Criteria</div>'
+    +ew('acceptanceCriteria','<div class="sec-body crit" id="val-acceptanceCriteria">'+esc(r.acceptanceCriteria)+'</div>')
+    +'</div>'
+
+    +(tags?'<div class="sec"><div class="sec-label">Tags</div><div class="tags-row" id="val-tags">'+tags+'</div></div>':'')
 
     +'</div></div>';
 
-  var scoreHtml=renderScore(r);
+  var scoreHtml=''; try{scoreHtml=renderScore(r);}catch(e){}
   var area=$('resultArea');
   area.innerHTML=scoreHtml+html;
   area.scrollIntoView({behavior:'smooth',block:'start'});
   window._report=r;
-  saveToHistory(r);
-  updateHistCount();
+  try{saveToHistory(r);updateHistCount();}catch(e){}
   $('btnPlain').addEventListener('click',copyPlain);
   $('btnMd').addEventListener('click',copyMd);
-  $('btnWord').addEventListener('click', downloadWord);
+  $('btnWord').addEventListener('click',downloadWord);
   $('btnAzdo').addEventListener('click',downloadAzdoCsv);
-  $('btnPush').addEventListener('click', openAzdoModal);
+  $('btnPush').addEventListener('click',openAzdoModal);
 }
 
 // ── Inline editing ─────────────────────────────────────
@@ -840,9 +814,9 @@ function saveEdit(field){
 
   var secClass='sec-body'
     +(field==='stepsToReproduce'?' steps'
-    :field==='expectedResult'?' expected'
-    :field==='actualResult'?' actual'
-    :field==='acceptanceCriteria'?' criteria':'');
+    :field==='expectedResult'?' exp'
+    :field==='actualResult'?' act'
+    :field==='acceptanceCriteria'?' crit':'');
 
   var valHtml=isTitle
     ? '<div class="rc-title field-edited" id="val-'+field+'">'+esc(newVal)+'</div>'
@@ -866,9 +840,9 @@ function cancelEdit(field){
 
   var secClass='sec-body'
     +(field==='stepsToReproduce'?' steps'
-    :field==='expectedResult'?' expected'
-    :field==='actualResult'?' actual'
-    :field==='acceptanceCriteria'?' criteria':'');
+    :field==='expectedResult'?' exp'
+    :field==='actualResult'?' act'
+    :field==='acceptanceCriteria'?' crit':'');
 
   wrap.innerHTML=(isTitle
     ? '<div class="rc-title" id="val-'+field+'">'+esc(r[field])+'</div>'
