@@ -192,7 +192,7 @@ input[type=text]::placeholder{color:var(--muted)}
   <div id="resultWrap" style="display:none"></div>
 </div>
 
-<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
 <script>
 // ── Screenshot state ───────────────────────────────────
 var screenshots = []; // [{base64, mediaType, name}]
@@ -300,39 +300,79 @@ $('generateBtn').addEventListener('click', async function(){
   btn.innerHTML='<div class="spinner"></div> AI is analyzing'+ssLabel+'...';
   $('resultWrap').style.display='none';
 
-  var prompt='You are a senior QA engineer writing a formal bug report for Azure DevOps.\n'
-    +'Generate a detailed, professional bug report as strict JSON only — no markdown fences, no explanation.\n\n'
-    +(app?'Application: '+app+'\n':'')
-    +(module?'Module/Feature: '+module+'\n':'')
-    +(env?'Environment: '+env+'\n':'')
-    +(story?'Related Test Case / Story: '+story+'\n':'')
-    +'Bug Description: '+(desc||'See attached screenshots')+'\n'
-    +(screenshots.length>0?'Number of screenshots provided: '+screenshots.length+'. Analyze ALL screenshots carefully — they may show different steps or states of the bug.\n':'')
-    +'\nRULES:\n'
-    +'- Title must mention the SPECIFIC application ("'+(app||'the application')+'") and EXACT issue. Format: ['+(app||'AppName')+'] - ['+(module||'Module')+'] - Specific issue\n'
-    +'- Steps to Reproduce: MINIMUM 6 detailed steps. Include exact navigation paths, button names, field values, URLs visible in screenshots.\n'
-    +'- If multiple screenshots are provided, reference them in steps (e.g. "As shown in screenshot 1...")\n'
-    +'- Expected and Actual results must be precise and technical.\n'
-    +'\nReturn ONLY this JSON:\n'
-    +'{\n'
-    +'  "title": "['+(app||'ApplicationName')+'] - ['+(module||'Module')+'] - Specific issue under 80 chars",\n'
-    +'  "description": "3-4 sentence professional description: what the bug is, which application and module, business impact, error messages observed.",\n'
-    +'  "stepsToReproduce": "1. Launch '+(app||'the application')+' and navigate to [URL]\\n2. Log in as [role]\\n3. Navigate to [exact path]\\n4. [Exact action]\\n5. [Exact action]\\n6. Observe the error",\n'
-    +'  "expectedResult": "Specific expected behavior with technical detail",\n'
-    +'  "actualResult": "Specific actual behavior with exact error messages",\n'
-    +'  "priority": "2",\n'
-    +'  "priorityLabel": "High",\n'
-    +'  "severityLabel": "High",\n'
-    +'  "priorityReason": "Specific reason tied to business impact",\n'
-    +'  "reproRate": "Always",\n'
-    +'  "workItemType": "Bug",\n'
-    +'  "acceptanceCriteria": "1. [Verification step]\\n2. [Verification step]\\n3. No regression in related functionality",\n'
-    +'  "tags": ["'+(app||'App')+'","'+(module||'Module')+'","Bug","Functional"],\n'
-    +'  "relatedStory": "'+(story||'')+'",\n'
-    +'  "application": "'+(app||'')+'",\n'
-    +'  "module": "'+(module||'')+'",\n'
-    +'  "environment": "'+(env||'')+'"\n'
-    +'}';
+  var prompt=
+'You are a highly experienced QA Lead with 10+ years writing formal defect reports for enterprise healthcare/insurance technology platforms in Azure DevOps.\n\n'
++'Your bug reports are known for:\n'
++'- Crystal-clear, business-impact-focused descriptions that non-technical stakeholders understand\n'
++'- Step-by-step reproduction instructions so precise that any developer can reproduce the issue in under 2 minutes\n'
++'- Zero ambiguity — every field contains specific, verifiable information\n\n'
++'INPUT CONTEXT:\n'
++(app?'Application: '+app+'\n':'')
++(module?'Module/Feature: '+module+'\n':'')
++(env?'Environment: '+env+'\n':'')
++(story?'Related Test Case / Story ID: '+story+'\n':'')
++'Tester\'s Bug Description: '+(desc||'See the attached screenshots for full context')+'\n'
++(screenshots.length>0?'Screenshots attached: '+screenshots.length+' image(s). Study EACH screenshot carefully — extract exact error messages, UI element names, URL paths, field values, and any visible system state.\n':'')
++'\n'
++'OUTPUT REQUIREMENTS — follow these rules strictly:\n\n'
+
++'TITLE:\n'
++'Format: ['+( app||'AppName')+'] ['+( module||'Module')+'] — One-line precise issue (max 90 chars)\n'
++'Must name the exact feature/page and exact failure. Not generic. Example: "[MRF Portal] [Ingestion Dashboard] — Duplicate file detection fails silently for state-specific plans"\n\n'
+
++'DESCRIPTION (4-6 sentences, structured):\n'
++'Sentence 1: What exactly is broken — name the specific feature, screen, and action that triggers it.\n'
++'Sentence 2: What the user observes — include exact error messages in quotes if visible in screenshots.\n'
++'Sentence 3: Business/functional impact — what workflow or process is blocked or affected.\n'
++'Sentence 4: Scope — does it affect all users / specific roles / specific data / specific environment.\n'
++'Sentence 5 (if needed): Any pattern observed — e.g. happens only on first load, only with certain inputs.\n'
++'Sentence 6 (if needed): Workaround if any, or state there is none.\n\n'
+
++'STEPS TO REPRODUCE (minimum 7 steps, maximum 12):\n'
++'Each step must be an atomic, executable action. Follow this pattern:\n'
++'1. [Navigation] — Open browser, go to exact URL or application entry point\n'
++'2. [Authentication] — Log in with [specific role, e.g. L1 Admin / L2 Support / Tenant Admin]\n'
++'3. [Navigation] — Navigate to exact menu path (e.g. Dashboard > MRF Ingestion > File Upload)\n'
++'4. [Setup/Precondition] — Any data setup, selection, or filter needed\n'
++'5. [Primary action] — The exact button click, form submission, or action being tested\n'
++'6. [Secondary action if needed] — Follow-up action\n'
++'7. [Observation] — What to look at / wait for\n'
++'8. [Confirmation] — Where/how the bug manifests\n'
++'Rules: Use exact button names in quotes. Mention specific field names. Include data values where visible. Reference screenshot numbers where relevant (e.g. "See Screenshot 2 for the error state").\n\n'
+
++'EXPECTED RESULT:\n'
++'2-3 sentences. State exactly what SHOULD happen from a functional/business requirements standpoint. Be specific about the UI state, message, or data change expected.\n\n'
+
++'ACTUAL RESULT:\n'
++'2-3 sentences. State exactly what DOES happen. Quote any error messages verbatim from screenshots. Describe the broken UI state precisely.\n\n'
+
++'ACCEPTANCE CRITERIA (minimum 4 items):\n'
++'Numbered list. Each item is a specific, testable, pass/fail condition. Start each with "Verify that...".\n\n'
+
++'PRIORITY & SEVERITY:\n'
++'Assess based on: 1=Critical(auth broken/data loss/system crash), 2=High(core feature blocked/no workaround), 3=Medium(partial failure/workaround exists), 4=Low(cosmetic/minor UX).\n\n'
+
++'Return ONLY valid JSON — no markdown fences, no extra text:\n'
++'{\n'
++'  "title": "['+(app||'AppName')+'] ['+(module||'Module')+'] — Precise issue description",\n'
++'  "description": "Full 4-6 sentence description per above rules.",\n'
++'  "stepsToReproduce": "1. Open browser and navigate to [URL or application]\\n2. Log in as [specific role]\\n3. Navigate to [exact menu path]\\n4. [Specific action with exact field/button names]\\n5. [Specific action]\\n6. [Specific action]\\n7. Observe [what to look for]\\n8. Note: [how the bug manifests — reference screenshot if applicable]",\n'
++'  "expectedResult": "2-3 sentences: specific expected system behavior and UI state.",\n'
++'  "actualResult": "2-3 sentences: exact observed behavior with verbatim error messages if visible.",\n'
++'  "priority": "2",\n'
++'  "priorityLabel": "High",\n'
++'  "severityLabel": "High",\n'
++'  "priorityReason": "2 sentences: specific business impact and reason for this priority level.",\n'
++'  "reproRate": "Always",\n'
++'  "workItemType": "Bug",\n'
++'  "acceptanceCriteria": "1. Verify that [specific condition]\\n2. Verify that [specific condition]\\n3. Verify that [specific condition]\\n4. Verify that no regression exists in related functionality",\n'
++'  "tags": ["'+(app||'App')+'","'+(module||'Module')+'","Bug","Functional-Testing"],\n'
++'  "relatedStory": "'+(story||'')+'",\n'
++'  "application": "'+(app||'')+'",\n'
++'  "module": "'+(module||'')+'",\n'
++'  "environment": "'+(env||'')+'"\n'
++'}';
+
 
   // Build parts — add ALL screenshots
   var parts=[];
@@ -425,30 +465,71 @@ async function downloadWord(){
   var r=window._report; if(!r) return;
   var btn=$('btnWord'); btn.textContent='⏳ Building...';
   try{
-    var docx=window.docx;
-    var {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,
-         BorderStyle,WidthType,ShadingType}=docx;
-    var border={style:BorderStyle.SINGLE,size:1,color:'CCCCCC'};
-    var borders={top:border,bottom:border,left:border,right:border};
-    var cm={top:80,bottom:80,left:120,right:120};
+    // Resolve docx library — CDN build exposes as window.docx
+    var lib = (typeof docx !== 'undefined') ? docx : window.docx;
+    if(!lib || !lib.Document){
+      throw new Error('Word library not loaded yet. Please wait a moment and try again, or refresh the page.');
+    }
+    var Document    = lib.Document;
+    var Packer      = lib.Packer;
+    var Paragraph   = lib.Paragraph;
+    var TextRun     = lib.TextRun;
+    var ImageRun    = lib.ImageRun;
+    var Table       = lib.Table;
+    var TableRow    = lib.TableRow;
+    var TableCell   = lib.TableCell;
+    var BorderStyle = lib.BorderStyle;
+    var WidthType   = lib.WidthType;
+    var ShadingType = lib.ShadingType;
 
-    function metaTable(r){
+    var border  = {style:BorderStyle.SINGLE,size:1,color:'CCCCCC'};
+    var borders = {top:border,bottom:border,left:border,right:border};
+    var cm      = {top:80,bottom:80,left:120,right:120};
+
+    // ── helpers ──────────────────────────────────────────
+    function sectionHead(title, color){
+      return new Paragraph({
+        spacing:{before:220,after:60},
+        border:{bottom:{style:BorderStyle.SINGLE,size:4,color:color||'2E75B6',space:1}},
+        children:[new TextRun({text:title,bold:true,size:26,font:'Arial',color:color||'1F3864'})]
+      });
+    }
+
+    function textLines(value, color){
+      return value.split('\n').map(function(line){
+        return new Paragraph({
+          spacing:{before:20,after:20},
+          children:[new TextRun({text:line||' ',size:22,font:'Arial',color:color||undefined})]
+        });
+      });
+    }
+
+    function metaTable(){
       var rows=[
-        ['Work Item Type','Bug'],['Priority','P'+r.priority+' — '+r.priorityLabel],
-        ['Severity',r.severityLabel],['Repro Rate',r.reproRate||'Always'],
-        ['Application',r.application||'—'],['Module',r.module||'—'],
-        ['Environment',r.environment||'—'],['Related Story',r.relatedStory||'—'],
+        ['Work Item Type','Bug'],
+        ['Priority','P'+r.priority+' — '+r.priorityLabel],
+        ['Severity',r.severityLabel],
+        ['Repro Rate',r.reproRate||'Always'],
+        ['Application',r.application||'—'],
+        ['Module / Feature',r.module||'—'],
+        ['Environment',r.environment||'—'],
+        ['Related Story / TC',r.relatedStory||'—'],
         ['Tags',(r.tags||[]).join(', ')]
       ];
       return new Table({
-        width:{size:9360,type:WidthType.DXA},columnWidths:[2800,6560],
+        width:{size:9360,type:WidthType.DXA},
+        columnWidths:[2600,6760],
         rows:rows.map(function(row){
           return new TableRow({children:[
-            new TableCell({borders,margins:cm,width:{size:2800,type:WidthType.DXA},
+            new TableCell({
+              borders,margins:cm,
+              width:{size:2600,type:WidthType.DXA},
               shading:{fill:'EBF3FB',type:ShadingType.CLEAR},
               children:[new Paragraph({children:[new TextRun({text:row[0],bold:true,size:20,font:'Arial'})]})]
             }),
-            new TableCell({borders,margins:cm,width:{size:6560,type:WidthType.DXA},
+            new TableCell({
+              borders,margins:cm,
+              width:{size:6760,type:WidthType.DXA},
               children:[new Paragraph({children:[new TextRun({text:row[1],size:20,font:'Arial'})]})]
             })
           ]});
@@ -456,28 +537,99 @@ async function downloadWord(){
       });
     }
 
-    function section(title, value, color){
-      var paras=[new Paragraph({spacing:{before:200,after:60},children:[new TextRun({text:title,bold:true,size:24,font:'Arial',color:color||'1F3864'})]})];
-      value.split('\n').forEach(function(line){
-        paras.push(new Paragraph({spacing:{before:20,after:20},children:[new TextRun({text:line,size:22,font:'Arial',color:color&&color!=='1F3864'?color:undefined})]}));
-      });
-      return paras;
+    // ── convert base64 → Uint8Array for ImageRun ─────────
+    function b64ToUint8(b64){
+      var binary=atob(b64);
+      var arr=new Uint8Array(binary.length);
+      for(var i=0;i<binary.length;i++) arr[i]=binary.charCodeAt(i);
+      return arr;
     }
 
+    // ── get image type string for docx ───────────────────
+    function imgType(mediaType){
+      var map={'image/png':'png','image/jpeg':'jpg','image/jpg':'jpg','image/gif':'gif','image/webp':'webp'};
+      return map[mediaType]||'png';
+    }
+
+    // ── get image dimensions from base64 ─────────────────
+    function getImgSize(ss){
+      return new Promise(function(resolve){
+        var img=new Image();
+        img.onload=function(){
+          // max width 8640 EMUs = 6 inches in docx (1 inch = 914400 EMU)
+          var maxW=5486400; // 6 inches
+          var ratio=img.naturalWidth/img.naturalHeight;
+          var w=Math.min(img.naturalWidth*9144, maxW); // px to EMU
+          var h=Math.round(w/ratio);
+          resolve({w:w,h:h});
+        };
+        img.onerror=function(){ resolve({w:4572000,h:2743200}); }; // fallback 5x3 inches
+        img.src=ss.src;
+      });
+    }
+
+    // ── build screenshot paragraphs ───────────────────────
+    var ssChildren=[];
+    if(screenshots.length>0){
+      ssChildren.push(sectionHead('Screenshots ('+screenshots.length+')'));
+      for(var si=0;si<screenshots.length;si++){
+        var ss=screenshots[si];
+        ssChildren.push(new Paragraph({
+          spacing:{before:160,after:40},
+          children:[new TextRun({text:'Screenshot '+(si+1)+': '+ss.name,bold:true,size:20,font:'Arial',color:'444444'})]
+        }));
+        try{
+          var dims=await getImgSize(ss);
+          ssChildren.push(new Paragraph({
+            spacing:{before:40,after:120},
+            children:[new ImageRun({
+              data:b64ToUint8(ss.base64),
+              transformation:{width:Math.round(dims.w/9144),height:Math.round(dims.h/9144)},
+              type:imgType(ss.mediaType)
+            })]
+          }));
+        }catch(imgErr){
+          ssChildren.push(new Paragraph({
+            children:[new TextRun({text:'[Screenshot could not be embedded: '+ss.name+']',size:20,font:'Arial',color:'888888',italics:true})]
+          }));
+        }
+      }
+    }
+
+    // ── assemble document ─────────────────────────────────
     var children=[
-      new Paragraph({spacing:{before:0,after:120},children:[new TextRun({text:'Bug Report',bold:true,size:40,font:'Arial',color:'1F3864'})]}),
-      new Paragraph({spacing:{before:0,after:40},children:[new TextRun({text:'Title: ',bold:true,size:24,font:'Arial'}),new TextRun({text:r.title,size:24,font:'Arial'})]}),
-      new Paragraph({spacing:{before:0,after:240},children:[new TextRun({text:'Generated by QA Bug Reporter | '+new Date().toLocaleDateString(),size:18,font:'Arial',color:'888888',italics:true})]}),
-      new Paragraph({spacing:{before:0,after:80},children:[new TextRun({text:'Work Item Classification',bold:true,size:26,font:'Arial',color:'1F3864'})]}),
-      metaTable(r),
-      new Paragraph({spacing:{before:60,after:40},children:[new TextRun({text:'Priority Justification: ',bold:true,size:20,font:'Arial'}),new TextRun({text:r.priorityReason,size:20,font:'Arial',italics:true})]}),
+      // Title block
+      new Paragraph({spacing:{before:0,after:100},children:[new TextRun({text:'Bug Report',bold:true,size:44,font:'Arial',color:'1F3864'})]}),
+      new Paragraph({spacing:{before:0,after:40},children:[new TextRun({text:r.title,size:26,font:'Arial',bold:true})]}),
+      new Paragraph({spacing:{before:0,after:280},children:[new TextRun({text:'Generated: '+new Date().toLocaleString()+' | QA Bug Reporter',size:18,font:'Arial',color:'888888',italics:true})]}),
+
+      // Classification table
+      sectionHead('Work Item Classification'),
+      metaTable(),
+      new Paragraph({spacing:{before:80,after:40},children:[
+        new TextRun({text:'Priority Justification: ',bold:true,size:20,font:'Arial'}),
+        new TextRun({text:r.priorityReason,size:20,font:'Arial',italics:true})
+      ]}),
     ];
 
-    section('Description',r.description).forEach(function(p){children.push(p);});
-    section('Steps to Reproduce',r.stepsToReproduce).forEach(function(p){children.push(p);});
-    section('Expected Result',r.expectedResult,'2E7D32').forEach(function(p){children.push(p);});
-    section('Actual Result',r.actualResult,'C00000').forEach(function(p){children.push(p);});
-    section('Acceptance Criteria',r.acceptanceCriteria).forEach(function(p){children.push(p);});
+    // Text sections
+    children.push(sectionHead('Description'));
+    textLines(r.description).forEach(function(p){children.push(p);});
+
+    children.push(sectionHead('Steps to Reproduce'));
+    textLines(r.stepsToReproduce).forEach(function(p){children.push(p);});
+
+    children.push(sectionHead('Expected Result','2E7D32'));
+    textLines(r.expectedResult,'2E7D32').forEach(function(p){children.push(p);});
+
+    children.push(sectionHead('Actual Result','C00000'));
+    textLines(r.actualResult,'C00000').forEach(function(p){children.push(p);});
+
+    children.push(sectionHead('Acceptance Criteria'));
+    textLines(r.acceptanceCriteria).forEach(function(p){children.push(p);});
+
+    // Screenshots section
+    ssChildren.forEach(function(p){children.push(p);});
 
     var doc=new Document({
       styles:{default:{document:{run:{font:'Arial',size:22}}}},
@@ -486,13 +638,17 @@ async function downloadWord(){
         children:children
       }]
     });
+
     var blob=await Packer.toBlob(doc);
     var url=URL.createObjectURL(blob);
-    var a=document.createElement('a'); a.href=url;
-    a.download=(r.application||'Bug').replace(/\s+/g,'_')+'_BugReport_'+Date.now()+'.docx';
-    a.click(); URL.revokeObjectURL(url);
+    var a=document.createElement('a');
+    a.href=url;
+    a.download=(r.application||'Bug').replace(/[^a-zA-Z0-9]/g,'_')+'_BugReport_'+Date.now()+'.docx';
+    a.click();
+    URL.revokeObjectURL(url);
     btn.classList.add('done'); btn.textContent='✅ Downloaded!';
     setTimeout(function(){btn.classList.remove('done');btn.textContent='⬇️ Download Word';},3000);
+
   }catch(err){
     showError('❌ Word download failed: '+err.message);
     btn.textContent='⬇️ Download Word';
