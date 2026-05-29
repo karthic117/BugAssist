@@ -3,193 +3,339 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>QA Bug Reporter — AZDO Format</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet"/>
+<title>QA Bug Reporter</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0e0f11;--surface:#16181c;--surface2:#1e2126;
-  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.16);
-  --text:#f0f0f0;--muted:#8a8f9a;
-  --accent:#4f7fff;--accent2:#2d5be3;
-  --green:#2ed87a;--red:#ff5c5c;--amber:#f5a623;
-  --tag-bg:rgba(79,127,255,0.12);--tag-text:#8ab4ff;
-  --r:10px;--rs:6px;
+  --bg:#f0f2f5;
+  --white:#ffffff;
+  --surface:#ffffff;
+  --surface2:#f7f8fa;
+  --border:#e4e7ec;
+  --border2:#d0d5dd;
+  --text:#101828;
+  --text2:#344054;
+  --muted:#667085;
+  --subtle:#98a2b3;
+  --accent:#2563eb;
+  --accent-dark:#1d4ed8;
+  --accent-bg:#eff6ff;
+  --green:#027a48;
+  --green-bg:#ecfdf3;
+  --green-border:#a9efc5;
+  --red:#b42318;
+  --red-bg:#fef3f2;
+  --red-border:#fecdca;
+  --amber:#b54708;
+  --amber-bg:#fffaeb;
+  --amber-border:#fedf89;
+  --sh:0 1px 2px rgba(16,24,40,0.06),0 1px 3px rgba(16,24,40,0.1);
+  --sh-md:0 2px 4px rgba(16,24,40,0.06),0 4px 8px rgba(16,24,40,0.06);
+  --sh-lg:0 8px 24px rgba(16,24,40,0.08),0 4px 8px rgba(16,24,40,0.04);
+  --r:10px;--rs:8px;
 }
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;min-height:100vh}
-.app{max-width:880px;margin:0 auto;padding:2rem 1.5rem 5rem}
-.header{display:flex;align-items:center;gap:14px;margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:1.5rem}
-.logo{width:44px;height:44px;background:var(--accent);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.header h1{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;letter-spacing:-0.3px}
-.header p{font-size:12px;color:var(--muted);margin-top:3px}
-.badge{display:inline-flex;align-items:center;background:rgba(0,120,212,0.18);color:#60aaff;border:1px solid rgba(0,120,212,0.3);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:8px;vertical-align:middle}
-.free-badge{background:rgba(46,216,122,0.12);color:#2ed87a;border:1px solid rgba(46,216,122,0.25);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle;display:inline-flex;align-items:center}
-.key-panel{background:var(--surface);border:1px solid rgba(79,127,255,0.25);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
-.key-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
-.key-panel-head h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
-.key-saved-badge{display:none;align-items:center;gap:5px;background:rgba(46,216,122,0.12);color:#2ed87a;border:1px solid rgba(46,216,122,0.25);border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:600}
-.key-row{display:flex;gap:8px;align-items:center}
-.key-row input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-size:13px;padding:9px 12px;outline:none;transition:border-color 0.15s}
-.key-row input:focus{border-color:var(--accent)}
-.key-row input::placeholder{color:var(--muted)}
-.save-key-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:background 0.15s}
-.save-key-btn:hover{background:var(--accent2)}
-.key-hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6}
-.key-hint a{color:var(--accent);text-decoration:none}
-.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
-.panel-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
-textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;resize:vertical;min-height:90px;outline:none;transition:border-color 0.15s}
-textarea:focus{border-color:var(--accent)}
-textarea::placeholder{color:var(--muted)}
-input[type=text]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:9px 12px;outline:none;transition:border-color 0.15s}
-input[type=text]:focus{border-color:var(--accent)}
-input[type=text]::placeholder{color:var(--muted)}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-@media(max-width:600px){.two-col{grid-template-columns:1fr}}
-.field-group label{font-size:11.5px;color:var(--muted);margin-bottom:5px;display:block;font-weight:500}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.5;min-height:100vh}
 
-/* MULTI SCREENSHOT */
-.drop-zone{border:2px dashed var(--border2);border-radius:var(--rs);padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2)}
-.drop-zone:hover,.drop-zone.drag{border-color:var(--accent);background:rgba(79,127,255,0.06)}
-.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.dz-icon{font-size:26px;display:block;margin-bottom:5px}
-.drop-zone p{font-size:13px;color:var(--muted)}
-.drop-zone p span{color:var(--accent)}
-.drop-zone small{font-size:11px;color:var(--muted);opacity:0.6;display:block;margin-top:3px}
-.screenshots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:12px}
-.ss-item{position:relative;border-radius:var(--rs);overflow:hidden;border:1px solid var(--border2);background:var(--surface2)}
-.ss-item img{width:100%;height:100px;object-fit:cover;display:block}
-.ss-item-label{font-size:10px;color:var(--muted);padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface)}
-.ss-remove{position:absolute;top:4px;right:4px;background:rgba(255,92,92,0.85);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
-.ss-count{font-size:12px;color:var(--accent);font-weight:600}
-.add-more-btn{background:transparent;border:1px dashed var(--border2);border-radius:var(--rs);padding:6px 12px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;position:relative;overflow:hidden}
-.add-more-btn:hover{border-color:var(--accent);color:var(--accent)}
-.add-more-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+/* ── NAV ────────────────────────────────────────────── */
+nav{height:60px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:200;box-shadow:var(--sh)}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-logo{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo svg{width:17px;height:17px;fill:white}
+.nav-title{font-size:15px;font-weight:600;color:var(--text);letter-spacing:-0.3px}
+.nav-sub{font-size:12px;color:var(--subtle);margin-left:4px;font-weight:400;letter-spacing:0}
+.nav-right{display:flex;align-items:center;gap:8px}
+.key-btn{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:500;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;cursor:pointer;transition:all 0.2s;user-select:none}
+.key-btn:hover{background:var(--white);border-color:var(--border2);color:var(--text2)}
+.key-btn svg{width:13px;height:13px;flex-shrink:0}
+.key-indicator{width:7px;height:7px;border-radius:50%;background:var(--border2);transition:background 0.3s}
+.key-indicator.on{background:#12b76a}
 
-.generate-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background 0.15s,transform 0.1s;margin-bottom:1.5rem}
-.generate-btn:hover{background:var(--accent2)}
-.generate-btn:active{transform:scale(0.99)}
-.generate-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none}
-.spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+/* ── LAYOUT ─────────────────────────────────────────── */
+.layout{max-width:1160px;margin:0 auto;padding:28px 24px 60px;display:grid;grid-template-columns:360px 1fr;gap:20px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+/* ── PANEL ──────────────────────────────────────────── */
+.panel{display:flex;flex-direction:column;gap:14px;position:sticky;top:76px}
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.card-hd{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;background:var(--white)}
+.card-hd-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-hd-icon svg{width:14px;height:14px}
+.icon-blue{background:#eff6ff;color:var(--accent)}
+.icon-blue svg{fill:var(--accent)}
+.icon-amber{background:#fffaeb;color:#c27803}
+.icon-amber svg{fill:#c27803}
+.icon-green{background:#ecfdf3;color:#027a48}
+.icon-green svg{fill:#027a48}
+.card-hd h2{font-size:13px;font-weight:600;color:var(--text);letter-spacing:-0.1px}
+.card-hd-right{margin-left:auto;font-size:11.5px;color:var(--subtle)}
+.card-bd{padding:14px 16px}
+
+/* ── DROP ZONE ──────────────────────────────────────── */
+.dz{border:2px dashed var(--border2);border-radius:var(--rs);padding:22px 16px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2)}
+.dz:hover,.dz.drag{border-color:var(--accent);background:var(--accent-bg)}
+.dz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.dz-svg{width:28px;height:28px;margin:0 auto 8px;opacity:0.4}
+.dz p{font-size:12.5px;color:var(--muted);line-height:1.5}
+.dz span{color:var(--accent);font-weight:500}
+.dz small{font-size:11px;color:var(--subtle);display:block;margin-top:3px}
+.ss-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.ss-bar span{font-size:12px;color:var(--muted);font-weight:500}
+.add-more{background:transparent;border:1px solid var(--border2);border-radius:6px;padding:3px 10px;font-size:11.5px;color:var(--muted);cursor:pointer;font-family:inherit;position:relative;overflow:hidden;display:none;transition:all 0.15s}
+.add-more:hover{border-color:var(--accent);color:var(--accent)}
+.add-more input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.ss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:7px;margin-top:10px}
+.ss-item{position:relative;border-radius:6px;overflow:hidden;border:1px solid var(--border)}
+.ss-item img{width:100%;height:72px;object-fit:cover;display:block}
+.ss-lbl{font-size:9px;color:var(--subtle);padding:2px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:var(--surface2)}
+.ss-del{position:absolute;top:3px;right:3px;background:rgba(180,35,24,0.9);color:#fff;border:none;border-radius:50%;width:16px;height:16px;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+
+/* ── FORM ───────────────────────────────────────────── */
+.fg{margin-bottom:12px}
+.fg:last-child{margin-bottom:0}
+.fg label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.fg textarea,.fg input[type=text]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:inherit;font-size:13px;padding:9px 12px;outline:none;transition:border-color 0.15s,box-shadow 0.15s;resize:vertical}
+.fg textarea{min-height:80px}
+.fg textarea:focus,.fg input[type=text]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.08);background:var(--white)}
+.fg textarea::placeholder,.fg input[type=text]::placeholder{color:var(--subtle)}
+.fg-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ── GENERATE BTN ───────────────────────────────────── */
+.gen-btn{width:100%;margin-top:4px;padding:11px 16px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.15s,box-shadow 0.15s,transform 0.1s;box-shadow:0 1px 2px rgba(37,99,235,0.3)}
+.gen-btn:hover{background:var(--accent-dark);box-shadow:0 2px 6px rgba(37,99,235,0.35)}
+.gen-btn:active{transform:scale(0.99)}
+.gen-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.65s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.error-msg{background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.25);color:#ff7b7b;border-radius:var(--rs);padding:11px 15px;font-size:13px;margin-bottom:1rem;line-height:1.8}
-.result-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:1rem}
-.result-header{background:var(--surface2);padding:11px 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
-.result-header-left{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px}
-.action-btns{display:flex;gap:7px;flex-wrap:wrap}
-.action-btn{background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--rs);padding:5px 11px;font-size:12px;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif}
-.action-btn:hover{border-color:var(--accent);color:var(--accent)}
-.action-btn.copied,.action-btn.done{border-color:var(--green);color:var(--green)}
-.action-btn.dl-word{border-color:rgba(79,127,255,0.4);color:#8ab4ff}
-.action-btn.dl-word:hover{border-color:var(--accent);background:rgba(79,127,255,0.1)}
-.action-btn.dl-azdo{border-color:rgba(0,120,212,0.4);color:#60aaff}
-.action-btn.dl-azdo:hover{border-color:#60aaff;background:rgba(0,120,212,0.1)}
-.report-body{padding:1.25rem}
-.field-row{margin-bottom:1.1rem}
-.field-key{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.7px;color:var(--muted);margin-bottom:5px}
-.field-val{font-size:13.5px;color:var(--text);line-height:1.7;background:var(--surface2);border-radius:var(--rs);padding:9px 13px;white-space:pre-wrap;border-left:3px solid transparent}
-.field-val.title-val{font-family:'Syne',sans-serif;font-size:15px;font-weight:600;border-left-color:var(--accent);background:rgba(79,127,255,0.07)}
-.field-val.steps-val{border-left-color:var(--amber)}
-.field-val.exp-val{border-left-color:var(--green)}
-.field-val.act-val{border-left-color:var(--red)}
-.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem}
-.meta-col .field-key{margin-bottom:5px}
-.badge-pill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:4px 12px;font-size:12.5px;font-weight:600}
-.p1{background:rgba(255,92,92,0.15);color:#ff7b7b;border:1px solid rgba(255,92,92,0.3)}
-.p2{background:rgba(245,166,35,0.15);color:#f5c86a;border:1px solid rgba(245,166,35,0.3)}
-.p3{background:rgba(79,127,255,0.15);color:#8ab4ff;border:1px solid rgba(79,127,255,0.3)}
-.p4{background:rgba(138,143,154,0.15);color:#b0b5c0;border:1px solid rgba(138,143,154,0.3)}
-.sc{background:rgba(255,92,92,0.15);color:#ff7b7b;border:1px solid rgba(255,92,92,0.3)}
-.sh{background:rgba(245,166,35,0.15);color:#f5c86a;border:1px solid rgba(245,166,35,0.3)}
-.sm{background:rgba(79,127,255,0.15);color:#8ab4ff;border:1px solid rgba(79,127,255,0.3)}
-.sl{background:rgba(138,143,154,0.15);color:#b0b5c0;border:1px solid rgba(138,143,154,0.3)}
-.reason-text{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:1rem}
-.divider{border:none;border-top:1px solid var(--border);margin:1rem 0}
-.tag{display:inline-flex;align-items:center;background:var(--tag-bg);color:var(--tag-text);border:1px solid rgba(79,127,255,0.2);border-radius:20px;padding:2px 9px;font-size:11.5px;font-weight:500;margin:2px}
+
+/* ── ERROR ──────────────────────────────────────────── */
+.err{background:var(--red-bg);border:1px solid var(--red-border);color:var(--red);border-radius:var(--rs);padding:10px 13px;font-size:12.5px;margin-top:10px;line-height:1.65;display:none}
+
+/* ── RESULT AREA ────────────────────────────────────── */
+.result-area{display:flex;flex-direction:column;gap:16px}
+
+/* Empty */
+.empty{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:52px 28px;text-align:center;box-shadow:var(--sh)}
+.empty-icon{width:52px;height:52px;background:var(--surface2);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.empty-icon svg{width:26px;height:26px;fill:var(--subtle)}
+.empty h3{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
+.empty p{font-size:13px;color:var(--muted);line-height:1.6;max-width:340px;margin:0 auto}
+
+/* Report card */
+.rc{background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh-md);overflow:hidden}
+.rc-header{padding:14px 20px;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.rc-header-left{display:flex;align-items:center;gap:10px}
+.rc-badge{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:4px 10px}
+.rc-badge svg{width:12px;height:12px;fill:rgba(255,255,255,0.5)}
+.rc-badge span{font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.8px}
+.rc-actions{display:flex;gap:6px;flex-wrap:wrap}
+.rc-btn{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.75);border-radius:6px;padding:5px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;gap:5px}
+.rc-btn:hover{background:rgba(255,255,255,0.14);color:#fff;border-color:rgba(255,255,255,0.25)}
+.rc-btn.ok{background:rgba(18,183,106,0.2);border-color:rgba(18,183,106,0.3);color:#6ee7b7}
+.rc-btn svg{width:12px;height:12px}
+
+.rc-body{padding:22px}
+
+/* Title */
+.rc-title-wrap{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.rc-title-eyebrow{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--subtle);margin-bottom:6px}
+.rc-title{font-size:17px;font-weight:600;color:var(--text);line-height:1.4;letter-spacing:-0.2px}
+
+/* Meta grid */
+.meta{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
+@media(max-width:700px){.meta{grid-template-columns:repeat(2,1fr)}}
+.mc{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.mc-label{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--subtle);margin-bottom:4px}
+.mc-val{font-size:12.5px;font-weight:600;color:var(--text2)}
+.chip{display:inline-flex;align-items:center;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600}
+.chip-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-border)}
+.chip-amber{background:var(--amber-bg);color:var(--amber);border:1px solid var(--amber-border)}
+.chip-blue{background:var(--accent-bg);color:var(--accent);border:1px solid #bfdbfe}
+.chip-gray{background:var(--surface2);color:var(--muted);border:1px solid var(--border2)}
+
+/* Justification */
+.justif{background:var(--amber-bg);border:1px solid var(--amber-border);border-radius:8px;padding:11px 14px;font-size:12.5px;color:#92400e;margin-bottom:20px;line-height:1.65;display:flex;gap:10px;align-items:flex-start}
+.justif svg{width:14px;height:14px;fill:#c27803;flex-shrink:0;margin-top:2px}
+
+/* Sections */
+.sec{margin-bottom:18px}
+.sec:last-child{margin-bottom:0}
+.sec-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--subtle);margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.sec-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.sec-body{font-size:13.5px;color:var(--text2);line-height:1.75;white-space:pre-wrap;background:var(--surface2);border-radius:8px;padding:12px 14px;border-left:3px solid var(--border2)}
+.sec-body.steps{border-left-color:#f59e0b;font-size:13px}
+.sec-body.expected{border-left-color:#12b76a;background:var(--green-bg);color:var(--green)}
+.sec-body.actual{border-left-color:#f04438;background:var(--red-bg);color:var(--red)}
+.sec-body.criteria{border-left-color:var(--accent);font-size:13px}
+.two-sec{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px}
+@media(max-width:640px){.two-sec{grid-template-columns:1fr}}
+
+/* Tags */
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.tag{display:inline-flex;background:var(--accent-bg);color:var(--accent);border:1px solid #bfdbfe;border-radius:6px;padding:2px 9px;font-size:11.5px;font-weight:500}
+
+/* ── INLINE EDITING ─────────────────────────────────── */
+.editable-wrap{position:relative}
+.editable-wrap:hover .edit-btn{opacity:1}
+.edit-btn{position:absolute;top:0;right:0;opacity:0;background:var(--white);border:1px solid var(--border2);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:500;color:var(--muted);cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;gap:4px;white-space:nowrap;box-shadow:var(--sh)}
+.edit-btn:hover{color:var(--accent);border-color:var(--accent)}
+.edit-btn svg{width:11px;height:11px;fill:currentColor}
+.edit-title-input{width:100%;font-family:inherit;font-size:17px;font-weight:600;color:var(--text);background:var(--white);border:2px solid var(--accent);border-radius:8px;padding:8px 12px;outline:none;letter-spacing:-0.2px;line-height:1.4;box-shadow:0 0 0 3px rgba(37,99,235,0.08)}
+.edit-textarea{width:100%;font-family:inherit;font-size:13.5px;color:var(--text2);background:var(--white);border:2px solid var(--accent);border-radius:8px;padding:10px 12px;outline:none;line-height:1.75;resize:vertical;min-height:80px;box-shadow:0 0 0 3px rgba(37,99,235,0.08)}
+.edit-actions{display:flex;gap:6px;margin-top:6px;justify-content:flex-end}
+.edit-save{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.edit-save:hover{background:var(--accent-dark)}
+.edit-cancel{background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:6px;padding:5px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.edit-cancel:hover{color:var(--text);border-color:var(--border)}
+.field-edited{border-left-color:var(--accent)!important}
+/* ── KEY MODAL ──────────────────────────────────────── */
+.overlay{position:fixed;inset:0;background:rgba(16,24,40,0.5);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.overlay.open{display:flex}
+.modal{background:var(--white);border-radius:14px;box-shadow:var(--sh-lg);width:460px;max-width:92vw;padding:28px}
+.modal-icon{width:44px;height:44px;background:var(--accent-bg);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.modal-icon svg{width:20px;height:20px;fill:var(--accent)}
+.modal h3{font-size:17px;font-weight:600;color:var(--text);margin-bottom:6px;letter-spacing:-0.2px}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.modal-row{display:flex;gap:8px;margin-bottom:10px}
+.modal-row input{flex:1;font-family:'DM Mono',monospace;font-size:13px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);padding:10px 12px;outline:none;transition:border-color 0.15s,box-shadow 0.15s}
+.modal-row input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.08)}
+.modal-row input::placeholder{color:var(--subtle);font-family:inherit;font-size:12.5px}
+.modal-save{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:10px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background 0.15s}
+.modal-save:hover{background:var(--accent-dark)}
+.modal-note{font-size:11.5px;color:var(--muted);line-height:1.65}
+.modal-note a{color:var(--accent);text-decoration:none;font-weight:500}
+.modal-note a:hover{text-decoration:underline}
+.modal-footer{display:flex;justify-content:flex-end;margin-top:18px}
+.modal-close{background:transparent;border:1px solid var(--border2);color:var(--muted);border-radius:var(--rs);padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.modal-close:hover{color:var(--text);border-color:var(--border)}
 </style>
 </head>
 <body>
-<div class="app">
 
-  <div class="header">
-    <div class="logo">🐞</div>
+<nav>
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24"><path d="M20 8h-2.81c-.45-.78-1.07-1.45-1.82-1.96L17 4.41 15.59 3l-2.17 2.17C12.96 5.06 12.49 5 12 5s-.96.06-1.41.17L8.41 3 7 4.41l1.62 1.63C7.88 6.55 7.26 7.22 6.81 8H4v2h2.09c-.05.33-.09.66-.09 1v1H4v2h2v1c0 .34.04.67.09 1H4v2h2.81c1.04 1.79 2.97 3 5.19 3s4.15-1.21 5.19-3H20v-2h-2.09c.05-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.04-.67-.09-1H20V8zm-6 8h-4v-2h4v2zm0-4h-4v-2h4v2z"/></svg>
+    </div>
     <div>
-      <h1>QA Bug Reporter <span class="badge">🔷 AZDO</span><span class="free-badge">✅ Free</span></h1>
-      <p>Upload screenshots + describe bug → AI generates complete AZDO work item → Download Word / CSV</p>
+      <div class="nav-title">QA Bug Reporter<span class="nav-sub">for Azure DevOps</span></div>
     </div>
   </div>
-
-  <!-- API KEY -->
-  <div class="key-panel">
-    <div class="key-panel-head">
-      <h2>🔑 Gemini API Key <span style="font-size:11px;color:var(--muted);font-weight:400">(free — saved in your browser only)</span></h2>
-      <div class="key-saved-badge" id="keySavedBadge">✅ Key saved</div>
-    </div>
-    <div class="key-row">
-      <input type="password" id="keyInput" placeholder="Paste your Gemini API key — AIza..." autocomplete="off"/>
-      <button class="save-key-btn" id="saveKeyBtn">Save Key</button>
-    </div>
-    <div class="key-hint">
-      Free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a> — 250 requests/day. Stored only in your browser.
+  <div class="nav-right">
+    <div class="key-btn" id="keyBtn" onclick="openModal()">
+      <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+      <div class="key-indicator" id="keyDot"></div>
+      <span id="keyLabel">Set API Key</span>
     </div>
   </div>
+</nav>
 
-  <!-- MULTI SCREENSHOT -->
+<div class="overlay" id="keyModal">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+    </div>
+    <h3>Gemini API Key</h3>
+    <p>Your key is saved in your browser only — never sent anywhere except Google's Gemini API. Free tier gives 250 requests/day with no credit card required.</p>
+    <div class="modal-row">
+      <input type="password" id="keyInput" placeholder="AIzaSy..." autocomplete="off"/>
+      <button class="modal-save" id="saveKeyBtn">Save key</button>
+    </div>
+    <div class="modal-note">Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></div>
+    <div class="modal-footer"><button class="modal-close" onclick="closeModal()">Close</button></div>
+  </div>
+</div>
+
+<div class="layout">
+
   <div class="panel">
-    <div class="panel-label">
-      <span>📷 Screenshots <span class="ss-count" id="ssCount"></span></span>
-      <div style="display:flex;gap:8px;align-items:center">
-        <span style="font-size:11px;color:var(--muted)">Up to 8 images — AI analyzes all</span>
-        <button class="add-more-btn" id="addMoreBtn" style="display:none">
-          + Add more
-          <input type="file" id="addMoreInput" accept="image/*" multiple/>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-icon icon-blue">
+          <svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+        </div>
+        <h2>Screenshots</h2>
+        <span class="card-hd-right" id="ssCount"></span>
+      </div>
+      <div class="card-bd">
+        <div class="dz" id="dropZone">
+          <input type="file" id="fileInput" accept="image/*" multiple/>
+          <svg class="dz-svg" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+          <p>Drop screenshots here or <span>browse to upload</span></p>
+          <small>PNG · JPG · WEBP · Up to 8 images · AI analyzes all</small>
+        </div>
+        <div id="ssWrap" style="display:none">
+          <div class="ss-bar">
+            <span id="ssLabel"></span>
+            <button class="add-more" id="addMoreBtn">+ Add more<input type="file" id="addMoreInput" accept="image/*" multiple/></button>
+          </div>
+          <div class="ss-grid" id="ssGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-icon icon-amber">
+          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </div>
+        <h2>Bug Description <span style="color:#f04438;font-weight:400;margin-left:2px">*</span></h2>
+      </div>
+      <div class="card-bd">
+        <div class="fg" style="margin-bottom:0">
+          <textarea id="descInput" rows="5" placeholder="Describe the bug — what you were doing, what went wrong, what error appeared. The AI will generate a complete formal report from this."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <div class="card-hd-icon icon-green">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+        </div>
+        <h2>Application Context</h2>
+      </div>
+      <div class="card-bd">
+        <div class="fg">
+          <label>Application Name</label>
+          <input type="text" id="appInput" placeholder="e.g. Trizetto MRF Portal"/>
+        </div>
+        <div class="fg">
+          <label>Module / Feature Area</label>
+          <input type="text" id="moduleInput" placeholder="e.g. Login, MRF Ingestion, Dashboard"/>
+        </div>
+        <div class="fg-2">
+          <div class="fg">
+            <label>Environment</label>
+            <input type="text" id="envInput" placeholder="e.g. QA, Chrome 124"/>
+          </div>
+          <div class="fg">
+            <label>Story / TC ID</label>
+            <input type="text" id="storyInput" placeholder="e.g. TC-1042"/>
+          </div>
+        </div>
+        <button class="gen-btn" id="generateBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Generate Bug Report
         </button>
+        <div id="errorMsg" class="err"></div>
       </div>
     </div>
-    <div class="drop-zone" id="dropZone">
-      <input type="file" id="fileInput" accept="image/*" multiple/>
-      <span class="dz-icon">📁</span>
-      <p>Drag &amp; drop screenshots here, or <span>click to browse</span></p>
-      <small>PNG, JPG, GIF, WEBP · Select multiple files at once · AI reads all screenshots</small>
-    </div>
-    <div class="screenshots-grid" id="ssGrid"></div>
+
   </div>
 
-  <!-- DESCRIPTION -->
-  <div class="panel">
-    <div class="panel-label">📝 Bug Description *</div>
-    <textarea id="descInput" placeholder="Describe the bug — what you were doing, what went wrong, what error appeared, what you expected. AI generates all report fields from this + your screenshots." rows="5"></textarea>
-  </div>
-
-  <!-- HINTS -->
-  <div class="panel">
-    <div class="panel-label">⚙️ Application Context</div>
-    <div class="two-col">
-      <div class="field-group">
-        <label>Application Name</label>
-        <input type="text" id="appInput" placeholder="e.g. Trizetto MRF Portal, TriZetto Connect"/>
+  <div id="resultArea" class="result-area">
+    <div class="empty" id="emptyState">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
       </div>
-      <div class="field-group">
-        <label>Module / Feature Area</label>
-        <input type="text" id="moduleInput" placeholder="e.g. Login, MRF Ingestion, Dashboard"/>
-      </div>
-    </div>
-    <div class="two-col" style="margin-top:10px">
-      <div class="field-group">
-        <label>Environment</label>
-        <input type="text" id="envInput" placeholder="e.g. Chrome 124, Windows 11, QA env"/>
-      </div>
-      <div class="field-group">
-        <label>Test Case / Story ID (optional)</label>
-        <input type="text" id="storyInput" placeholder="e.g. TC-1042, US-234"/>
-      </div>
+      <h3>Your report will appear here</h3>
+      <p>Add a bug description on the left — optionally upload screenshots and fill in the application context — then click Generate Bug Report.</p>
     </div>
   </div>
 
-  <button class="generate-btn" id="generateBtn">🪄 Generate AZDO Bug Report</button>
-
-  <div id="errorMsg" class="error-msg" style="display:none"></div>
-  <div id="resultWrap" style="display:none"></div>
 </div>
 
 
@@ -201,22 +347,37 @@ var screenshots = []; // [{base64, mediaType, name}]
 var MAX_SS = 8;
 
 function $(id){ return document.getElementById(id); }
-function showError(m){ $('errorMsg').innerHTML=m; $('errorMsg').style.display='block'; }
+function showError(m){ var e=$('errorMsg'); e.innerHTML=m; e.style.display='block'; }
 function hideError(){ $('errorMsg').style.display='none'; }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
 
-// ── Key ────────────────────────────────────────────────
+// ── Key modal ──────────────────────────────────────────
+function openModal(){ $('keyModal').classList.add('open'); }
+function closeModal(){ $('keyModal').classList.remove('open'); }
+$('keyModal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+
+function updateKeyStatus(){
+  var key=localStorage.getItem('gemini_api_key');
+  var dot=$('keyDot'); var label=$('keyLabel');
+  if(key){ dot.classList.add('active'); label.textContent='API Key saved'; }
+  else { dot.classList.remove('active'); label.textContent='Add API Key'; }
+}
+
 window.addEventListener('DOMContentLoaded', function(){
   var saved=localStorage.getItem('gemini_api_key');
-  if(saved){ $('keyInput').value=saved; $('keySavedBadge').style.display='inline-flex'; }
+  if(saved){ $('keyInput').value=saved; }
+  updateKeyStatus();
 });
+
 $('saveKeyBtn').addEventListener('click', function(){
   var key=$('keyInput').value.trim();
-  if(!key){ showError('⚠️ Please paste your Gemini API key.'); return; }
+  if(!key){ showError('Please paste your Gemini API key.'); return; }
   localStorage.setItem('gemini_api_key', key);
-  $('keySavedBadge').style.display='inline-flex';
+  updateKeyStatus();
+  closeModal();
   hideError();
 });
+
 function getKey(){ return localStorage.getItem('gemini_api_key')||$('keyInput').value.trim(); }
 
 // ── File handling ──────────────────────────────────────
@@ -232,7 +393,7 @@ function readFileAsBase64(file){
 
 async function addFiles(files){
   var remaining = MAX_SS - screenshots.length;
-  if(remaining<=0){ showError('⚠️ Maximum '+MAX_SS+' screenshots allowed.'); return; }
+  if(remaining<=0){ showError('Maximum '+MAX_SS+' screenshots allowed.'); return; }
   var toAdd = Array.from(files).filter(function(f){ return f.type.startsWith('image/'); }).slice(0, remaining);
   for(var i=0;i<toAdd.length;i++){
     var ss = await readFileAsBase64(toAdd[i]);
@@ -243,25 +404,29 @@ async function addFiles(files){
 
 function renderScreenshots(){
   var grid=$('ssGrid');
-  var count=$('ssCount');
-  var addMore=$('addMoreBtn');
   var dropZone=$('dropZone');
+  var wrap=$('ssWrap');
+  var addMore=$('addMoreBtn');
+  
+  var countLabel=$('ssLabel');
 
-  count.textContent = screenshots.length>0 ? '('+screenshots.length+'/'+MAX_SS+')' : '';
-  dropZone.style.display = screenshots.length>0 ? 'none' : 'block';
-  addMore.style.display = screenshots.length>0 && screenshots.length<MAX_SS ? 'inline-flex' : 'none';
+  var n=screenshots.length;
+  $('ssCount').textContent = n>0 ? n+'/'+MAX_SS : '';
+  dropZone.style.display = n>0 ? 'none' : 'block';
+  wrap.style.display = n>0 ? 'block' : 'none';
+  addMore.style.display = n>0 && n<MAX_SS ? 'inline-flex' : 'none';
+  countLabel.textContent = n+' screenshot'+(n!==1?'s':'')+' added';
 
   grid.innerHTML='';
   screenshots.forEach(function(ss, idx){
     var item=document.createElement('div');
     item.className='ss-item';
     item.innerHTML='<img src="'+ss.src+'" alt="Screenshot '+(idx+1)+'">'
-      +'<div class="ss-item-label">📷 '+(idx+1)+'. '+esc(ss.name)+'</div>'
+      +'<div class="ss-item-label">'+(idx+1)+'. '+esc(ss.name)+'</div>'
       +'<button class="ss-remove" data-idx="'+idx+'" title="Remove">✕</button>';
     grid.appendChild(item);
   });
 
-  // remove buttons
   grid.querySelectorAll('.ss-remove').forEach(function(btn){
     btn.addEventListener('click', function(){
       screenshots.splice(parseInt(this.dataset.idx),1);
@@ -276,8 +441,6 @@ $('fileInput').addEventListener('change', function(e){ addFiles(e.target.files);
 dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.classList.add('drag'); });
 dropZone.addEventListener('dragleave', function(){ dropZone.classList.remove('drag'); });
 dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.classList.remove('drag'); addFiles(e.dataTransfer.files); });
-
-// Add more button
 $('addMoreInput').addEventListener('change', function(e){ addFiles(e.target.files); this.value=''; });
 
 // ── Generate ───────────────────────────────────────────
@@ -299,8 +462,8 @@ $('generateBtn').addEventListener('click', async function(){
   var btn=$('generateBtn');
   btn.disabled=true;
   var ssLabel = screenshots.length>0 ? ' ('+screenshots.length+' screenshot'+(screenshots.length>1?'s':'')+')' : '';
-  btn.innerHTML='<div class="spinner"></div> AI is analyzing'+ssLabel+'...';
-  $('resultWrap').style.display='none';
+  btn.innerHTML='<div class="spinner"></div> Analyzing'+ssLabel+'...';
+  var es=$('emptyState'); if(es) es.style.display='none';
 
   var prompt=
 'You are a highly experienced QA Lead with 10+ years writing formal defect reports for enterprise healthcare/insurance technology platforms in Azure DevOps.\n\n'
@@ -412,54 +575,189 @@ $('generateBtn').addEventListener('click', async function(){
     showError('❌ '+esc(err.message||String(err)));
   }finally{
     btn.disabled=false;
-    btn.innerHTML='🪄 Generate AZDO Bug Report';
+    btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate Bug Report';
   }
 });
 
 // ── Render ─────────────────────────────────────────────
 function renderReport(r){
-  var pClass={'1':'p1','2':'p2','3':'p3','4':'p4'}[String(r.priority)]||'p3';
-  var sClass={'critical':'sc','high':'sh','medium':'sm','low':'sl'}[String(r.severityLabel||'').toLowerCase()]||'sm';
+  var pPill={'1':'chip chip-red','2':'chip chip-amber','3':'chip chip-blue','4':'chip chip-gray'}[String(r.priority)]||'chip chip-blue';
+  var sPill={'critical':'chip chip-red','high':'chip chip-amber','medium':'chip chip-blue','low':'chip chip-gray'}[String(r.severityLabel||'').toLowerCase()]||'chip chip-blue';
   var tags=(r.tags||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('');
 
-  $('resultWrap').innerHTML=
-    '<div class="result-wrap">'
-    +'<div class="result-header">'
-    +'<span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>'
-    +'<div class="action-btns">'
-    +'<button class="action-btn" id="btnPlain">📄 Copy Text</button>'
-    +'<button class="action-btn" id="btnMd">📋 Copy Markdown</button>'
-    +'<button class="action-btn dl-word" id="btnWord">⬇️ Download Word</button>'
-    +'<button class="action-btn dl-azdo" id="btnAzdo">⬇️ Download AZDO CSV</button>'
+  var EDIT_ICON='<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+
+  function editBtn(field){ return '<button class="edit-btn" onclick="startEdit(\''+field+'\')">'+EDIT_ICON+'Edit</button>'; }
+
+  var html=
+    '<div class="rc">'
+    +'<div class="rc-header">'
+    +'<div class="rc-badge"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg><span>Bug Report — Azure DevOps</span></div>'
+    +'<div class="rc-actions">'
+    +'<button class="rc-btn" id="btnPlain"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>Copy Text</button>'
+    +'<button class="rc-btn" id="btnMd"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Markdown</button>'
+    +'<button class="rc-btn word" id="btnWord"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Word Doc</button>'
+    +'<button class="rc-btn csv" id="btnAzdo"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Import CSV</button>'
     +'</div></div>'
-    +'<div class="report-body">'
-    +'<div class="field-row"><div class="field-key">🏷️ Title</div><div class="field-val title-val">'+esc(r.title)+'</div></div>'
-    +'<div class="meta-row">'
-    +'<div class="meta-col"><div class="field-key">Priority</div><span class="badge-pill '+pClass+'">🚩 P'+r.priority+' — '+esc(r.priorityLabel)+'</span></div>'
-    +'<div class="meta-col"><div class="field-key">Severity</div><span class="badge-pill '+sClass+'">⚠️ '+esc(r.severityLabel)+'</span></div>'
-    +'<div class="meta-col"><div class="field-key">Work Item</div><span class="badge-pill p1">🐞 '+esc(r.workItemType||'Bug')+'</span></div>'
-    +'<div class="meta-col"><div class="field-key">Repro Rate</div><span class="badge-pill p3">🔁 '+esc(r.reproRate||'Always')+'</span></div>'
-    +(r.relatedStory?'<div class="meta-col"><div class="field-key">Related</div><span class="badge-pill p3">🔗 '+esc(r.relatedStory)+'</span></div>':'')
+    +'<div class="rc-body">'
+
+    // Title
+    +'<div class="rc-title-wrap">'
+    +'<div class="rc-title-eyebrow">Work Item Title</div>'
+    +'<div class="editable-wrap" id="wrap-title">'
+    +'<div class="rc-title" id="val-title">'+esc(r.title)+'</div>'
+    +editBtn('title')
     +'</div>'
-    +'<p class="reason-text">💡 '+esc(r.priorityReason)+'</p>'
-    +'<hr class="divider"/>'
-    +'<div class="field-row"><div class="field-key">📋 Description</div><div class="field-val">'+esc(r.description)+'</div></div>'
-    +'<div class="field-row"><div class="field-key">🔢 Steps to Reproduce</div><div class="field-val steps-val">'+esc(r.stepsToReproduce)+'</div></div>'
-    +'<div class="two-col">'
-    +'<div class="field-row"><div class="field-key">✅ Expected Result</div><div class="field-val exp-val">'+esc(r.expectedResult)+'</div></div>'
-    +'<div class="field-row"><div class="field-key">❌ Actual Result</div><div class="field-val act-val">'+esc(r.actualResult)+'</div></div>'
-    +'</div><hr class="divider"/>'
-    +'<div class="field-row"><div class="field-key">✔️ Acceptance Criteria</div><div class="field-val steps-val">'+esc(r.acceptanceCriteria)+'</div></div>'
-    +(tags?'<div class="field-row"><div class="field-key">🏷️ Tags</div><div style="margin-top:5px">'+tags+'</div></div>':'')
+    +'</div>'
+
+    // Meta grid
+    +'<div class="meta">'
+    +'<div class="mc"><div class="mc-label">Priority</div><div class="mc-val"><span class="'+pPill+'">P'+r.priority+' '+esc(r.priorityLabel)+'</span></div></div>'
+    +'<div class="mc"><div class="mc-label">Severity</div><div class="mc-val"><span class="'+sPill+'">'+esc(r.severityLabel)+'</span></div></div>'
+    +'<div class="mc"><div class="mc-label">Repro Rate</div><div class="mc-val">'+esc(r.reproRate||'Always')+'</div></div>'
+    +'<div class="mc"><div class="mc-label">Work Item</div><div class="mc-val">'+esc(r.workItemType||'Bug')+'</div></div>'
+    +(r.application?'<div class="mc"><div class="mc-label">Application</div><div class="mc-val">'+esc(r.application)+'</div></div>':'')
+    +(r.module?'<div class="mc"><div class="mc-label">Module</div><div class="mc-val">'+esc(r.module)+'</div></div>':'')
+    +(r.environment?'<div class="mc"><div class="mc-label">Environment</div><div class="mc-val">'+esc(r.environment)+'</div></div>':'')
+    +(r.relatedStory?'<div class="mc"><div class="mc-label">Story / TC</div><div class="mc-val">'+esc(r.relatedStory)+'</div></div>':'')
+    +'</div>'
+
+    // Justification
+    +'<div class="justif"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg><strong>Priority Justification:</strong> '+esc(r.priorityReason)+'</div>'
+
+    // Description
+    +'<div class="sec">'
+    +'<div class="sec-label">Description</div>'
+    +'<div class="editable-wrap" id="wrap-description">'
+    +'<div class="sec-body" id="val-description">'+esc(r.description)+'</div>'
+    +editBtn('description')
+    +'</div>'
+    +'</div>'
+
+    // Steps
+    +'<div class="sec">'
+    +'<div class="sec-label">Steps to Reproduce</div>'
+    +'<div class="editable-wrap" id="wrap-stepsToReproduce">'
+    +'<div class="sec-body steps" id="val-stepsToReproduce">'+esc(r.stepsToReproduce)+'</div>'
+    +editBtn('stepsToReproduce')
+    +'</div>'
+    +'</div>'
+
+    // Expected & Actual
+    +'<div class="two-sec">'
+    +'<div class="sec"><div class="sec-label">Expected Result</div>'
+    +'<div class="editable-wrap" id="wrap-expectedResult">'
+    +'<div class="sec-body expected" id="val-expectedResult">'+esc(r.expectedResult)+'</div>'
+    +editBtn('expectedResult')
+    +'</div></div>'
+    +'<div class="sec"><div class="sec-label">Actual Result</div>'
+    +'<div class="editable-wrap" id="wrap-actualResult">'
+    +'<div class="sec-body actual" id="val-actualResult">'+esc(r.actualResult)+'</div>'
+    +editBtn('actualResult')
+    +'</div></div>'
+    +'</div>'
+
+    // Acceptance Criteria
+    +'<div class="sec">'
+    +'<div class="sec-label">Acceptance Criteria</div>'
+    +'<div class="editable-wrap" id="wrap-acceptanceCriteria">'
+    +'<div class="sec-body criteria" id="val-acceptanceCriteria">'+esc(r.acceptanceCriteria)+'</div>'
+    +editBtn('acceptanceCriteria')
+    +'</div>'
+    +'</div>'
+
+    // Tags
+    +(tags?'<div class="sec"><div class="sec-label">Tags</div><div class="tags-wrap" id="val-tags">'+tags+'</div></div>':'')
+
     +'</div></div>';
 
-  $('resultWrap').style.display='block';
-  $('resultWrap').scrollIntoView({behavior:'smooth',block:'start'});
+  var area=$('resultArea');
+  area.innerHTML=html;
+  area.scrollIntoView({behavior:'smooth',block:'start'});
   window._report=r;
   $('btnPlain').addEventListener('click',copyPlain);
   $('btnMd').addEventListener('click',copyMd);
   $('btnWord').addEventListener('click', downloadWord);
   $('btnAzdo').addEventListener('click',downloadAzdoCsv);
+}
+
+// ── Inline editing ─────────────────────────────────────
+function startEdit(field){
+  var r=window._report;
+  var wrap=$('wrap-'+field);
+  var valEl=$('val-'+field);
+  if(!wrap||!valEl) return;
+
+  var isTitle = field==='title';
+  var currentVal = r[field]||'';
+
+  // Build editor
+  var inputHtml = isTitle
+    ? '<input class="edit-title-input" id="edit-input" type="text" value="'+currentVal.replace(/"/g,'&quot;')+'" />'
+    : '<textarea class="edit-textarea" id="edit-input" rows="'+(field==='stepsToReproduce'||field==='acceptanceCriteria'?'8':'4')+'">'+currentVal+'</textarea>';
+
+  wrap.innerHTML=inputHtml
+    +'<div class="edit-actions">'
+    +'<button class="edit-cancel" onclick="cancelEdit(\''+field+'\')">Cancel</button>'
+    +'<button class="edit-save" onclick="saveEdit(\''+field+'\')">Save changes</button>'
+    +'</div>';
+
+  var inp=$('edit-input');
+  inp.focus();
+  if(isTitle){ inp.setSelectionRange(inp.value.length,inp.value.length); }
+  else { inp.setSelectionRange(inp.value.length,inp.value.length); }
+}
+
+function saveEdit(field){
+  var r=window._report;
+  var inp=$('edit-input');
+  if(!inp) return;
+  var newVal=inp.value.trim();
+  if(!newVal){ cancelEdit(field); return; }
+
+  r[field]=newVal;
+  window._report=r;
+
+  var wrap=$('wrap-'+field);
+  var isTitle=field==='title';
+  var EDIT_ICON='<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+
+  var secClass='sec-body'
+    +(field==='stepsToReproduce'?' steps'
+    :field==='expectedResult'?' expected'
+    :field==='actualResult'?' actual'
+    :field==='acceptanceCriteria'?' criteria':'');
+
+  var valHtml=isTitle
+    ? '<div class="rc-title field-edited" id="val-'+field+'">'+esc(newVal)+'</div>'
+    : '<div class="'+secClass+' field-edited" id="val-'+field+'">'+esc(newVal)+'</div>';
+
+  wrap.innerHTML=valHtml
+    +'<button class="edit-btn" onclick="startEdit(\''+field+'\')">'+EDIT_ICON+'Edit</button>';
+
+  // Flash save confirmation
+  var vEl=$('val-'+field);
+  vEl.style.transition='background 0.3s';
+  vEl.style.background='#ecfdf3';
+  setTimeout(function(){ vEl.style.background=''; },1200);
+}
+
+function cancelEdit(field){
+  var r=window._report;
+  var wrap=$('wrap-'+field);
+  var isTitle=field==='title';
+  var EDIT_ICON='<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+
+  var secClass='sec-body'
+    +(field==='stepsToReproduce'?' steps'
+    :field==='expectedResult'?' expected'
+    :field==='actualResult'?' actual'
+    :field==='acceptanceCriteria'?' criteria':'');
+
+  wrap.innerHTML=(isTitle
+    ? '<div class="rc-title" id="val-'+field+'">'+esc(r[field])+'</div>'
+    : '<div class="'+secClass+'" id="val-'+field+'">'+esc(r[field])+'</div>')
+    +'<button class="edit-btn" onclick="startEdit(\''+field+'\')">'+EDIT_ICON+'Edit</button>';
 }
 
 // ── Word Download ──────────────────────────────────────
@@ -552,12 +850,12 @@ async function downloadWord(){
     a.download=(r.application||'Bug').replace(/[^a-zA-Z0-9]/g,'_')+'_BugReport_'+Date.now()+'.docx';
     a.click();
     URL.revokeObjectURL(url);
-    btn.classList.add('done'); btn.textContent='✅ Downloaded!';
-    setTimeout(function(){btn.classList.remove('done');btn.textContent='⬇️ Download Word';},3000);
+    btn.classList.add('success'); btn.textContent='Downloaded';
+    setTimeout(function(){btn.classList.remove('success');btn.textContent='↓ Download Word';},3000);
 
   }catch(err){
     showError('❌ Word download failed: '+err.message);
-    btn.textContent='⬇️ Download Word';
+    btn.textContent='↓ Download Word';
   }
 }
 
@@ -578,23 +876,23 @@ function downloadAzdoCsv(){
   a.download=(r.application||'Bug').replace(/\s+/g,'_')+'_AZDO_'+Date.now()+'.csv';
   a.click(); URL.revokeObjectURL(url);
   var btn=$('btnAzdo');
-  btn.classList.add('done'); btn.textContent='✅ Downloaded!';
-  setTimeout(function(){btn.classList.remove('done');btn.textContent='⬇️ Download AZDO CSV';},3000);
+  btn.classList.add('success'); btn.textContent='Downloaded';
+  setTimeout(function(){btn.classList.remove('success');btn.textContent='↓ Download CSV';},3000);
 }
 
 // ── Copy ───────────────────────────────────────────────
 function copyPlain(){
   var r=window._report; if(!r) return;
-  copyText('BUG REPORT — AZURE DEVOPS\n==============================================\nTitle        : '+r.title+'\nApplication  : '+(r.application||'—')+'\nModule       : '+(r.module||'—')+'\nPriority     : P'+r.priority+' — '+r.priorityLabel+'\nSeverity     : '+r.severityLabel+'\nRepro Rate   : '+(r.reproRate||'Always')+'\nEnvironment  : '+(r.environment||'—')+'\nRelated Story: '+(r.relatedStory||'—')+'\n==============================================\n\nDESCRIPTION\n'+r.description+'\n\nSTEPS TO REPRODUCE\n'+r.stepsToReproduce+'\n\nEXPECTED RESULT\n'+r.expectedResult+'\n\nACTUAL RESULT\n'+r.actualResult+'\n\nACCEPTANCE CRITERIA\n'+r.acceptanceCriteria+'\n\nTAGS: '+(r.tags||[]).join(', '),'btnPlain','📄 Copy Text');
+  copyText('BUG REPORT — AZURE DEVOPS\n==============================================\nTitle        : '+r.title+'\nApplication  : '+(r.application||'—')+'\nModule       : '+(r.module||'—')+'\nPriority     : P'+r.priority+' — '+r.priorityLabel+'\nSeverity     : '+r.severityLabel+'\nRepro Rate   : '+(r.reproRate||'Always')+'\nEnvironment  : '+(r.environment||'—')+'\nRelated Story: '+(r.relatedStory||'—')+'\n==============================================\n\nDESCRIPTION\n'+r.description+'\n\nSTEPS TO REPRODUCE\n'+r.stepsToReproduce+'\n\nEXPECTED RESULT\n'+r.expectedResult+'\n\nACTUAL RESULT\n'+r.actualResult+'\n\nACCEPTANCE CRITERIA\n'+r.acceptanceCriteria+'\n\nTAGS: '+(r.tags||[]).join(', '),'btnPlain','Copy Text');
 }
 function copyMd(){
   var r=window._report; if(!r) return;
-  copyText('## 🐞 '+r.title+'\n\n| Field | Value |\n|---|---|\n| **Application** | '+(r.application||'—')+' |\n| **Module** | '+(r.module||'—')+' |\n| **Priority** | P'+r.priority+' — '+r.priorityLabel+' |\n| **Severity** | '+r.severityLabel+' |\n| **Repro Rate** | '+(r.reproRate||'Always')+' |\n| **Environment** | '+(r.environment||'—')+' |\n\n### 📋 Description\n'+r.description+'\n\n### 🔢 Steps to Reproduce\n'+r.stepsToReproduce+'\n\n### ✅ Expected Result\n'+r.expectedResult+'\n\n### ❌ Actual Result\n'+r.actualResult+'\n\n### ✔️ Acceptance Criteria\n'+r.acceptanceCriteria+'\n\n**Tags:** '+(r.tags||[]).join(', '),'btnMd','📋 Copy Markdown');
+  copyText('## 🐞 '+r.title+'\n\n| Field | Value |\n|---|---|\n| **Application** | '+(r.application||'—')+' |\n| **Module** | '+(r.module||'—')+' |\n| **Priority** | P'+r.priority+' — '+r.priorityLabel+' |\n| **Severity** | '+r.severityLabel+' |\n| **Repro Rate** | '+(r.reproRate||'Always')+' |\n| **Environment** | '+(r.environment||'—')+' |\n\n### 📋 Description\n'+r.description+'\n\n### 🔢 Steps to Reproduce\n'+r.stepsToReproduce+'\n\n### ✅ Expected Result\n'+r.expectedResult+'\n\n### ❌ Actual Result\n'+r.actualResult+'\n\n### ✔️ Acceptance Criteria\n'+r.acceptanceCriteria+'\n\n**Tags:** '+(r.tags||[]).join(', '),'btnMd','Copy Markdown');
 }
 function copyText(text,id,label){
   navigator.clipboard.writeText(text).then(function(){
-    var b=$(id); b.classList.add('copied'); b.textContent='✅ Copied!';
-    setTimeout(function(){b.classList.remove('copied');b.textContent=label;},2500);
+    var b=$(id); b.classList.add('success'); b.textContent='Copied';
+    setTimeout(function(){b.classList.remove('success');b.textContent=label;},2500);
   });
 }
 </script>
