@@ -47,8 +47,7 @@ select:focus{border-color:var(--accent)}
 .load-btn:disabled{opacity:0.45;cursor:not-allowed}
 .info-note{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px}
 .info-note strong{color:var(--text)}
-.warn-box{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.25);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:#f5c86a;line-height:1.7;margin-top:10px;display:none}
-.warn-box strong{color:var(--amber)}
+.info-note code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:3px;font-size:11px;color:#a8c4ff}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
 .panel-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:10px}
 textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;resize:vertical;min-height:90px;outline:none;transition:border-color 0.15s}
@@ -73,7 +72,7 @@ textarea::placeholder{color:var(--muted)}
 .generate-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none}
 .spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.error-msg{background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.25);color:#ff7b7b;border-radius:var(--rs);padding:11px 15px;font-size:13px;margin-bottom:1rem;display:flex;align-items:flex-start;gap:8px;line-height:1.7}
+.error-msg{background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.25);color:#ff7b7b;border-radius:var(--rs);padding:11px 15px;font-size:13px;margin-bottom:1rem;line-height:1.8}
 .result-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .result-header{background:var(--surface2);padding:11px 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
 .result-header-left{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px}
@@ -124,10 +123,10 @@ textarea::placeholder{color:var(--muted)}
     <div class="model-row">
       <label>Model:</label>
       <select id="modelSelect">
-        <option value="SmolLM2-1.7B-Instruct-q4f32_1-MLC" selected>SmolLM2-1.7B q4f32 (~1.1 GB) — Recommended ✓</option>
-        <option value="SmolLM2-360M-Instruct-q4f32_1-MLC">SmolLM2-360M q4f32 (~450 MB) — Fastest ✓</option>
-        <option value="Llama-3.2-1B-Instruct-q4f32_1-MLC">Llama-3.2-1B q4f32 (~800 MB) ✓</option>
-        <option value="Phi-3.5-mini-instruct-q4f32_1-MLC">Phi-3.5-mini q4f32 (~2.8 GB) — Best quality ✓</option>
+        <option value="SmolLM2-360M-Instruct-q4f32_1-MLC" selected>SmolLM2-360M q4f32 (~580 MB) — Fastest, no shader-f16 needed ✓</option>
+        <option value="SmolLM2-1.7B-Instruct-q4f32_1-MLC">SmolLM2-1.7B q4f32 (~2.7 GB) — Better quality ✓</option>
+        <option value="Llama-3.2-1B-Instruct-q4f32_1-MLC">Llama-3.2-1B q4f32 (~1.1 GB) ✓</option>
+        <option value="Llama-3.2-3B-Instruct-q4f32_1-MLC">Llama-3.2-3B q4f32 (~3 GB) — Best quality ✓</option>
       </select>
       <button class="load-btn" id="loadBtn">⚡ Load AI Model</button>
     </div>
@@ -135,10 +134,10 @@ textarea::placeholder{color:var(--muted)}
       <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
       <div class="progress-label"><span id="progressMsg">Initializing...</span><span id="progressPct">0%</span></div>
     </div>
-    <div class="warn-box" id="warnBox"></div>
-    <div class="info-note">
-      <strong>First time only:</strong> model downloads to your browser cache (~450 MB–2.8 GB). After that loads instantly offline.
-      Requires <strong>Chrome or Edge</strong> (latest version). All models use <strong>q4f32</strong> — compatible with all GPUs.
+    <div class="info-note" id="infoNote">
+      <strong>Requirements:</strong> Chrome 113+ or Edge 113+ (latest). All models are <strong>q4f32</strong> — no shader-f16 GPU feature needed.<br/>
+      <strong>First load:</strong> downloads to browser cache (~580 MB for fastest model). After that, loads instantly offline.<br/>
+      <strong>If load fails:</strong> open <code>chrome://flags</code> → search <strong>WebGPU</strong> → enable it → relaunch Chrome.
     </div>
   </div>
 
@@ -177,19 +176,24 @@ textarea::placeholder{color:var(--muted)}
 
   <button class="generate-btn" id="generateBtn">🪄 Generate AZDO Bug Report</button>
 
-  <div id="errorMsg" class="error-msg" style="display:none"><span>⚠️</span><span id="errorText"></span></div>
+  <div id="errorMsg" class="error-msg" style="display:none"></div>
   <div id="resultWrap" style="display:none"></div>
 </div>
 
 <script type="module">
-import { CreateMLCEngine, hasModelInCache, prebuiltAppConfig } from "https://esm.run/@mlc-ai/web-llm";
+// Pin to a specific stable version to avoid CDN resolution failures
+import { CreateMLCEngine } from "https://esm.run/@mlc-ai/web-llm@0.2.79";
 
 let engine = null;
 let modelLoaded = false;
 let imageFileName = '';
 
 function $(id){ return document.getElementById(id); }
-function showError(m){ $('errorText').textContent = m; $('errorMsg').style.display = 'flex'; }
+
+function showError(html){
+  $('errorMsg').innerHTML = html;
+  $('errorMsg').style.display = 'block';
+}
 function hideError(){ $('errorMsg').style.display = 'none'; }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
 function setStatus(state, text){ $('aiDot').className='dot '+state; $('aiStatusText').textContent=text; }
@@ -199,21 +203,27 @@ function setProgress(pct, msg){
   $('progressMsg').textContent = msg;
   $('progressPct').textContent = Math.round(pct)+'%';
 }
-function showWarn(msg){ $('warnBox').style.display='block'; $('warnBox').innerHTML=msg; }
 
-// ── Check WebGPU on load ───────────────────────────────
+// ── Detect WebGPU and show appropriate message ─────────
 async function checkWebGPU(){
-  if (!navigator.gpu) {
-    showWarn('⚠️ <strong>WebGPU not detected.</strong> Please use <strong>Chrome 113+</strong> or <strong>Edge 113+</strong>. If you are on Chrome, go to <code>chrome://flags</code> and enable <strong>Unsafe WebGPU</strong>.');
+  if (!navigator.gpu){
+    showError('⚠️ <strong>WebGPU not available.</strong> Please use <strong>Chrome 113+</strong> or <strong>Edge 113+</strong>.<br/>If on Chrome: go to <code style="background:rgba(255,255,255,0.1);padding:1px 5px;border-radius:3px">chrome://flags</code> → enable <strong>Unsafe WebGPU Support</strong> → relaunch.');
     return false;
   }
-  const adapter = await navigator.gpu.requestAdapter();
-  if (!adapter) {
-    showWarn('⚠️ <strong>WebGPU adapter not found.</strong> Your GPU may not be supported. Try updating your Chrome/Edge browser and GPU drivers.');
+  try {
+    const adapter = await navigator.gpu.requestAdapter();
+    if (!adapter){
+      showError('⚠️ <strong>No WebGPU adapter found.</strong> Update your Chrome/Edge to the latest version and update your GPU drivers, then refresh.');
+      return false;
+    }
+  } catch(e){
+    showError('⚠️ WebGPU check failed: ' + e.message);
     return false;
   }
   return true;
 }
+
+// Run check on page load
 checkWebGPU();
 
 // ── Load Model ─────────────────────────────────────────
@@ -222,14 +232,13 @@ $('loadBtn').addEventListener('click', async () => {
   const modelId = $('modelSelect').value;
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Loading...';
-  setStatus('loading', 'Downloading & initializing...');
-  setProgress(0, 'Starting download...');
+  setStatus('loading', 'Downloading model...');
+  setProgress(0, 'Starting...');
   hideError();
-  $('warnBox').style.display = 'none';
 
   const gpuOk = await checkWebGPU();
-  if (!gpuOk) {
-    setStatus('error', 'WebGPU not available');
+  if (!gpuOk){
+    setStatus('error', 'WebGPU unavailable');
     btn.disabled = false;
     btn.innerHTML = '⚡ Retry Load';
     return;
@@ -244,21 +253,25 @@ $('loadBtn').addEventListener('click', async () => {
     });
     modelLoaded = true;
     setStatus('ready', 'Model ready ✓');
-    setProgress(100, 'Loaded successfully ✓');
+    setProgress(100, '✓ Loaded and cached');
     btn.innerHTML = '✅ Model Loaded';
     btn.style.cssText = 'background:rgba(46,216,122,0.15);color:#2ed87a;border:1px solid rgba(46,216,122,0.3);cursor:default';
-  } catch(err) {
+  } catch(err){
     setStatus('error', 'Load failed');
     btn.disabled = false;
     btn.innerHTML = '⚡ Retry Load';
-    // Give a specific hint for the shader-f16 error
-    let msg = err.message || String(err);
-    if (msg.includes('shader-f16') || msg.includes('f16')) {
-      msg = 'Your GPU does not support shader-f16. The q4f32 models should fix this — make sure you selected a "q4f32" model from the dropdown and retry.';
-    } else if (msg.includes('WebGPU') || msg.includes('webgpu')) {
-      msg = 'WebGPU error: ' + msg + '. Try updating Chrome/Edge to the latest version.';
+    let msg = String(err.message || err);
+    let hint = '';
+    if (msg.includes('shader-f16') || msg.includes('f16')){
+      hint = '<br/>💡 <strong>Fix:</strong> Select <strong>SmolLM2-360M q4f32</strong> from the model dropdown — it does not require shader-f16.';
+    } else if (msg.includes('No URL found') || msg.includes('model ID')){
+      hint = '<br/>💡 Model ID not found in registry. Try selecting a different model.';
+    } else if (msg.includes('fetch') || msg.includes('network') || msg.includes('Failed')){
+      hint = '<br/>💡 Network error downloading model weights. Check your internet connection and retry.';
+    } else {
+      hint = '<br/>💡 Try: update Chrome/Edge to latest version, or open chrome://flags and enable WebGPU.';
     }
-    showError(msg);
+    showError('❌ <strong>Load failed:</strong> ' + esc(msg) + hint);
   }
 });
 
@@ -293,8 +306,8 @@ $('generateBtn').addEventListener('click', async () => {
   const env  = $('envInput').value.trim();
   hideError();
 
-  if (!modelLoaded){ showError('Load the AI model first — click "Load AI Model" above.'); return; }
-  if (!desc){ showError('Please enter a bug description.'); return; }
+  if (!modelLoaded){ showError('⚠️ Please load the AI model first — click <strong>Load AI Model</strong> above.'); return; }
+  if (!desc){ showError('⚠️ Please enter a bug description.'); return; }
 
   const btn = $('generateBtn');
   btn.disabled = true;
@@ -303,14 +316,14 @@ $('generateBtn').addEventListener('click', async () => {
 
   const prompt =
 `You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only.
-No markdown, no explanation, no code fences. Return only the raw JSON object.
+No markdown fences, no explanation. Return ONLY the raw JSON object.
 
 Bug Description: ${desc}
-${mod  ? 'Module: '+mod : ''}
+${mod  ? 'Module: '+mod  : ''}
 ${env  ? 'Environment: '+env : ''}
-${imageFileName ? 'Screenshot: '+imageFileName : ''}
+${imageFileName ? 'Screenshot filename: '+imageFileName : ''}
 
-Return ONLY this JSON:
+Return ONLY this JSON object:
 {
   "title": "[${mod||'Module'}] Short bug title under 80 chars",
   "description": "2-3 sentence professional description of the bug and its impact",
@@ -326,8 +339,7 @@ Return ONLY this JSON:
   "acceptanceCriteria": "What must be verified to close this bug",
   "tags": ["tag1","tag2","tag3"]
 }
-Priority guide: 1=Critical(crash/auth/data loss), 2=High(feature broken), 3=Medium(workaround exists), 4=Low(cosmetic)
-Return ONLY the JSON. Nothing else.`;
+Priority: 1=Critical(crash/login/data loss), 2=High(feature broken), 3=Medium(workaround exists), 4=Low(cosmetic)`;
 
   try {
     const reply = await engine.chat.completions.create({
@@ -340,7 +352,7 @@ Return ONLY the JSON. Nothing else.`;
     if (!match) throw new Error('AI returned unexpected format. Please try again.');
     renderReport(JSON.parse(match[0]));
   } catch(err){
-    showError('Generation failed: ' + err.message);
+    showError('❌ Generation failed: ' + esc(String(err.message || err)));
   } finally {
     btn.disabled = false;
     btn.innerHTML = '🪄 Generate AZDO Bug Report';
@@ -456,7 +468,7 @@ function copyText(text, id, label){
   navigator.clipboard.writeText(text).then(()=>{
     const b=$(id);
     b.classList.add('copied'); b.textContent='✅ Copied!';
-    setTimeout(()=>{ b.classList.remove('copied'); b.textContent=label; }, 2500);
+    setTimeout(()=>{ b.classList.remove('copied'); b.textContent=label; },2500);
   });
 }
 </script>
