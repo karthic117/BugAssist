@@ -192,7 +192,24 @@ input[type=text]::placeholder{color:var(--muted)}
   <div id="resultWrap" style="display:none"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
+<script>
+// Load docx library dynamically with fallback CDNs
+(function(){
+  var urls=[
+    'https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.umd.js',
+    'https://unpkg.com/docx@7.8.2/build/index.umd.js'
+  ];
+  function tryLoad(i){
+    if(i>=urls.length) return;
+    var s=document.createElement('script');
+    s.src=urls[i];
+    s.onload=function(){ window._docxReady=true; };
+    s.onerror=function(){ tryLoad(i+1); };
+    document.head.appendChild(s);
+  }
+  tryLoad(0);
+})();
+</script>
 <script>
 // ── Screenshot state ───────────────────────────────────
 var screenshots = []; // [{base64, mediaType, name}]
@@ -456,7 +473,15 @@ function renderReport(r){
   window._report=r;
   $('btnPlain').addEventListener('click',copyPlain);
   $('btnMd').addEventListener('click',copyMd);
-  $('btnWord').addEventListener('click',downloadWord);
+  $('btnWord').addEventListener('click', async function(){
+    // Wait up to 5s for docx library to load
+    var waited=0;
+    while((!window.docx || !window.docx.Document) && waited<5000){
+      await new Promise(function(r){setTimeout(r,300);});
+      waited+=300;
+    }
+    downloadWord();
+  });
   $('btnAzdo').addEventListener('click',downloadAzdoCsv);
 }
 
@@ -465,10 +490,10 @@ async function downloadWord(){
   var r=window._report; if(!r) return;
   var btn=$('btnWord'); btn.textContent='⏳ Building...';
   try{
-    // Resolve docx library — CDN build exposes as window.docx
-    var lib = (typeof docx !== 'undefined') ? docx : window.docx;
+    // docx 7.x UMD build exposes window.docx
+    var lib = window.docx;
     if(!lib || !lib.Document){
-      throw new Error('Word library not loaded yet. Please wait a moment and try again, or refresh the page.');
+      throw new Error('Word library not loaded yet. Please wait 5 seconds and try again.');
     }
     var Document    = lib.Document;
     var Packer      = lib.Packer;
