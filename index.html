@@ -24,54 +24,31 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .header p{font-size:12px;color:var(--muted);margin-top:3px}
 .badge{display:inline-flex;align-items:center;background:rgba(0,120,212,0.18);color:#60aaff;border:1px solid rgba(0,120,212,0.3);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:8px;vertical-align:middle}
 .free-badge{background:rgba(46,216,122,0.12);color:#2ed87a;border:1px solid rgba(46,216,122,0.25);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle;display:inline-flex;align-items:center}
-.ai-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
-.ai-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
-.ai-panel-head h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
-.ai-status{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--muted)}
-.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:background 0.3s}
-.dot.loading{background:var(--amber);animation:pulse 0.9s ease-in-out infinite}
-.dot.ready{background:var(--green)}
-.dot.error{background:var(--red)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
-.progress-wrap{margin-top:10px;display:none}
-.progress-wrap.visible{display:block}
-.progress-bar-bg{background:var(--surface2);border-radius:20px;height:6px;overflow:hidden;margin-bottom:6px}
-.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:20px;width:0%;transition:width 0.4s ease}
-.progress-label{font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between}
-.model-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
-.model-row label{font-size:12px;color:var(--muted);white-space:nowrap}
-select{background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:var(--rs);padding:7px 10px;font-size:12.5px;outline:none;cursor:pointer;font-family:'Inter',sans-serif}
-select:focus{border-color:var(--accent)}
-.load-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background 0.15s;display:inline-flex;align-items:center;gap:7px}
-.load-btn:hover{background:var(--accent2)}
-.load-btn:disabled{opacity:0.45;cursor:not-allowed}
-.info-note{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);padding:10px 14px;font-size:12px;color:var(--muted);line-height:1.7;margin-top:10px}
-.info-note strong{color:var(--text)}
-.info-note code{font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,0.07);padding:1px 5px;border-radius:3px;font-size:11px;color:#a8c4ff}
+.info-panel{background:rgba(79,127,255,0.08);border:1px solid rgba(79,127,255,0.2);border-radius:var(--r);padding:1rem 1.25rem;margin-bottom:1rem;font-size:12.5px;color:var(--muted);line-height:1.7}
+.info-panel strong{color:var(--text)}
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
 .panel-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:10px}
 textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;resize:vertical;min-height:90px;outline:none;transition:border-color 0.15s}
 textarea:focus{border-color:var(--accent)}
 textarea::placeholder{color:var(--muted)}
-.drop-zone{border:2px dashed var(--border2);border-radius:var(--rs);padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2)}
+input[type=text],input[type=date],select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:9px 12px;outline:none;transition:border-color 0.15s}
+input:focus,select:focus{border-color:var(--accent)}
+select option{background:var(--surface2)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+@media(max-width:600px){.two-col,.three-col{grid-template-columns:1fr}}
+.field-group label{font-size:11.5px;color:var(--muted);margin-bottom:5px;display:block;font-weight:500}
+.drop-zone{border:2px dashed var(--border2);border-radius:var(--rs);padding:1.5rem;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2)}
 .drop-zone:hover,.drop-zone.drag{border-color:var(--accent);background:rgba(79,127,255,0.06)}
 .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.dz-icon{font-size:30px;display:block;margin-bottom:8px}
 .drop-zone p{font-size:13px;color:var(--muted)}
 .drop-zone p span{color:var(--accent)}
-.drop-zone small{font-size:11px;color:var(--muted);opacity:0.6;display:block;margin-top:4px}
-.preview-area{margin-top:12px;position:relative;display:inline-block}
-.preview-area img{max-width:100%;max-height:240px;border-radius:var(--rs);border:1px solid var(--border2);display:block}
-.remove-btn{position:absolute;top:-9px;right:-9px;background:var(--red);color:#fff;border:none;border-radius:50%;width:24px;height:24px;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.img-note{font-size:11.5px;color:var(--amber);margin-top:8px}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-@media(max-width:600px){.two-col{grid-template-columns:1fr}}
+.preview-area{margin-top:10px;position:relative;display:inline-block}
+.preview-area img{max-width:100%;max-height:200px;border-radius:var(--rs);border:1px solid var(--border2);display:block}
+.remove-btn{position:absolute;top:-8px;right:-8px;background:var(--red);color:#fff;border:none;border-radius:50%;width:22px;height:22px;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .generate-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background 0.15s,transform 0.1s;margin-bottom:1.5rem}
 .generate-btn:hover{background:var(--accent2)}
 .generate-btn:active{transform:scale(0.99)}
-.generate-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none}
-.spinner{width:17px;height:17px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
 .error-msg{background:rgba(255,92,92,0.1);border:1px solid rgba(255,92,92,0.25);color:#ff7b7b;border-radius:var(--rs);padding:11px 15px;font-size:13px;margin-bottom:1rem;line-height:1.8}
 .result-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
 .result-header{background:var(--surface2);padding:11px 1.25rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px}
@@ -95,11 +72,6 @@ textarea::placeholder{color:var(--muted)}
 .p2{background:rgba(245,166,35,0.15);color:#f5c86a;border:1px solid rgba(245,166,35,0.3)}
 .p3{background:rgba(79,127,255,0.15);color:#8ab4ff;border:1px solid rgba(79,127,255,0.3)}
 .p4{background:rgba(138,143,154,0.15);color:#b0b5c0;border:1px solid rgba(138,143,154,0.3)}
-.sc{background:rgba(255,92,92,0.15);color:#ff7b7b;border:1px solid rgba(255,92,92,0.3)}
-.sh{background:rgba(245,166,35,0.15);color:#f5c86a;border:1px solid rgba(245,166,35,0.3)}
-.sm{background:rgba(79,127,255,0.15);color:#8ab4ff;border:1px solid rgba(79,127,255,0.3)}
-.sl{background:rgba(138,143,154,0.15);color:#b0b5c0;border:1px solid rgba(138,143,154,0.3)}
-.reason-text{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:1rem}
 .divider{border:none;border-top:1px solid var(--border);margin:1rem 0}
 .tag{display:inline-flex;align-items:center;background:var(--tag-bg);color:var(--tag-text);border:1px solid rgba(79,127,255,0.2);border-radius:20px;padding:2px 9px;font-size:11.5px;font-weight:500;margin:2px}
 </style>
@@ -111,64 +83,99 @@ textarea::placeholder{color:var(--muted)}
     <div class="logo">🐞</div>
     <div>
       <h1>QA Bug Reporter <span class="badge">🔷 AZDO</span><span class="free-badge">✅ Free</span></h1>
-      <p>No API key &nbsp;·&nbsp; No install &nbsp;·&nbsp; AI runs in your browser &nbsp;·&nbsp; GitHub Pages ready</p>
+      <p>No API key &nbsp;·&nbsp; No install &nbsp;·&nbsp; Works on GitHub Pages &nbsp;·&nbsp; Instant generation</p>
     </div>
   </div>
 
-  <div class="ai-panel">
-    <div class="ai-panel-head">
-      <h2>🤖 Browser AI Engine &nbsp;<span style="font-size:11px;color:var(--muted);font-weight:400">(WebLLM — no server, no key)</span></h2>
-      <div class="ai-status"><span class="dot" id="aiDot"></span><span id="aiStatusText">Not loaded</span></div>
-    </div>
-    <div class="model-row">
-      <label>Model:</label>
-      <select id="modelSelect">
-        <option value="Llama-3.2-1B-Instruct-q4f32_1-MLC" selected>Llama-3.2-1B q4f32 (~1.1 GB) — Recommended ✓</option>
-        <option value="SmolLM2-360M-Instruct-q4f32_1-MLC">SmolLM2-360M q4f32 (~580 MB) — Fastest ✓</option>
-        <option value="Llama-3.2-3B-Instruct-q4f32_1-MLC">Llama-3.2-3B q4f32 (~3 GB) — Best quality ✓</option>
-      </select>
-      <button class="load-btn" id="loadBtn">⚡ Load AI Model</button>
-    </div>
-    <div class="progress-wrap" id="progressWrap">
-      <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
-      <div class="progress-label"><span id="progressMsg">Initializing...</span><span id="progressPct">0%</span></div>
-    </div>
-    <div class="info-note">
-      <strong>Requirements:</strong> Chrome 113+ or Edge 113+ (latest). Models use q4f32 — no special GPU features needed.<br/>
-      <strong>First load:</strong> downloads model from HuggingFace to browser cache. After that, loads offline instantly.<br/>
-      <strong>If it keeps failing:</strong> try <code>chrome://flags</code> → search <strong>WebGPU</strong> → enable → relaunch Chrome.
-    </div>
+  <div class="info-panel">
+    <strong>🚀 Instant mode — no AI download needed.</strong> Fill in the fields below and click Generate. The tool uses smart templates to produce a complete, professional AZDO bug report instantly — no waiting, no model download, works on any browser.
   </div>
 
+  <!-- SCREENSHOT -->
   <div class="panel">
     <div class="panel-label">📷 Screenshot (optional)</div>
     <div class="drop-zone" id="dropZone">
       <input type="file" id="fileInput" accept="image/*"/>
-      <span class="dz-icon">📁</span>
-      <p>Drag &amp; drop screenshot here, or <span>click to browse</span></p>
-      <small>PNG, JPG, GIF, WEBP</small>
+      <p>Drag &amp; drop screenshot, or <span>click to browse</span></p>
     </div>
     <div id="previewArea" style="display:none" class="preview-area">
       <img id="previewImg" alt="Screenshot preview"/>
       <button class="remove-btn" id="removeImg">✕</button>
     </div>
-    <div class="img-note">⚠️ Browser AI is text-only. Describe what you see in the screenshot in the Bug Description below.</div>
   </div>
 
+  <!-- CORE FIELDS -->
   <div class="panel">
-    <div class="panel-label">📝 Bug Description *</div>
-    <textarea id="descInput" placeholder="Describe the bug — what you did, what happened, what you expected, any error messages..." rows="5"></textarea>
+    <div class="panel-label">📝 Bug Details</div>
+    <div class="field-group" style="margin-bottom:12px">
+      <label>Bug Title / Short Description *</label>
+      <input type="text" id="titleInput" placeholder="e.g. Login fails with valid credentials on MRF application"/>
+    </div>
+    <div class="field-group">
+      <label>Detailed Description *</label>
+      <textarea id="descInput" placeholder="Describe what went wrong — what you did, what happened, what error appeared..." rows="4"></textarea>
+    </div>
   </div>
 
+  <!-- STEPS + EXPECTED + ACTUAL -->
   <div class="panel">
+    <div class="panel-label">🔢 Reproduction Details</div>
+    <div class="field-group" style="margin-bottom:12px">
+      <label>Steps to Reproduce</label>
+      <textarea id="stepsInput" placeholder="1. Navigate to login page&#10;2. Enter valid credentials&#10;3. Click Login button&#10;4. Observe the error" rows="4"></textarea>
+    </div>
     <div class="two-col">
-      <div>
-        <div class="panel-label" style="margin-bottom:8px">🧩 Module / Feature Area</div>
-        <textarea id="moduleInput" placeholder="e.g. Login, MRF Ingestion, Dashboard..." style="min-height:52px;resize:none" rows="2"></textarea>
+      <div class="field-group">
+        <label>Expected Result</label>
+        <textarea id="expectedInput" placeholder="User should be logged in and redirected to dashboard" rows="3" style="min-height:70px"></textarea>
       </div>
-      <div>
-        <div class="panel-label" style="margin-bottom:8px">💻 Environment</div>
-        <textarea id="envInput" placeholder="e.g. Chrome 124, Windows 11, QA env..." style="min-height:52px;resize:none" rows="2"></textarea>
+      <div class="field-group">
+        <label>Actual Result</label>
+        <textarea id="actualInput" placeholder="Error message displayed: 'Invalid credentials'" rows="3" style="min-height:70px"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- META -->
+  <div class="panel">
+    <div class="panel-label">⚙️ Classification</div>
+    <div class="three-col" style="margin-bottom:12px">
+      <div class="field-group">
+        <label>Module / Feature Area</label>
+        <input type="text" id="moduleInput" placeholder="e.g. Login, MRF Ingestion"/>
+      </div>
+      <div class="field-group">
+        <label>Priority</label>
+        <select id="priorityInput">
+          <option value="1-Critical">P1 — Critical</option>
+          <option value="2-High" selected>P2 — High</option>
+          <option value="3-Medium">P3 — Medium</option>
+          <option value="4-Low">P4 — Low</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>Severity</label>
+        <select id="severityInput">
+          <option value="Critical">Critical</option>
+          <option value="High" selected>High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="field-group">
+        <label>Environment</label>
+        <input type="text" id="envInput" placeholder="e.g. Chrome 124, Windows 11, QA env"/>
+      </div>
+      <div class="field-group">
+        <label>Repro Rate</label>
+        <select id="reproInput">
+          <option value="Always">Always</option>
+          <option value="Intermittent">Intermittent</option>
+          <option value="Rarely">Rarely</option>
+          <option value="Unable to reproduce">Unable to reproduce</option>
+        </select>
       </div>
     </div>
   </div>
@@ -179,124 +186,27 @@ textarea::placeholder{color:var(--muted)}
   <div id="resultWrap" style="display:none"></div>
 </div>
 
-<script type="module">
-import * as webllm from "https://esm.run/@mlc-ai/web-llm@0.2.79";
-
-let engine = null;
-let modelLoaded = false;
-let imageFileName = '';
-
+<script>
 function $(id){ return document.getElementById(id); }
-function showError(html){ $('errorMsg').innerHTML=html; $('errorMsg').style.display='block'; }
+function showError(m){ $('errorMsg').innerHTML=m; $('errorMsg').style.display='block'; }
 function hideError(){ $('errorMsg').style.display='none'; }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
-function setStatus(state,text){ $('aiDot').className='dot '+state; $('aiStatusText').textContent=text; }
-function setProgress(pct,msg){
-  $('progressWrap').classList.add('visible');
-  $('progressFill').style.width=Math.min(pct,100)+'%';
-  $('progressMsg').textContent=msg;
-  $('progressPct').textContent=Math.round(pct)+'%';
-}
-
-// ── Model configs — explicit appConfig bypasses any CDN config fetch issues ──
-const MODEL_LIB_BASE = webllm.modelLibURLPrefix + webllm.modelVersion;
-
-const MODEL_CONFIGS = {
-  "Llama-3.2-1B-Instruct-q4f32_1-MLC": {
-    model: "https://huggingface.co/mlc-ai/Llama-3.2-1B-Instruct-q4f32_1-MLC",
-    model_id: "Llama-3.2-1B-Instruct-q4f32_1-MLC",
-    model_lib: MODEL_LIB_BASE + "/Llama-3.2-1B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
-    low_resource_required: true,
-    overrides: { context_window_size: 4096 }
-  },
-  "SmolLM2-360M-Instruct-q4f32_1-MLC": {
-    model: "https://huggingface.co/mlc-ai/SmolLM2-360M-Instruct-q4f32_1-MLC",
-    model_id: "SmolLM2-360M-Instruct-q4f32_1-MLC",
-    model_lib: MODEL_LIB_BASE + "/SmolLM2-360M-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
-    low_resource_required: true,
-    overrides: { context_window_size: 4096 }
-  },
-  "Llama-3.2-3B-Instruct-q4f32_1-MLC": {
-    model: "https://huggingface.co/mlc-ai/Llama-3.2-3B-Instruct-q4f32_1-MLC",
-    model_id: "Llama-3.2-3B-Instruct-q4f32_1-MLC",
-    model_lib: MODEL_LIB_BASE + "/Llama-3.2-3B-Instruct-q4f32_1-ctx4k_cs1k-webgpu.wasm",
-    low_resource_required: true,
-    overrides: { context_window_size: 4096 }
-  }
-};
-
-// ── Load Model ─────────────────────────────────────────
-$('loadBtn').addEventListener('click', async () => {
-  const btn = $('loadBtn');
-  const modelId = $('modelSelect').value;
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Loading...';
-  setStatus('loading', 'Downloading model...');
-  setProgress(0, 'Starting...');
-  hideError();
-
-  // WebGPU check
-  if (!navigator.gpu) {
-    setStatus('error','WebGPU not available');
-    btn.disabled=false; btn.innerHTML='⚡ Retry Load';
-    showError('❌ <strong>WebGPU not available.</strong> Use Chrome 113+ or Edge 113+. Go to <code>chrome://flags</code> → enable <strong>Unsafe WebGPU</strong> → relaunch.');
-    return;
-  }
-
-  try {
-    // Explicit appConfig — avoids HuggingFace config fetch redirect issues
-    const appConfig = {
-      useIndexedDBCache: true,   // use IndexedDB so model survives page reload
-      model_list: [ MODEL_CONFIGS[modelId] ]
-    };
-
-    engine = await webllm.CreateMLCEngine(modelId, {
-      appConfig,
-      initProgressCallback: (p) => {
-        const pct = Math.round((p.progress||0)*100);
-        setProgress(pct, p.text || 'Loading...');
-      }
-    });
-
-    modelLoaded = true;
-    setStatus('ready','Model ready ✓');
-    setProgress(100,'✓ Loaded and cached');
-    btn.innerHTML = '✅ Model Loaded';
-    btn.style.cssText = 'background:rgba(46,216,122,0.15);color:#2ed87a;border:1px solid rgba(46,216,122,0.3);cursor:default';
-  } catch(err) {
-    setStatus('error','Load failed');
-    btn.disabled=false; btn.innerHTML='⚡ Retry Load';
-    let msg = String(err.message||err);
-    let hint = '';
-    if (msg.includes('shader-f16')||msg.includes('f16'))
-      hint='<br/>💡 GPU does not support shader-f16. Select <strong>SmolLM2-360M q4f32</strong> or <strong>Llama-3.2-1B q4f32</strong> and retry.';
-    else if (msg.includes('fetch')||msg.includes('Failed to fetch')||msg.includes('NetworkError'))
-      hint='<br/>💡 Network error. Check internet connection and retry. HuggingFace may be temporarily slow.';
-    else if (msg.includes('WebGPU')||msg.includes('webgpu'))
-      hint='<br/>💡 Update Chrome/Edge to latest version. Go to <code>chrome://flags</code> and enable WebGPU.';
-    else
-      hint='<br/>💡 Open Chrome DevTools → Console tab → share the full error message for more help.';
-    showError('❌ <strong>Load failed:</strong> '+esc(msg)+hint);
-  }
-});
 
 // ── File Upload ────────────────────────────────────────
-const dropZone = $('dropZone');
-$('fileInput').addEventListener('change', e => handleFile(e.target.files[0]));
-dropZone.addEventListener('dragover', e=>{e.preventDefault();dropZone.classList.add('drag');});
-dropZone.addEventListener('dragleave', ()=>dropZone.classList.remove('drag'));
-dropZone.addEventListener('drop', e=>{e.preventDefault();dropZone.classList.remove('drag');handleFile(e.dataTransfer.files[0]);});
-$('removeImg').addEventListener('click', ()=>{
-  imageFileName='';
+var dropZone = $('dropZone');
+$('fileInput').addEventListener('change', function(e){ handleFile(e.target.files[0]); });
+dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.classList.add('drag'); });
+dropZone.addEventListener('dragleave', function(){ dropZone.classList.remove('drag'); });
+dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
+$('removeImg').addEventListener('click', function(){
   $('previewArea').style.display='none';
   dropZone.style.display='block';
   $('fileInput').value='';
 });
 function handleFile(file){
   if(!file||!file.type.startsWith('image/')) return;
-  imageFileName=file.name;
-  const reader=new FileReader();
-  reader.onload=ev=>{
+  var reader=new FileReader();
+  reader.onload=function(ev){
     $('previewImg').src=ev.target.result;
     $('previewArea').style.display='inline-block';
     dropZone.style.display='none';
@@ -304,176 +214,193 @@ function handleFile(file){
   reader.readAsDataURL(file);
 }
 
-// ── Generate ───────────────────────────────────────────
-$('generateBtn').addEventListener('click', async ()=>{
-  const desc=$('descInput').value.trim();
-  const mod=$('moduleInput').value.trim();
-  const env=$('envInput').value.trim();
-  hideError();
-
-  if(!modelLoaded){showError('⚠️ Please load the AI model first — click <strong>Load AI Model</strong> above.');return;}
-  if(!desc){showError('⚠️ Please enter a bug description.');return;}
-
-  const btn=$('generateBtn');
-  btn.disabled=true;
-  btn.innerHTML='<div class="spinner"></div> Generating report...';
-  $('resultWrap').style.display='none';
-
-  const prompt=
-`You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only.
-No markdown fences, no explanation. Return ONLY the raw JSON object.
-
-Bug Description: ${desc}
-${mod?'Module: '+mod:''}
-${env?'Environment: '+env:''}
-${imageFileName?'Screenshot: '+imageFileName:''}
-
-Return ONLY this JSON:
-{
-  "title": "[${mod||'Module'}] Short bug title under 80 chars",
-  "description": "2-3 sentence professional description of the bug and its impact",
-  "stepsToReproduce": "1. First step\\n2. Second step\\n3. Third step",
-  "expectedResult": "What should happen",
-  "actualResult": "What actually happened",
-  "priority": "2",
-  "priorityLabel": "High",
-  "severityLabel": "High",
-  "priorityReason": "One sentence justifying priority and severity",
-  "reproRate": "Always",
-  "workItemType": "Bug",
-  "acceptanceCriteria": "What must be verified to close this bug",
-  "tags": ["tag1","tag2","tag3"]
+// ── Smart report builder ───────────────────────────────
+function inferTags(title, desc, module){
+  var tags = [];
+  var text = (title+' '+desc+' '+module).toLowerCase();
+  if(/login|auth|credential|password|sign.?in/.test(text)) tags.push('Authentication');
+  if(/ui|display|layout|render|screen|visual/.test(text)) tags.push('UI');
+  if(/api|endpoint|request|response|http|rest/.test(text)) tags.push('API');
+  if(/data|database|db|record|save|load|fetch/.test(text)) tags.push('Data');
+  if(/crash|fail|error|exception|500|400/.test(text)) tags.push('Error-Handling');
+  if(/performance|slow|timeout|lag|speed/.test(text)) tags.push('Performance');
+  if(/mrf|ingestion|file|upload/.test(text)) tags.push('MRF');
+  if(/tenant|multi/.test(text)) tags.push('Multitenancy');
+  if(tags.length === 0) tags.push('Bug', 'Functional-Testing');
+  if(module) tags.push(module.replace(/\s+/g,'-'));
+  return [...new Set(tags)].slice(0,4);
 }
-Priority: 1=Critical(crash/login/data loss), 2=High(feature broken), 3=Medium(workaround exists), 4=Low(cosmetic)`;
 
-  try{
-    const reply=await engine.chat.completions.create({
-      messages:[{role:'user',content:prompt}],
-      temperature:0.1,
-      max_tokens:900
-    });
-    const raw=reply.choices[0].message.content||'';
-    const match=raw.match(/\{[\s\S]*\}/);
-    if(!match) throw new Error('AI returned unexpected format. Please try again.');
-    renderReport(JSON.parse(match[0]));
-  }catch(err){
-    showError('❌ Generation failed: '+esc(String(err.message||err)));
-  }finally{
-    btn.disabled=false;
-    btn.innerHTML='🪄 Generate AZDO Bug Report';
+function buildTitle(titleInput, module){
+  var t = titleInput.trim();
+  if(!t) return '';
+  var mod = module.trim();
+  if(mod && !t.startsWith('[')) return '['+mod+'] '+t;
+  return t;
+}
+
+function buildSteps(stepsRaw, desc){
+  if(stepsRaw.trim()){
+    var lines = stepsRaw.trim().split('\n').filter(function(l){ return l.trim(); });
+    return lines.map(function(l,i){
+      // if already numbered keep it, else add number
+      return /^\d+\./.test(l.trim()) ? l.trim() : (i+1)+'. '+l.trim();
+    }).join('\n');
   }
+  // auto-generate basic steps from description
+  return '1. Navigate to the affected module/page\n2. Perform the action described in the bug description\n3. Observe the result';
+}
+
+function buildAcceptanceCriteria(title, expected){
+  var exp = expected.trim();
+  if(exp) return 'Verify that: '+exp+'\nNo error messages are displayed.\nBehavior is consistent across supported browsers/environments.';
+  return 'The reported issue no longer occurs.\nThe feature works as expected per requirements.\nNo regression in related functionality.';
+}
+
+function buildDescription(desc, env, reproRate){
+  var d = desc.trim();
+  var extras = [];
+  if(env) extras.push('Environment: '+env);
+  if(reproRate) extras.push('Repro rate: '+reproRate);
+  return d + (extras.length ? '\n\n'+extras.join(' | ') : '');
+}
+
+// ── Generate ───────────────────────────────────────────
+$('generateBtn').addEventListener('click', function(){
+  hideError();
+  var titleRaw = $('titleInput').value.trim();
+  var desc     = $('descInput').value.trim();
+  var steps    = $('stepsInput').value.trim();
+  var expected = $('expectedInput').value.trim();
+  var actual   = $('actualInput').value.trim();
+  var module   = $('moduleInput').value.trim();
+  var env      = $('envInput').value.trim();
+  var priVal   = $('priorityInput').value;
+  var severity = $('severityInput').value;
+  var repro    = $('reproInput').value;
+
+  if(!titleRaw){ showError('⚠️ Please enter a bug title / short description.'); return; }
+  if(!desc){ showError('⚠️ Please enter a detailed description.'); return; }
+
+  var priParts = priVal.split('-');
+  var priNum   = priParts[0];
+  var priLabel = priParts[1];
+
+  var report = {
+    title:              buildTitle(titleRaw, module),
+    description:        buildDescription(desc, env, repro),
+    stepsToReproduce:   buildSteps(steps, desc),
+    expectedResult:     expected || 'The feature works as per requirements without any errors.',
+    actualResult:       actual   || 'The described error or unexpected behavior occurs.',
+    priority:           priNum,
+    priorityLabel:      priLabel,
+    severityLabel:      severity,
+    priorityReason:     getPriorityReason(priNum, priLabel, severity),
+    reproRate:          repro,
+    workItemType:       'Bug',
+    acceptanceCriteria: buildAcceptanceCriteria(titleRaw, expected),
+    tags:               inferTags(titleRaw, desc, module)
+  };
+
+  renderReport(report);
 });
+
+function getPriorityReason(num, label, severity){
+  var reasons = {
+    '1': 'Critical priority assigned as this issue causes complete feature/system failure with no workaround available.',
+    '2': 'High priority as this significantly impacts core functionality and blocks key user workflows.',
+    '3': 'Medium priority since a workaround exists, but the issue degrades user experience.',
+    '4': 'Low priority as this is a cosmetic or minor issue with minimal business impact.'
+  };
+  return reasons[num] || 'Priority set based on functional impact and user-facing severity.';
+}
 
 // ── Render ─────────────────────────────────────────────
 function renderReport(r){
-  const pClass={'1':'p1','2':'p2','3':'p3','4':'p4'}[String(r.priority)]||'p3';
-  const sClass={'critical':'sc','high':'sh','medium':'sm','low':'sl'}[String(r.severityLabel||'').toLowerCase()]||'sm';
-  const tags=(r.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+  var pClass = {'1':'p1','2':'p2','3':'p3','4':'p4'}[r.priority]||'p3';
+  var sClass = {'Critical':'p1','High':'p2','Medium':'p3','Low':'p4'}[r.severityLabel]||'p3';
+  var tags = (r.tags||[]).map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join('');
 
-  $('resultWrap').innerHTML=`
-  <div class="result-wrap">
-    <div class="result-header">
-      <span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>
-      <div class="copy-btns">
-        <button class="copy-btn" id="btnMd">📋 Copy Markdown</button>
-        <button class="copy-btn" id="btnPlain">📄 Copy Plain Text</button>
-      </div>
-    </div>
-    <div class="report-body">
-      <div class="field-row"><div class="field-key">🏷️ Title</div><div class="field-val title-val">${esc(r.title)}</div></div>
-      <div class="meta-row">
-        <div class="meta-col"><div class="field-key">Priority</div><span class="badge-pill ${pClass}">🚩 P${r.priority} — ${esc(r.priorityLabel)}</span></div>
-        <div class="meta-col"><div class="field-key">Severity</div><span class="badge-pill ${sClass}">⚠️ ${esc(r.severityLabel)}</span></div>
-        <div class="meta-col"><div class="field-key">Work Item</div><span class="badge-pill p1">🐞 ${esc(r.workItemType||'Bug')}</span></div>
-        <div class="meta-col"><div class="field-key">Repro Rate</div><span class="badge-pill p3">🔁 ${esc(r.reproRate||'Always')}</span></div>
-      </div>
-      <p class="reason-text">💡 ${esc(r.priorityReason)}</p>
-      <hr class="divider"/>
-      <div class="field-row"><div class="field-key">📋 Description</div><div class="field-val">${esc(r.description)}</div></div>
-      <div class="field-row"><div class="field-key">🔢 Steps to Reproduce</div><div class="field-val steps-val">${esc(r.stepsToReproduce)}</div></div>
-      <div class="two-col">
-        <div class="field-row"><div class="field-key">✅ Expected Result</div><div class="field-val exp-val">${esc(r.expectedResult)}</div></div>
-        <div class="field-row"><div class="field-key">❌ Actual Result</div><div class="field-val act-val">${esc(r.actualResult)}</div></div>
-      </div>
-      <hr class="divider"/>
-      <div class="field-row"><div class="field-key">✔️ Acceptance Criteria</div><div class="field-val">${esc(r.acceptanceCriteria)}</div></div>
-      ${tags?`<div class="field-row"><div class="field-key">🏷️ Tags</div><div style="margin-top:5px">${tags}</div></div>`:''}
-    </div>
-  </div>`;
+  $('resultWrap').innerHTML =
+    '<div class="result-wrap">'
+    +'<div class="result-header">'
+    +'<span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>'
+    +'<div class="copy-btns">'
+    +'<button class="copy-btn" id="btnMd">📋 Copy Markdown</button>'
+    +'<button class="copy-btn" id="btnPlain">📄 Copy Plain Text</button>'
+    +'</div></div>'
+    +'<div class="report-body">'
+    +'<div class="field-row"><div class="field-key">🏷️ Title</div><div class="field-val title-val">'+esc(r.title)+'</div></div>'
+    +'<div class="meta-row">'
+    +'<div class="meta-col"><div class="field-key">Priority</div><span class="badge-pill '+pClass+'">🚩 P'+r.priority+' — '+esc(r.priorityLabel)+'</span></div>'
+    +'<div class="meta-col"><div class="field-key">Severity</div><span class="badge-pill '+sClass+'">⚠️ '+esc(r.severityLabel)+'</span></div>'
+    +'<div class="meta-col"><div class="field-key">Work Item</div><span class="badge-pill p1">🐞 Bug</span></div>'
+    +'<div class="meta-col"><div class="field-key">Repro Rate</div><span class="badge-pill p3">🔁 '+esc(r.reproRate)+'</span></div>'
+    +'</div>'
+    +'<p style="font-size:12px;color:var(--muted);font-style:italic;margin-bottom:1rem">💡 '+esc(r.priorityReason)+'</p>'
+    +'<hr class="divider"/>'
+    +'<div class="field-row"><div class="field-key">📋 Description</div><div class="field-val">'+esc(r.description)+'</div></div>'
+    +'<div class="field-row"><div class="field-key">🔢 Steps to Reproduce</div><div class="field-val steps-val">'+esc(r.stepsToReproduce)+'</div></div>'
+    +'<div class="two-col">'
+    +'<div class="field-row"><div class="field-key">✅ Expected Result</div><div class="field-val exp-val">'+esc(r.expectedResult)+'</div></div>'
+    +'<div class="field-row"><div class="field-key">❌ Actual Result</div><div class="field-val act-val">'+esc(r.actualResult)+'</div></div>'
+    +'</div>'
+    +'<hr class="divider"/>'
+    +'<div class="field-row"><div class="field-key">✔️ Acceptance Criteria</div><div class="field-val">'+esc(r.acceptanceCriteria)+'</div></div>'
+    +(tags?'<div class="field-row"><div class="field-key">🏷️ Tags</div><div style="margin-top:5px">'+tags+'</div></div>':'')
+    +'</div></div>';
 
   $('resultWrap').style.display='block';
   $('resultWrap').scrollIntoView({behavior:'smooth',block:'start'});
-  window._report=r;
-  $('btnMd').addEventListener('click',copyMd);
-  $('btnPlain').addEventListener('click',copyPlain);
+  window._report = r;
+  $('btnMd').addEventListener('click', copyMd);
+  $('btnPlain').addEventListener('click', copyPlain);
 }
 
 // ── Copy ───────────────────────────────────────────────
 function copyPlain(){
-  const r=window._report; if(!r) return;
+  var r=window._report; if(!r) return;
   copyText(
-`BUG REPORT — AZURE DEVOPS
-==============================================
-Title        : ${r.title}
-Work Item    : ${r.workItemType||'Bug'}
-Priority     : P${r.priority} — ${r.priorityLabel}
-Severity     : ${r.severityLabel}
-Repro Rate   : ${r.reproRate||'Always'}
-==============================================
-
-DESCRIPTION
-${r.description}
-
-STEPS TO REPRODUCE
-${r.stepsToReproduce}
-
-EXPECTED RESULT
-${r.expectedResult}
-
-ACTUAL RESULT
-${r.actualResult}
-
-ACCEPTANCE CRITERIA
-${r.acceptanceCriteria}
-
-TAGS: ${(r.tags||[]).join(', ')}`, 'btnPlain','📄 Copy Plain Text');
+    'BUG REPORT — AZURE DEVOPS\n'
+    +'==============================================\n'
+    +'Title        : '+r.title+'\n'
+    +'Work Item    : Bug\n'
+    +'Priority     : P'+r.priority+' — '+r.priorityLabel+'\n'
+    +'Severity     : '+r.severityLabel+'\n'
+    +'Repro Rate   : '+r.reproRate+'\n'
+    +'==============================================\n\n'
+    +'DESCRIPTION\n'+r.description+'\n\n'
+    +'STEPS TO REPRODUCE\n'+r.stepsToReproduce+'\n\n'
+    +'EXPECTED RESULT\n'+r.expectedResult+'\n\n'
+    +'ACTUAL RESULT\n'+r.actualResult+'\n\n'
+    +'ACCEPTANCE CRITERIA\n'+r.acceptanceCriteria+'\n\n'
+    +'TAGS: '+r.tags.join(', '),
+    'btnPlain','📄 Copy Plain Text');
 }
 
 function copyMd(){
-  const r=window._report; if(!r) return;
+  var r=window._report; if(!r) return;
   copyText(
-`## 🐞 ${r.title}
-
-| Field | Value |
-|---|---|
-| **Work Item** | ${r.workItemType||'Bug'} |
-| **Priority** | P${r.priority} — ${r.priorityLabel} |
-| **Severity** | ${r.severityLabel} |
-| **Repro Rate** | ${r.reproRate||'Always'} |
-
-### 📋 Description
-${r.description}
-
-### 🔢 Steps to Reproduce
-${r.stepsToReproduce}
-
-### ✅ Expected Result
-${r.expectedResult}
-
-### ❌ Actual Result
-${r.actualResult}
-
-### ✔️ Acceptance Criteria
-${r.acceptanceCriteria}
-
-**Tags:** ${(r.tags||[]).join(', ')}`, 'btnMd','📋 Copy Markdown');
+    '## 🐞 '+r.title+'\n\n'
+    +'| Field | Value |\n|---|---|\n'
+    +'| **Work Item** | Bug |\n'
+    +'| **Priority** | P'+r.priority+' — '+r.priorityLabel+' |\n'
+    +'| **Severity** | '+r.severityLabel+' |\n'
+    +'| **Repro Rate** | '+r.reproRate+' |\n\n'
+    +'### 📋 Description\n'+r.description+'\n\n'
+    +'### 🔢 Steps to Reproduce\n'+r.stepsToReproduce+'\n\n'
+    +'### ✅ Expected Result\n'+r.expectedResult+'\n\n'
+    +'### ❌ Actual Result\n'+r.actualResult+'\n\n'
+    +'### ✔️ Acceptance Criteria\n'+r.acceptanceCriteria+'\n\n'
+    +'**Tags:** '+r.tags.join(', '),
+    'btnMd','📋 Copy Markdown');
 }
 
 function copyText(text,id,label){
-  navigator.clipboard.writeText(text).then(()=>{
-    const b=$(id);
+  navigator.clipboard.writeText(text).then(function(){
+    var b=$(id);
     b.classList.add('copied'); b.textContent='✅ Copied!';
-    setTimeout(()=>{b.classList.remove('copied');b.textContent=label;},2500);
+    setTimeout(function(){ b.classList.remove('copied'); b.textContent=label; },2500);
   });
 }
 </script>
