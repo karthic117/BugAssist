@@ -24,6 +24,22 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .header p{font-size:12px;color:var(--muted);margin-top:3px}
 .badge{display:inline-flex;align-items:center;background:rgba(0,120,212,0.18);color:#60aaff;border:1px solid rgba(0,120,212,0.3);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:8px;vertical-align:middle}
 .free-badge{background:rgba(46,216,122,0.12);color:#2ed87a;border:1px solid rgba(46,216,122,0.25);border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;margin-left:6px;vertical-align:middle;display:inline-flex;align-items:center}
+
+/* KEY PANEL */
+.key-panel{background:var(--surface);border:1px solid rgba(79,127,255,0.25);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
+.key-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.key-panel-head h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px}
+.key-saved-badge{display:none;align-items:center;gap:5px;background:rgba(46,216,122,0.12);color:#2ed87a;border:1px solid rgba(46,216,122,0.25);border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:600}
+.key-row{display:flex;gap:8px;align-items:center}
+.key-row input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rs);color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;padding:9px 12px;outline:none;transition:border-color 0.15s}
+.key-row input:focus{border-color:var(--accent)}
+.key-row input::placeholder{color:var(--muted);font-family:'Inter',sans-serif}
+.save-key-btn{background:var(--accent);color:#fff;border:none;border-radius:var(--rs);padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background 0.15s;font-family:'Inter',sans-serif}
+.save-key-btn:hover{background:var(--accent2)}
+.key-hint{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6}
+.key-hint a{color:var(--accent);text-decoration:none}
+.key-hint a:hover{text-decoration:underline}
+
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:1rem}
 .panel-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:10px}
 textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:10px 12px;resize:vertical;min-height:90px;outline:none;transition:border-color 0.15s}
@@ -31,7 +47,7 @@ textarea:focus{border-color:var(--accent)}
 textarea::placeholder{color:var(--muted)}
 input[type=text]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--rs);color:var(--text);font-family:'Inter',sans-serif;font-size:13.5px;padding:9px 12px;outline:none;transition:border-color 0.15s}
 input[type=text]:focus{border-color:var(--accent)}
-input::placeholder{color:var(--muted)}
+input[type=text]::placeholder{color:var(--muted)}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media(max-width:600px){.two-col{grid-template-columns:1fr}}
 .field-group label{font-size:11.5px;color:var(--muted);margin-bottom:5px;display:block;font-weight:500}
@@ -94,6 +110,22 @@ input::placeholder{color:var(--muted)}
     </div>
   </div>
 
+  <!-- API KEY PANEL -->
+  <div class="key-panel">
+    <div class="key-panel-head">
+      <h2>🔑 Gemini API Key <span style="font-size:11px;color:var(--muted);font-weight:400">(free — saved in your browser only)</span></h2>
+      <div class="key-saved-badge" id="keySavedBadge">✅ Key saved</div>
+    </div>
+    <div class="key-row">
+      <input type="password" id="keyInput" placeholder="Paste your Gemini API key here — AIza..." autocomplete="off"/>
+      <button class="save-key-btn" id="saveKeyBtn">Save Key</button>
+    </div>
+    <div class="key-hint">
+      Get a <strong>free key</strong> (no credit card) at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a> — 1,500 requests/day free.
+      Your key is stored only in <strong>your browser's localStorage</strong> — never sent anywhere except Google's API.
+    </div>
+  </div>
+
   <!-- SCREENSHOT -->
   <div class="panel">
     <div class="panel-label">📷 Screenshot (optional — AI will analyze it)</div>
@@ -112,12 +144,12 @@ input::placeholder{color:var(--muted)}
   <!-- DESCRIPTION -->
   <div class="panel">
     <div class="panel-label">📝 Bug Description *</div>
-    <textarea id="descInput" placeholder="Describe the bug — what you were doing, what went wrong, what you expected. The AI will generate all report fields from this." rows="5"></textarea>
+    <textarea id="descInput" placeholder="Describe the bug — what you were doing, what went wrong, what you expected. AI generates all report fields from this." rows="5"></textarea>
   </div>
 
   <!-- OPTIONAL HINTS -->
   <div class="panel">
-    <div class="panel-label">⚙️ Optional Hints (helps AI be more precise)</div>
+    <div class="panel-label">⚙️ Optional Hints</div>
     <div class="two-col">
       <div class="field-group">
         <label>Module / Feature Area</label>
@@ -137,23 +169,35 @@ input::placeholder{color:var(--muted)}
 </div>
 
 <script>
-// ─────────────────────────────────────────────────────
-// REPLACE THIS WITH YOUR GEMINI FREE API KEY
-// Get free key at: https://aistudio.google.com/app/apikey
-// ─────────────────────────────────────────────────────
-var GEMINI_KEY = 'AQ.Ab8RN6IOtP70xeBDqxNfVgzSjPRwzJcRW2AVVZMYu1qLo540Lg';
-// ─────────────────────────────────────────────────────
-
-var imageBase64 = null;
-var imageMediaType = null;
-
+var imageBase64=null, imageMediaType=null;
 function $(id){ return document.getElementById(id); }
 function showError(m){ $('errorMsg').innerHTML=m; $('errorMsg').style.display='block'; }
 function hideError(){ $('errorMsg').style.display='none'; }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
 
+// ── Key management ─────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function(){
+  var saved = localStorage.getItem('gemini_api_key');
+  if(saved){
+    $('keyInput').value = saved;
+    $('keySavedBadge').style.display = 'inline-flex';
+  }
+});
+
+$('saveKeyBtn').addEventListener('click', function(){
+  var key = $('keyInput').value.trim();
+  if(!key){ showError('⚠️ Please paste your Gemini API key first.'); return; }
+  localStorage.setItem('gemini_api_key', key);
+  $('keySavedBadge').style.display = 'inline-flex';
+  hideError();
+});
+
+function getKey(){
+  return localStorage.getItem('gemini_api_key') || $('keyInput').value.trim();
+}
+
 // ── File Upload ────────────────────────────────────────
-var dropZone = $('dropZone');
+var dropZone=$('dropZone');
 $('fileInput').addEventListener('change', function(e){ handleFile(e.target.files[0]); });
 dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.classList.add('drag'); });
 dropZone.addEventListener('dragleave', function(){ dropZone.classList.remove('drag'); });
@@ -166,10 +210,10 @@ $('removeImg').addEventListener('click', function(){
 });
 function handleFile(file){
   if(!file||!file.type.startsWith('image/')) return;
-  imageMediaType = file.type;
+  imageMediaType=file.type;
   var reader=new FileReader();
   reader.onload=function(ev){
-    imageBase64 = ev.target.result.split(',')[1];
+    imageBase64=ev.target.result.split(',')[1];
     $('previewImg').src=ev.target.result;
     $('previewArea').style.display='inline-block';
     dropZone.style.display='none';
@@ -179,17 +223,18 @@ function handleFile(file){
 
 // ── Generate ───────────────────────────────────────────
 $('generateBtn').addEventListener('click', async function(){
-  var desc   = $('descInput').value.trim();
-  var module = $('moduleInput').value.trim();
-  var env    = $('envInput').value.trim();
+  var desc=$('descInput').value.trim();
+  var module=$('moduleInput').value.trim();
+  var env=$('envInput').value.trim();
+  var key=getKey();
   hideError();
 
-  if(!desc && !imageBase64){
-    showError('⚠️ Please enter a bug description or upload a screenshot.');
+  if(!key){
+    showError('⚠️ Please paste your Gemini API key above and click <strong>Save Key</strong>. Get a free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#8ab4ff">aistudio.google.com/app/apikey</a>');
     return;
   }
-  if(GEMINI_KEY === 'AQ.Ab8RN6IOtP70xeBDqxNfVgzSjPRwzJcRW2AVVZMYu1qLo540Lg'){
-    showError('⚠️ Please add your Gemini API key in the HTML file. Open index.html and replace <code>AQ.Ab8RN6IOtP70xeBDqxNfVgzSjPRwzJcRW2AVVZMYu1qLo540Lg</code> with your key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#8ab4ff">aistudio.google.com</a>');
+  if(!desc&&!imageBase64){
+    showError('⚠️ Please enter a bug description or upload a screenshot.');
     return;
   }
 
@@ -198,52 +243,36 @@ $('generateBtn').addEventListener('click', async function(){
   btn.innerHTML='<div class="spinner"></div> AI is analyzing...';
   $('resultWrap').style.display='none';
 
-  var systemPrompt = 'You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only. No markdown fences, no explanation. Return ONLY the raw JSON object.\n\nReturn exactly this JSON:\n{\n  "title": "[Module] Short bug title under 80 chars",\n  "description": "2-3 sentence professional description of the bug and its impact",\n  "stepsToReproduce": "1. Step one\\n2. Step two\\n3. Step three",\n  "expectedResult": "What should happen",\n  "actualResult": "What actually happened",\n  "priority": "2",\n  "priorityLabel": "High",\n  "severityLabel": "High",\n  "priorityReason": "One sentence justifying priority and severity",\n  "reproRate": "Always",\n  "workItemType": "Bug",\n  "acceptanceCriteria": "What must be verified to close this bug",\n  "tags": ["tag1","tag2","tag3"]\n}\nPriority: 1=Critical(crash/auth/data loss), 2=High(feature broken), 3=Medium(workaround exists), 4=Low(cosmetic)';
+  var prompt='You are a senior QA engineer. Generate an Azure DevOps bug report as strict JSON only.\nNo markdown fences, no explanation. Return ONLY the raw JSON object.\n\nBug Description: '+(desc||'See screenshot')
+    +(module?'\nModule: '+module:'')
+    +(env?'\nEnvironment: '+env:'')
+    +(!desc&&imageBase64?'\nAnalyze the screenshot to identify the bug and fill all fields.':'')
+    +'\n\nReturn ONLY this JSON:\n{\n  "title": "'+(module?'['+module+'] ':'')+'Short bug title under 80 chars",\n  "description": "2-3 sentence professional description of the bug and its impact",\n  "stepsToReproduce": "1. Step one\\n2. Step two\\n3. Step three",\n  "expectedResult": "What should happen",\n  "actualResult": "What actually happened",\n  "priority": "2",\n  "priorityLabel": "High",\n  "severityLabel": "High",\n  "priorityReason": "One sentence justifying priority and severity",\n  "reproRate": "Always",\n  "workItemType": "Bug",\n  "acceptanceCriteria": "What must be verified to close this bug",\n  "tags": ["tag1","tag2","tag3"]\n}\nPriority: 1=Critical(crash/auth/data loss), 2=High(feature broken), 3=Medium(workaround exists), 4=Low(cosmetic)';
 
-  var userText = 'Generate a complete AZDO bug report.\n';
-  if(desc) userText += '\nBug Description:\n' + desc;
-  if(module) userText += '\nModule: ' + module;
-  if(env) userText += '\nEnvironment: ' + env;
-  if(imageBase64 && !desc) userText += '\nAnalyze the screenshot to identify the bug and fill all fields.';
+  var parts=[];
+  if(imageBase64) parts.push({inlineData:{mimeType:imageMediaType,data:imageBase64}});
+  parts.push({text:prompt});
 
-  // Build Gemini request parts
-  var parts = [];
-  if(imageBase64){
-    parts.push({ inlineData: { mimeType: imageMediaType, data: imageBase64 } });
-  }
-  parts.push({ text: systemPrompt + '\n\n' + userText });
-
-  try {
-    var resp = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_KEY,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts: parts }] })
-      }
+  try{
+    var resp=await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key='+key,
+      { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({contents:[{parts:parts}]}) }
     );
-
     if(!resp.ok){
-      var e = await resp.json();
-      var msg = (e.error && e.error.message) ? e.error.message : 'HTTP ' + resp.status;
-      if(resp.status === 400 && msg.includes('API_KEY')){
-        throw new Error('Invalid API key. Get a free key at aistudio.google.com/app/apikey');
-      }
-      throw new Error('Gemini error: ' + msg);
+      var e=await resp.json();
+      var msg=(e.error&&e.error.message)?e.error.message:'HTTP '+resp.status;
+      if(resp.status===400||resp.status===403) throw new Error('Invalid API key. Get a free key at aistudio.google.com/app/apikey');
+      throw new Error('Gemini error: '+msg);
     }
-
-    var data = await resp.json();
-    var raw = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts
-      ? data.candidates[0].content.parts.map(function(p){ return p.text||''; }).join('')
-      : '';
-
-    var match = raw.match(/\{[\s\S]*\}/);
-    if(!match) throw new Error('AI returned unexpected format. Try again.');
+    var data=await resp.json();
+    var raw=data.candidates&&data.candidates[0]&&data.candidates[0].content
+      ?data.candidates[0].content.parts.map(function(p){return p.text||'';}).join(''):'';
+    var match=raw.match(/\{[\s\S]*\}/);
+    if(!match) throw new Error('Unexpected AI response. Please try again.');
     renderReport(JSON.parse(match[0]));
-
-  } catch(err){
-    showError('❌ ' + (err.message || String(err)));
-  } finally {
+  }catch(err){
+    showError('❌ '+esc(err.message||String(err)));
+  }finally{
     btn.disabled=false;
     btn.innerHTML='🪄 Generate AZDO Bug Report';
   }
@@ -253,16 +282,12 @@ $('generateBtn').addEventListener('click', async function(){
 function renderReport(r){
   var pClass={'1':'p1','2':'p2','3':'p3','4':'p4'}[String(r.priority)]||'p3';
   var sClass={'critical':'sc','high':'sh','medium':'sm','low':'sl'}[String(r.severityLabel||'').toLowerCase()]||'sm';
-  var tags=(r.tags||[]).map(function(t){ return '<span class="tag">'+esc(t)+'</span>'; }).join('');
+  var tags=(r.tags||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('');
 
   $('resultWrap').innerHTML=
     '<div class="result-wrap">'
-    +'<div class="result-header">'
-    +'<span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>'
-    +'<div class="copy-btns">'
-    +'<button class="copy-btn" id="btnMd">📋 Copy Markdown</button>'
-    +'<button class="copy-btn" id="btnPlain">📄 Copy Plain Text</button>'
-    +'</div></div>'
+    +'<div class="result-header"><span class="result-header-left">🔷 Azure DevOps — Bug Work Item</span>'
+    +'<div class="copy-btns"><button class="copy-btn" id="btnMd">📋 Copy Markdown</button><button class="copy-btn" id="btnPlain">📄 Copy Plain Text</button></div></div>'
     +'<div class="report-body">'
     +'<div class="field-row"><div class="field-key">🏷️ Title</div><div class="field-val title-val">'+esc(r.title)+'</div></div>'
     +'<div class="meta-row">'
@@ -287,54 +312,23 @@ function renderReport(r){
   $('resultWrap').style.display='block';
   $('resultWrap').scrollIntoView({behavior:'smooth',block:'start'});
   window._report=r;
-  $('btnMd').addEventListener('click', copyMd);
-  $('btnPlain').addEventListener('click', copyPlain);
+  $('btnMd').addEventListener('click',copyMd);
+  $('btnPlain').addEventListener('click',copyPlain);
 }
 
 // ── Copy ───────────────────────────────────────────────
 function copyPlain(){
   var r=window._report; if(!r) return;
-  copyText(
-    'BUG REPORT — AZURE DEVOPS\n'
-    +'==============================================\n'
-    +'Title        : '+r.title+'\n'
-    +'Work Item    : '+(r.workItemType||'Bug')+'\n'
-    +'Priority     : P'+r.priority+' — '+r.priorityLabel+'\n'
-    +'Severity     : '+r.severityLabel+'\n'
-    +'Repro Rate   : '+(r.reproRate||'Always')+'\n'
-    +'==============================================\n\n'
-    +'DESCRIPTION\n'+r.description+'\n\n'
-    +'STEPS TO REPRODUCE\n'+r.stepsToReproduce+'\n\n'
-    +'EXPECTED RESULT\n'+r.expectedResult+'\n\n'
-    +'ACTUAL RESULT\n'+r.actualResult+'\n\n'
-    +'ACCEPTANCE CRITERIA\n'+r.acceptanceCriteria+'\n\n'
-    +'TAGS: '+(r.tags||[]).join(', '),
-    'btnPlain','📄 Copy Plain Text');
+  copyText('BUG REPORT — AZURE DEVOPS\n==============================================\nTitle        : '+r.title+'\nWork Item    : '+(r.workItemType||'Bug')+'\nPriority     : P'+r.priority+' — '+r.priorityLabel+'\nSeverity     : '+r.severityLabel+'\nRepro Rate   : '+(r.reproRate||'Always')+'\n==============================================\n\nDESCRIPTION\n'+r.description+'\n\nSTEPS TO REPRODUCE\n'+r.stepsToReproduce+'\n\nEXPECTED RESULT\n'+r.expectedResult+'\n\nACTUAL RESULT\n'+r.actualResult+'\n\nACCEPTANCE CRITERIA\n'+r.acceptanceCriteria+'\n\nTAGS: '+(r.tags||[]).join(', '),'btnPlain','📄 Copy Plain Text');
 }
-
 function copyMd(){
   var r=window._report; if(!r) return;
-  copyText(
-    '## 🐞 '+r.title+'\n\n'
-    +'| Field | Value |\n|---|---|\n'
-    +'| **Work Item** | '+(r.workItemType||'Bug')+' |\n'
-    +'| **Priority** | P'+r.priority+' — '+r.priorityLabel+' |\n'
-    +'| **Severity** | '+r.severityLabel+' |\n'
-    +'| **Repro Rate** | '+(r.reproRate||'Always')+' |\n\n'
-    +'### 📋 Description\n'+r.description+'\n\n'
-    +'### 🔢 Steps to Reproduce\n'+r.stepsToReproduce+'\n\n'
-    +'### ✅ Expected Result\n'+r.expectedResult+'\n\n'
-    +'### ❌ Actual Result\n'+r.actualResult+'\n\n'
-    +'### ✔️ Acceptance Criteria\n'+r.acceptanceCriteria+'\n\n'
-    +'**Tags:** '+(r.tags||[]).join(', '),
-    'btnMd','📋 Copy Markdown');
+  copyText('## 🐞 '+r.title+'\n\n| Field | Value |\n|---|---|\n| **Work Item** | '+(r.workItemType||'Bug')+' |\n| **Priority** | P'+r.priority+' — '+r.priorityLabel+' |\n| **Severity** | '+r.severityLabel+' |\n| **Repro Rate** | '+(r.reproRate||'Always')+' |\n\n### 📋 Description\n'+r.description+'\n\n### 🔢 Steps to Reproduce\n'+r.stepsToReproduce+'\n\n### ✅ Expected Result\n'+r.expectedResult+'\n\n### ❌ Actual Result\n'+r.actualResult+'\n\n### ✔️ Acceptance Criteria\n'+r.acceptanceCriteria+'\n\n**Tags:** '+(r.tags||[]).join(', '),'btnMd','📋 Copy Markdown');
 }
-
 function copyText(text,id,label){
   navigator.clipboard.writeText(text).then(function(){
-    var b=$(id);
-    b.classList.add('copied'); b.textContent='✅ Copied!';
-    setTimeout(function(){ b.classList.remove('copied'); b.textContent=label; },2500);
+    var b=$(id); b.classList.add('copied'); b.textContent='✅ Copied!';
+    setTimeout(function(){b.classList.remove('copied');b.textContent=label;},2500);
   });
 }
 </script>
