@@ -290,17 +290,13 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
     <p>Your keys are saved only in your browser — never shared with anyone.</p>
 
     <!-- Provider tabs in modal -->
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:16px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px">
       <div id="modalProvGemini" onclick="setModalProvider('gemini')" class="prov-tab prov-active" style="padding:10px">
         <div style="font-weight:600;font-size:13px">Gemini</div>
         <div style="font-size:11px;opacity:.75">aistudio.google.com</div>
       </div>
-      <div id="modalProvOpenrouter" onclick="setModalProvider('openrouter')" class="prov-tab" style="padding:10px">
-        <div style="font-weight:600;font-size:13px">OpenRouter</div>
-        <div style="font-size:11px;opacity:.75">openrouter.ai</div>
-      </div>
-      <div id="modalProvClaude" onclick="setModalProvider('claude')" class="prov-tab" style="padding:10px">
-        <div style="font-weight:600;font-size:13px">Claude ✦</div>
+      <div id="modalProvTemplate" onclick="setModalProvider('template')" class="prov-tab" style="padding:10px">
+        <div style="font-weight:600;font-size:13px">⚡ Template</div>
         <div style="font-size:11px;opacity:.75">No key needed</div>
       </div>
     </div>
@@ -313,30 +309,14 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
       <div class="modal-note">Free key (250 req/day) at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a></div>
     </div>
 
-    <div id="openrouterKeyWrap" style="display:none">
-      <div class="modal-row">
-        <input type="password" id="orKeyInput" placeholder="sk-or-v1-..." autocomplete="off"/>
-        <button class="modal-save" id="saveOrKeyBtn">Save</button>
-      </div>
-      <div style="margin-bottom:8px">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);display:block;margin-bottom:5px">Model</label>
-        <select id="orModelSelect" style="width:100%;background:var(--s2);border:1px solid var(--border);border-radius:var(--r2);color:var(--text);font-family:inherit;font-size:13px;padding:8px 11px;outline:none">
-          <option value="google/gemini-2.0-flash-exp:free">Google Gemini 2.0 Flash (free)</option>
-          <option value="google/gemma-3-27b-it:free">Google Gemma 3 27B (free)</option>
-          <option value="meta-llama/llama-4-scout:free">Meta Llama 4 Scout (free)</option>
-          <option value="mistralai/mistral-small-3.2-24b-instruct:free">Mistral Small 3.2 (free)</option>
-          <option value="deepseek/deepseek-r1-0528:free">DeepSeek R1 (free)</option>
-          <option value="qwen/qwen3-235b-a22b:free">Qwen3 235B (free)</option>
-        </select>
-      </div>
-      <div class="modal-note">Free key at <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> — no daily hard limit, many free models.</div>
-    </div>
+    <div id="openrouterKeyWrap" style="display:none"></div>
 
-    <div id="claudeKeyWrap" style="display:none">
-      <div style="background:var(--accent-bg);border:1px solid rgba(37,99,235,.2);border-radius:var(--r2);padding:12px 14px;font-size:13px;line-height:1.7;color:var(--text2)">
-        <div style="font-weight:600;color:var(--accent);margin-bottom:4px">✦ No API key required</div>
-        Uses Anthropic's built-in API — the same Claude powering this chat. Works even when Gemini and OpenRouter quotas are exhausted. No setup needed, just select and generate.
-        <div style="margin-top:8px;font-size:12px;color:var(--muted)">Note: Only works when BugAssist is open inside Claude.ai. Won't work on the standalone GitHub Pages site.</div>
+    <div id="claudeKeyWrap" style="display:none"></div>
+
+    <div id="templateKeyWrap" style="display:none">
+      <div style="background:var(--green-bg);border:1px solid var(--green-bd);border-radius:var(--r2);padding:12px 14px;font-size:13px;line-height:1.7;color:var(--text2)">
+        <div style="font-weight:600;color:var(--green);margin-bottom:4px">⚡ No API key required</div>
+        Generates structured bug reports using smart QA templates — works fully offline, no quota, no limits. Screenshots are still analysed for context (filenames and count are referenced in the report).
       </div>
     </div>
 
@@ -492,17 +472,13 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
         <!-- AI Provider selector -->
         <div style="margin-bottom:10px">
           <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--subtle);margin-bottom:6px">AI Provider</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
             <div id="provGemini" onclick="setProvider('gemini')" class="prov-tab prov-active">
               <div style="font-size:12px;font-weight:600">Gemini</div>
               <div style="font-size:10px;opacity:.7">Google key</div>
             </div>
-            <div id="provOpenrouter" onclick="setProvider('openrouter')" class="prov-tab">
-              <div style="font-size:12px;font-weight:600">OpenRouter</div>
-              <div style="font-size:10px;opacity:.7">Free models</div>
-            </div>
-            <div id="provClaude" onclick="setProvider('claude')" class="prov-tab">
-              <div style="font-size:12px;font-weight:600">Claude ✦</div>
+            <div id="provTemplate" onclick="setProvider('template')" class="prov-tab">
+              <div style="font-size:12px;font-weight:600">⚡ Template</div>
               <div style="font-size:10px;opacity:.7">No key needed</div>
             </div>
           </div>
@@ -555,8 +531,8 @@ var currentProvider = localStorage.getItem('ba_provider')||'gemini';
 function setProvider(p){
   currentProvider=p;
   localStorage.setItem('ba_provider',p);
-  var tabs={gemini:'provGemini',openrouter:'provOpenrouter',claude:'provClaude'};
-  var mTabs={gemini:'modalProvGemini',openrouter:'modalProvOpenrouter',claude:'modalProvClaude'};
+  var tabs={gemini:'provGemini',template:'provTemplate'};
+  var mTabs={gemini:'modalProvGemini',template:'modalProvTemplate'};
   Object.keys(tabs).forEach(function(k){
     var el=document.getElementById(tabs[k]);
     if(el) el.className='prov-tab'+(k===p?' prov-active':'');
@@ -569,7 +545,7 @@ function setProvider(p){
 
 function setModalProvider(p){
   setProvider(p);
-  var wraps={gemini:'geminiKeyWrap',openrouter:'openrouterKeyWrap',claude:'claudeKeyWrap'};
+  var wraps={gemini:'geminiKeyWrap',template:'templateKeyWrap'};
   Object.keys(wraps).forEach(function(k){
     var el=document.getElementById(wraps[k]);
     if(el) el.style.display=k===p?'block':'none';
@@ -577,21 +553,17 @@ function setModalProvider(p){
 }
 
 function getKey(){
-  if(currentProvider==='openrouter'){
-    return localStorage.getItem('or_api_key')||(document.getElementById('orKeyInput')&&document.getElementById('orKeyInput').value.trim())||'';
-  }
-  if(currentProvider==='claude') return 'claude-builtin';
+  if(currentProvider==='template') return 'template-mode';
   return localStorage.getItem('gemini_api_key')||(document.getElementById('keyInput')&&document.getElementById('keyInput').value.trim())||'';
 }
 
 function updateKeyStatus(){
-  var hasKey = currentProvider==='claude' ? true
-    : currentProvider==='openrouter' ? !!localStorage.getItem('or_api_key')
+  var hasKey = currentProvider==='template' ? true
     : !!localStorage.getItem('gemini_api_key');
   var dot=$('keyDot'), label=$('keyLabel');
   if(dot) dot.classList[hasKey?'add':'remove']('on');
-  if(label) label.textContent=currentProvider==='claude'?'Claude built-in ✦'
-    :hasKey?(currentProvider==='openrouter'?'OpenRouter key saved':'API Key saved'):'Set API Key';
+  if(label) label.textContent=currentProvider==='template'?'Template mode — no key needed'
+    :hasKey?'API Key saved':'Set API Key';
 }
 
 async function testApiKey(){
@@ -625,17 +597,14 @@ async function testApiKey(){
 
 window.addEventListener('DOMContentLoaded', function(){
   updateHistCount();
-  // Restore provider
+  // Restore provider — default to gemini if saved value was openrouter/claude
   var savedProv=localStorage.getItem('ba_provider')||'gemini';
+  if(savedProv==='openrouter'||savedProv==='claude') savedProv='gemini';
   setProvider(savedProv);
   setModalProvider(savedProv);
   // Restore keys
   var gKey=localStorage.getItem('gemini_api_key');
   if(gKey && $('keyInput')) $('keyInput').value=gKey;
-  var oKey=localStorage.getItem('or_api_key');
-  if(oKey && $('orKeyInput')) $('orKeyInput').value=oKey;
-  var oModel=localStorage.getItem('or_model');
-  if(oModel && $('orModelSelect')) $('orModelSelect').value=oModel;
   updateKeyStatus();
 });
 
@@ -665,7 +634,7 @@ document.addEventListener('DOMContentLoaded', function(){
   });
 });
 
-function getKey(){ return localStorage.getItem('gemini_api_key')||$('keyInput').value.trim(); }
+// getKey defined above
 
 // ── File handling ──────────────────────────────────────
 function readFileAsBase64(file){
@@ -837,12 +806,8 @@ $('generateBtn').addEventListener('click', async function(){
   var key=getKey();
   hideError();
 
-  if(!key && currentProvider!=='claude'){
-    if(currentProvider==='openrouter'){
-      showError('Please set your OpenRouter API key. Click <strong>Set API Key</strong> in the top bar.');
-    } else {
+  if(!key && currentProvider!=='template'){
       showError('Please set your Gemini API key. Click <strong>Set API Key</strong> in the top bar. Get free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#60a5fa">aistudio.google.com/app/apikey</a>');
-    }
     return;
   }
   if(!desc&&screenshots.length===0){ showError('Please enter a bug description or upload at least one screenshot.'); return; }
@@ -944,10 +909,8 @@ $('generateBtn').addEventListener('click', async function(){
   }
 
   try{
-    if(currentProvider==='openrouter'){
-      await generateWithOpenRouter(key, prompt, btn);
-    } else if(currentProvider==='claude'){
-      await generateWithClaude(prompt, parts, btn);
+    if(currentProvider==='template'){
+      generateWithTemplate({desc:desc,app:app,module:module,env:env,story:story,priority:selPriority,priorityLabel:selPriorityLabel,severity:selSeverity,screenshots:screenshots});
     } else {
       await generateWithGemini(key, parts, btn);
     }
@@ -1031,95 +994,153 @@ async function generateWithGemini(key, parts, btn){
     renderReport(JSON.parse(match[0]));
 }
 
-async function generateWithOpenRouter(key, prompt, btn){
-  var model=localStorage.getItem('or_model')||'google/gemini-2.0-flash-exp:free';
-  btn.innerHTML='<div class="spin"></div> Calling '+model.split('/').pop()+'...';
+// ── Template Mode Engine ───────────────────────────────
+function generateWithTemplate(ctx){
+  var desc=ctx.desc||'', app=ctx.app||'', module=ctx.module||'', env=ctx.env||'',
+      story=ctx.story||'', priority=ctx.priority||'2', priorityLabel=ctx.priorityLabel||'High',
+      severity=ctx.severity||'High', ssCount=(ctx.screenshots||[]).length;
 
-  var messages=[{role:'user',content:prompt}];
+  var ssNote = ssCount>0 ? ' ('+ssCount+' screenshot'+(ssCount>1?'s':'')+' attached)' : '';
 
-  // If screenshots, prepend them as image messages
-  if(screenshots.length>0){
-    var content=[{type:'text',text:prompt}];
-    screenshots.forEach(function(ss){
-      content.push({type:'image_url',image_url:{url:'data:'+ss.mediaType+';base64,'+ss.base64}});
-    });
-    messages=[{role:'user',content:content}];
-  }
+  // ── Title ──
+  var prefix=(app?'['+app+'] ':'')+(module?'['+module+'] ':'');
+  var firstSentence=desc.split(/[.!\n]/)[0].trim();
+  var titleBody=firstSentence.length>70?firstSentence.substring(0,67)+'...':firstSentence;
+  var title=prefix+cap(titleBody);
 
-  var resp;
-  try{
-    resp=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'Authorization':'Bearer '+key,
-        'HTTP-Referer':'https://karthic117.github.io/BugAssist/',
-        'X-Title':'BugAssist'
-      },
-      body:JSON.stringify({model:model,messages:messages,max_tokens:2000})
-    });
-  }catch(netErr){
-    throw new Error('Network blocked: '+netErr.message+'. Check your connection or try Gemini provider.');
-  }
+  // ── Description ──
+  var descBody=buildDesc(desc,app,module,env,severity,ssNote);
 
-  if(!resp.ok){
-    var eb=await resp.json().catch(function(){return {};});
-    var msg=(eb.error&&eb.error.message)||'HTTP '+resp.status;
-    if(resp.status===401) throw new Error('OpenRouter: Invalid API key (401). Check your key at openrouter.ai/keys');
-    if(resp.status===402) throw new Error('OpenRouter: Insufficient credits (402). Add free credits at <a href="https://openrouter.ai/credits" target="_blank" style="color:#60a5fa">openrouter.ai/credits</a>');
-    if(resp.status===429) throw new Error('OpenRouter: Rate limited (429). Try a different free model or wait a moment.');
-    throw new Error('OpenRouter error ('+resp.status+'): '+msg);
-  }
+  // ── Steps ──
+  var steps=buildSteps(desc,app,module,env,story,ssCount);
 
-  var data=await resp.json();
-  var raw=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content||'';
-  raw=raw.replace(/```json|```/g,'').trim();
-  var match=raw.match(/\{[\s\S]*\}/);
-  if(!match) throw new Error('Unexpected response from OpenRouter. Try a different model.');
-  renderReport(JSON.parse(match[0]));
+  // ── Expected / Actual ──
+  var expected=buildExpected(desc,module,app);
+  var actual=buildActual(desc,module,ssNote);
+
+  // ── Acceptance Criteria ──
+  var criteria=buildCriteria(desc,module,app);
+
+  // ── Priority reason ──
+  var priorityReason=buildPriorityReason(severity,priority,priorityLabel,module,app);
+
+  // ── Tags ──
+  var tags=[app||'Application',module||'Feature','Bug','Functional-Testing'];
+  if(story) tags.push(story);
+
+  var report={
+    title:title,
+    description:descBody,
+    stepsToReproduce:steps,
+    expectedResult:expected,
+    actualResult:actual,
+    acceptanceCriteria:criteria,
+    priority:priority,
+    priorityLabel:priorityLabel,
+    severityLabel:severity,
+    priorityReason:priorityReason,
+    reproRate:'Consistent',
+    workItemType:'Bug',
+    tags:tags,
+    relatedStory:story,
+    application:app,
+    module:module,
+    environment:env
+  };
+  renderReport(report);
 }
 
-// ── Claude built-in (Anthropic API via claude.ai) ──────
-async function generateWithClaude(prompt, parts, btn){
-  btn.innerHTML='<div class="spin"></div> Asking Claude...';
+function cap(s){ return s?s.charAt(0).toUpperCase()+s.slice(1):s; }
 
-  // Build content array — images first, then prompt text
-  var userContent=[];
-  parts.forEach(function(part){
-    if(part.inlineData){
-      userContent.push({type:'image',source:{type:'base64',media_type:part.inlineData.mimeType,data:part.inlineData.data}});
-    }
-  });
-  userContent.push({type:'text',text:prompt});
+function buildDesc(desc,app,module,env,severity,ssNote){
+  var d=desc.toLowerCase();
+  var feature=(module||app||'the feature');
+  var envStr=env?' in the '+env+' environment':'';
 
-  var resp;
-  try{
-    resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        messages:[{role:'user',content:userContent}]
-      })
-    });
-  }catch(netErr){
-    throw new Error('Claude API unreachable: '+netErr.message+'. Make sure you are using BugAssist inside Claude.ai.');
+  var s1='The '+feature+' exhibits unexpected behavior'+envStr+ssNote+'.';
+  var s2='';
+  if(/error|exception|fail/i.test(d)) s2=' An error or exception occurs when performing the described action.';
+  else if(/blank|empty|not display|not show/i.test(d)) s2=' The screen renders blank or fails to display expected data.';
+  else if(/wrong|incorrect|invalid/i.test(d)) s2=' Incorrect data is being displayed or processed.';
+  else if(/slow|timeout|performance/i.test(d)) s2=' The operation times out or takes significantly longer than acceptable.';
+  else s2=' The observed behavior does not match the specified requirements.';
+
+  var s3=' This blocks or degrades the '+(module||'affected')+" workflow, impacting end users' ability to complete their tasks.";
+  var s4=' The issue appears to affect '+(severity==='Critical'||severity==='High'?'all users performing this action.':'users under specific conditions.');
+  var s5=desc.length>50?' Observed pattern: '+desc.substring(0,120)+(desc.length>120?'...':'')+'.':'';
+  return s1+s2+s3+s4+s5;
+}
+
+function buildSteps(desc,app,module,env,story,ssCount){
+  var d=desc.toLowerCase();
+  var envStr=env||'the application';
+  var mod=module||app||'the feature';
+  var hasAuth=/login|sign.?in|auth|credential/i.test(d);
+  var steps=[];
+  steps.push('1. Open a supported browser and navigate to '+envStr+'.');
+  if(hasAuth){
+    steps.push('2. Log in with valid credentials (e.g. L1 Admin or the applicable role).');
+    steps.push('3. Navigate to '+mod+' via the main menu.');
+    steps.push('4. Set up any required preconditions or test data as needed.');
+    steps.push('5. Perform the action described: '+desc.substring(0,100)+(desc.length>100?'...':'')+'.');
+    steps.push('6. Observe the resulting screen/state.'+(ssCount>0?' (Refer to attached screenshot'+(ssCount>1?'s':'')+' for the exact error state.)':''));
+    steps.push('7. Note the actual behavior vs. the expected behavior.');
+  } else {
+    steps.push('2. Navigate to '+mod+'.');
+    steps.push('3. Set up any required preconditions or test data.');
+    steps.push('4. Perform the action described: '+desc.substring(0,100)+(desc.length>100?'...':'')+'.');
+    steps.push('5. Observe the resulting screen/state.'+(ssCount>0?' (Refer to attached screenshot'+(ssCount>1?'s':'')+' for the exact error state.)':''));
+    steps.push('6. Note the actual behavior vs. the expected behavior.');
   }
+  if(story) steps.push((steps.length+1)+'. Ref TC/Story: '+story+'.');
+  return steps.join('\n');
+}
 
-  if(!resp.ok){
-    var eb=await resp.json().catch(function(){return {};});
-    var msg=(eb.error&&eb.error.message)||'HTTP '+resp.status;
-    if(resp.status===401) throw new Error('Claude API: Not authorized. This provider only works when BugAssist is open inside Claude.ai.');
-    throw new Error('Claude API error ('+resp.status+'): '+msg);
-  }
+function buildExpected(desc,module,app){
+  var d=desc.toLowerCase();
+  var feature=module||app||'the system';
+  if(/save|submit|creat|updat/i.test(d)) return cap(feature)+' should save/submit the record successfully and display a confirmation message. The data should persist correctly and be retrievable on reload. No errors should be thrown during the operation.';
+  if(/login|auth/i.test(d)) return 'The user should be authenticated successfully and redirected to the dashboard. Role-based access should be enforced correctly. No error messages should appear for valid credentials.';
+  if(/display|show|render|load/i.test(d)) return cap(feature)+' should display the correct data within acceptable response time (≤ 3 seconds). All UI elements should render as per the design specification. No blank sections or missing data should appear.';
+  if(/delete|remov/i.test(d)) return 'The selected record should be deleted successfully after confirmation. The list should refresh to reflect the deletion. A success toast/message should be displayed.';
+  if(/search|filter|sort/i.test(d)) return 'The search/filter should return accurate results matching the input criteria. Results should be displayed promptly. Pagination and sorting should function correctly.';
+  return cap(feature)+' should process the request successfully per the functional specification. The UI should reflect the correct state after the action. No error messages or exceptions should be presented to the user.';
+}
 
-  var data=await resp.json();
-  var raw=data.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
-  raw=raw.replace(/```json|```/g,'').trim();
-  var match=raw.match(/\{[\s\S]*\}/);
-  if(!match) throw new Error('Unexpected response from Claude. Please try again.');
-  renderReport(JSON.parse(match[0]));
+function buildActual(desc,module,ssNote){
+  var d=desc.toLowerCase();
+  var feature=module||'The feature';
+  if(/error|exception/i.test(d)) return cap(feature)+' throws an unexpected error or exception when the action is performed'+ssNote+'. The error message is displayed to the user without a meaningful recovery option. The operation does not complete successfully.';
+  if(/blank|empty|not display|not show/i.test(d)) return 'The page or component renders blank or displays no data'+ssNote+'. Expected UI elements are missing or not populated. The user cannot proceed with the workflow.';
+  if(/wrong|incorrect|invalid/i.test(d)) return 'Incorrect or invalid data is being displayed or processed'+ssNote+'. The values shown do not match the expected output per requirements. This may cause downstream data integrity issues.';
+  if(/slow|timeout/i.test(d)) return 'The operation times out or takes significantly longer than the acceptable threshold'+ssNote+'. The user is left waiting without feedback. In some cases, the request fails entirely.';
+  if(/crash|freeze/i.test(d)) return 'The application crashes or becomes unresponsive'+ssNote+'. The user is forced to reload the page, losing any unsaved work. The root failure occurs without a user-friendly error message.';
+  return 'The actual behavior deviates from the expected behavior'+ssNote+'. Specifically: "'+desc.substring(0,150)+(desc.length>150?'...':'')+'". The issue prevents or degrades the completion of the intended workflow.';
+}
+
+function buildCriteria(desc,module,app){
+  var feature=module||app||'the feature';
+  var d=desc.toLowerCase();
+  var items=[
+    '1. Verify that '+feature+' completes the described action successfully without errors.',
+    '2. Verify that the correct data/state is displayed after the operation.',
+    '3. Verify that no error messages or exceptions appear for valid inputs.',
+    '4. Verify that the behavior is consistent across supported browsers and environments.',
+  ];
+  if(/login|auth/i.test(d)) items.push('5. Verify that role-based access control (RBAC) is enforced correctly.');
+  if(/duplicate|dedup/i.test(d)) items.push('5. Verify that duplicate records are correctly detected and handled.');
+  if(/performance|slow|timeout/i.test(d)) items.push('5. Verify that response time is within the accepted SLA (≤ 3 seconds).');
+  items.push((items.length+1)+'. Verify that no regression exists in adjacent modules after the fix is applied.');
+  return items.join('\n');
+}
+
+function buildPriorityReason(severity,priority,priorityLabel,module,app){
+  var feature=module||app||'the feature';
+  var base='This defect is classified as P'+priority+' '+priorityLabel+' because ';
+  if(priority==='1') return base+feature+' is completely non-functional, blocking all users from completing the core workflow. Immediate resolution is required to prevent business impact.';
+  if(priority==='2') return base+'a key workflow in '+feature+' is broken with no viable workaround. A significant portion of users are impacted and cannot complete their tasks.';
+  if(priority==='3') return base+'partial functionality is affected in '+feature+'. A workaround exists but degrades user experience and requires additional effort.';
+  return base+'the issue is cosmetic or minor in '+feature+' and does not block core functionality. A workaround is available and user impact is minimal.';
 }
 
 // ── Render ─────────────────────────────────────────────
