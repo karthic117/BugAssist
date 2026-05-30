@@ -76,7 +76,8 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
 
 /* DROP ZONE */
 .dz{border:2px dashed var(--border2);border-radius:var(--r2);padding:20px 14px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;background:var(--s2)}
-.dz:hover,.dz.drag{border-color:var(--accent);background:var(--accent-bg)}
+.dz:hover,.dz.drag,.dz-focused{border-color:var(--accent);background:var(--accent-bg)}
+.dz:focus{outline:none}
 .dz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
 .dz-icon{width:30px;height:30px;margin:0 auto 8px;opacity:0.35;fill:var(--muted);display:block}
 .dz p{font-size:12.5px;color:var(--muted)}
@@ -289,14 +290,18 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
     <p>Your keys are saved only in your browser — never shared with anyone.</p>
 
     <!-- Provider tabs in modal -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:16px">
       <div id="modalProvGemini" onclick="setModalProvider('gemini')" class="prov-tab prov-active" style="padding:10px">
         <div style="font-weight:600;font-size:13px">Gemini</div>
         <div style="font-size:11px;opacity:.75">aistudio.google.com</div>
       </div>
       <div id="modalProvOpenrouter" onclick="setModalProvider('openrouter')" class="prov-tab" style="padding:10px">
         <div style="font-weight:600;font-size:13px">OpenRouter</div>
-        <div style="font-size:11px;opacity:.75">openrouter.ai · more free models</div>
+        <div style="font-size:11px;opacity:.75">openrouter.ai</div>
+      </div>
+      <div id="modalProvClaude" onclick="setModalProvider('claude')" class="prov-tab" style="padding:10px">
+        <div style="font-weight:600;font-size:13px">Claude ✦</div>
+        <div style="font-size:11px;opacity:.75">No key needed</div>
       </div>
     </div>
 
@@ -324,7 +329,15 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
           <option value="qwen/qwen3-235b-a22b:free">Qwen3 235B (free)</option>
         </select>
       </div>
-      <div class="modal-note">Free key at <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> — no daily hard limit, many free models. <a href="https://openrouter.ai/models?q=free" target="_blank">Browse all free models →</a></div>
+      <div class="modal-note">Free key at <a href="https://openrouter.ai/keys" target="_blank">openrouter.ai/keys</a> — no daily hard limit, many free models.</div>
+    </div>
+
+    <div id="claudeKeyWrap" style="display:none">
+      <div style="background:var(--accent-bg);border:1px solid rgba(37,99,235,.2);border-radius:var(--r2);padding:12px 14px;font-size:13px;line-height:1.7;color:var(--text2)">
+        <div style="font-weight:600;color:var(--accent);margin-bottom:4px">✦ No API key required</div>
+        Uses Anthropic's built-in API — the same Claude powering this chat. Works even when Gemini and OpenRouter quotas are exhausted. No setup needed, just select and generate.
+        <div style="margin-top:8px;font-size:12px;color:var(--muted)">Note: Only works when BugAssist is open inside Claude.ai. Won't work on the standalone GitHub Pages site.</div>
+      </div>
     </div>
 
     <div id="keyTestResult" style="display:none;margin-top:10px;padding:9px 12px;border-radius:8px;font-size:12.5px;line-height:1.6"></div>
@@ -401,11 +414,17 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
         <span class="card-hd-right" id="ssCount"></span>
       </div>
       <div class="card-bd">
-        <div class="dz" id="dropZone">
-          <input type="file" id="fileInput" accept="image/*" multiple/>
+        <div class="dz" id="dropZone" tabindex="0"
+          onclick="this.focus();document.getElementById('fileInput').click()"
+          onfocus="this.classList.add('dz-focused')"
+          onblur="this.classList.remove('dz-focused')">
+          <input type="file" id="fileInput" accept="image/*" multiple style="display:none"/>
           <svg class="dz-icon" viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
-          <p>Drop here, <span>browse</span>, or <strong>Ctrl+V</strong> to paste</p>
+          <p id="dzText">Click to browse &nbsp;·&nbsp; Drag &amp; drop &nbsp;·&nbsp; <strong>Ctrl+V</strong> paste</p>
           <small>PNG · JPG · WEBP · Up to 8 · AI analyzes all</small>
+        </div>
+        <div id="pasteHint" style="font-size:11.5px;color:var(--muted);text-align:center;margin-top:6px;display:none">
+          📋 <strong>To paste:</strong> click the zone above first, then press <kbd style="background:var(--s2);border:1px solid var(--border2);border-radius:3px;padding:1px 5px;font-family:'DM Mono',monospace;font-size:10.5px">Ctrl+V</kbd>
         </div>
         <div id="ssWrap" style="display:none">
           <div class="ss-bar">
@@ -473,14 +492,18 @@ nav{height:58px;background:var(--white);border-bottom:1px solid var(--border);di
         <!-- AI Provider selector -->
         <div style="margin-bottom:10px">
           <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;color:var(--subtle);margin-bottom:6px">AI Provider</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">
             <div id="provGemini" onclick="setProvider('gemini')" class="prov-tab prov-active">
-              <div style="font-size:12.5px;font-weight:600">Gemini</div>
-              <div style="font-size:10.5px;opacity:.7">Google · Free key</div>
+              <div style="font-size:12px;font-weight:600">Gemini</div>
+              <div style="font-size:10px;opacity:.7">Google key</div>
             </div>
             <div id="provOpenrouter" onclick="setProvider('openrouter')" class="prov-tab">
-              <div style="font-size:12.5px;font-weight:600">OpenRouter</div>
-              <div style="font-size:10.5px;opacity:.7">Multi-model · Free tier</div>
+              <div style="font-size:12px;font-weight:600">OpenRouter</div>
+              <div style="font-size:10px;opacity:.7">Free models</div>
+            </div>
+            <div id="provClaude" onclick="setProvider('claude')" class="prov-tab">
+              <div style="font-size:12px;font-weight:600">Claude ✦</div>
+              <div style="font-size:10px;opacity:.7">No key needed</div>
             </div>
           </div>
         </div>
@@ -532,31 +555,43 @@ var currentProvider = localStorage.getItem('ba_provider')||'gemini';
 function setProvider(p){
   currentProvider=p;
   localStorage.setItem('ba_provider',p);
-  document.getElementById('provGemini').className='prov-tab'+(p==='gemini'?' prov-active':'');
-  document.getElementById('provOpenrouter').className='prov-tab'+(p==='openrouter'?' prov-active':'');
-  // sync modal tabs
-  document.getElementById('modalProvGemini').className='prov-tab'+(p==='gemini'?' prov-active':'');
-  document.getElementById('modalProvOpenrouter').className='prov-tab'+(p==='openrouter'?' prov-active':'');
+  var tabs={gemini:'provGemini',openrouter:'provOpenrouter',claude:'provClaude'};
+  var mTabs={gemini:'modalProvGemini',openrouter:'modalProvOpenrouter',claude:'modalProvClaude'};
+  Object.keys(tabs).forEach(function(k){
+    var el=document.getElementById(tabs[k]);
+    if(el) el.className='prov-tab'+(k===p?' prov-active':'');
+  });
+  Object.keys(mTabs).forEach(function(k){
+    var el=document.getElementById(mTabs[k]);
+    if(el) el.className='prov-tab'+(k===p?' prov-active':'');
+  });
 }
 
 function setModalProvider(p){
   setProvider(p);
-  document.getElementById('geminiKeyWrap').style.display=p==='gemini'?'block':'none';
-  document.getElementById('openrouterKeyWrap').style.display=p==='openrouter'?'block':'none';
-}
-
-function updateKeyStatus(){
-  var gKey=localStorage.getItem('gemini_api_key');
-  var oKey=localStorage.getItem('or_api_key');
-  var hasKey = currentProvider==='gemini' ? !!gKey : !!oKey;
-  var dot=$('keyDot'); var label=$('keyLabel');
-  if(hasKey){ dot.classList.add('on'); label.textContent=currentProvider==='openrouter'?'OpenRouter key saved':'API Key saved'; }
-  else { dot.classList.remove('on'); label.textContent='Set API Key'; }
+  var wraps={gemini:'geminiKeyWrap',openrouter:'openrouterKeyWrap',claude:'claudeKeyWrap'};
+  Object.keys(wraps).forEach(function(k){
+    var el=document.getElementById(wraps[k]);
+    if(el) el.style.display=k===p?'block':'none';
+  });
 }
 
 function getKey(){
-  if(currentProvider==='openrouter') return localStorage.getItem('or_api_key')||($('orKeyInput')&&$('orKeyInput').value.trim())||'';
-  return localStorage.getItem('gemini_api_key')||($('keyInput')&&$('keyInput').value.trim())||'';
+  if(currentProvider==='openrouter'){
+    return localStorage.getItem('or_api_key')||(document.getElementById('orKeyInput')&&document.getElementById('orKeyInput').value.trim())||'';
+  }
+  if(currentProvider==='claude') return 'claude-builtin';
+  return localStorage.getItem('gemini_api_key')||(document.getElementById('keyInput')&&document.getElementById('keyInput').value.trim())||'';
+}
+
+function updateKeyStatus(){
+  var hasKey = currentProvider==='claude' ? true
+    : currentProvider==='openrouter' ? !!localStorage.getItem('or_api_key')
+    : !!localStorage.getItem('gemini_api_key');
+  var dot=$('keyDot'), label=$('keyLabel');
+  if(dot) dot.classList[hasKey?'add':'remove']('on');
+  if(label) label.textContent=currentProvider==='claude'?'Claude built-in ✦'
+    :hasKey?(currentProvider==='openrouter'?'OpenRouter key saved':'API Key saved'):'Set API Key';
 }
 
 async function testApiKey(){
@@ -687,40 +722,95 @@ function renderScreenshots(){
   });
 }
 
-// Drop zone
-var dropZone=$('dropZone');
-$('fileInput').addEventListener('change', function(e){ addFiles(e.target.files); this.value=''; });
-dropZone.addEventListener('dragover', function(e){ e.preventDefault(); dropZone.classList.add('drag'); });
-dropZone.addEventListener('dragleave', function(){ dropZone.classList.remove('drag'); });
-dropZone.addEventListener('drop', function(e){ e.preventDefault(); dropZone.classList.remove('drag'); addFiles(e.dataTransfer.files); });
-$('addMoreInput').addEventListener('change', function(e){ addFiles(e.target.files); this.value=''; });
+// ── File input (browse button) ─────────────────────────
+$('fileInput').addEventListener('change',function(e){ addFiles(e.target.files); this.value=''; });
 
-// ── Paste screenshot from clipboard (Ctrl+V anywhere on page) ──
-document.addEventListener('paste', function(e){
-  var items = (e.clipboardData||e.originalEvent&&e.originalEvent.clipboardData||window.clipboardData);
-  if(!items) return;
-  var imageFiles=[];
-  var itemList = items.items||[];
-  for(var i=0;i<itemList.length;i++){
-    var item=itemList[i];
-    if(item.type && item.type.indexOf('image')!==-1){
-      var file=item.getAsFile();
-      if(file){
-        // give it a timestamped name
-        var ext=item.type.split('/')[1]||'png';
-        Object.defineProperty(file,'name',{value:'pasted-'+(screenshots.length+imageFiles.length+1)+'-'+Date.now()+'.'+ext,writable:false});
-        imageFiles.push(file);
+// ── Drag and drop ──────────────────────────────────────
+var dz=$('dropZone');
+dz.addEventListener('dragover',function(e){ e.preventDefault(); dz.classList.add('drag'); });
+dz.addEventListener('dragleave',function(){ dz.classList.remove('drag'); });
+dz.addEventListener('drop',function(e){
+  e.preventDefault(); dz.classList.remove('drag');
+  addFiles(e.dataTransfer.files);
+});
+
+// ── Add more button ────────────────────────────────────
+$('addMoreInput').addEventListener('change',function(e){ addFiles(e.target.files); this.value=''; });
+
+// ── Paste handler ──────────────────────────────────────
+// Strategy 1: drop zone keydown (most reliable — user clicked zone first)
+dz.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey)&&e.key==='v'){
+    e.preventDefault();
+    handlePasteEvent(null);
+  }
+});
+
+// Strategy 2: document-level paste event (works when page has focus)
+document.addEventListener('paste',function(e){
+  var items=(e.clipboardData||{}).items||[];
+  var imgs=extractImages(items);
+  if(imgs.length>0){
+    e.preventDefault();
+    addFiles(imgs);
+    showPasteToast(imgs.length);
+  }
+});
+
+// Strategy 3: Clipboard API (when user presses Ctrl+V on focused drop zone)
+async function handlePasteEvent(e){
+  // First try clipboardData from event
+  if(e&&e.clipboardData){
+    var items=e.clipboardData.items||[];
+    var imgs=extractImages(items);
+    if(imgs.length>0){ addFiles(imgs); showPasteToast(imgs.length); return; }
+  }
+  // Then try Clipboard API
+  if(navigator.clipboard&&navigator.clipboard.read){
+    try{
+      var clipItems=await navigator.clipboard.read();
+      var blobs=[];
+      for(var ci=0;ci<clipItems.length;ci++){
+        for(var ti=0;ti<clipItems[ci].types.length;ti++){
+          var type=clipItems[ci].types[ti];
+          if(type.indexOf('image')!==-1){
+            var blob=await clipItems[ci].getType(type);
+            var ext=type.split('/')[1]||'png';
+            var file=new File([blob],'pasted-'+(screenshots.length+blobs.length+1)+'.'+ext,{type:type});
+            blobs.push(file);
+          }
+        }
+      }
+      if(blobs.length>0){ addFiles(blobs); showPasteToast(blobs.length); return; }
+    }catch(err){
+      // Permission denied or no image — show hint
+      $('pasteHint').style.display='block';
+    }
+  }
+}
+
+function extractImages(items){
+  var imgs=[];
+  for(var i=0;i<items.length;i++){
+    if(items[i].type&&items[i].type.indexOf('image')!==-1){
+      var f=items[i].getAsFile();
+      if(f){
+        try{ Object.defineProperty(f,'name',{value:'pasted-'+(screenshots.length+imgs.length+1)+'.'+( f.type.split('/')[1]||'png')}); }catch(ex){}
+        imgs.push(f);
       }
     }
   }
-  if(imageFiles.length>0){
-    e.preventDefault();
-    addFiles(imageFiles);
-    // flash the drop zone to confirm
-    dropZone.classList.add('drag');
-    setTimeout(function(){ dropZone.classList.remove('drag'); }, 600);
-    // show paste toast
-    showPasteToast(imageFiles.length);
+  return imgs;
+}
+
+// Update drop zone text when focused to guide user
+dz.addEventListener('focus',function(){
+  $('dzText').innerHTML='<span style="color:var(--accent);font-weight:600">Zone focused</span> — now press <strong>Ctrl+V</strong> to paste screenshot';
+  $('pasteHint').style.display='none';
+});
+dz.addEventListener('blur',function(){
+  if(screenshots.length===0){
+    $('dzText').innerHTML='Click to browse &nbsp;·&nbsp; Drag &amp; drop &nbsp;·&nbsp; <strong>Ctrl+V</strong> paste';
   }
 });
 
@@ -747,9 +837,9 @@ $('generateBtn').addEventListener('click', async function(){
   var key=getKey();
   hideError();
 
-  if(!key){
+  if(!key && currentProvider!=='claude'){
     if(currentProvider==='openrouter'){
-      showError('Please set your OpenRouter API key. Click <strong>Set API Key</strong> in the top bar, choose OpenRouter tab, and paste your key from <a href="https://openrouter.ai/keys" target="_blank" style="color:#60a5fa">openrouter.ai/keys</a> (free account).');
+      showError('Please set your OpenRouter API key. Click <strong>Set API Key</strong> in the top bar.');
     } else {
       showError('Please set your Gemini API key. Click <strong>Set API Key</strong> in the top bar. Get free key at <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#60a5fa">aistudio.google.com/app/apikey</a>');
     }
@@ -837,27 +927,27 @@ $('generateBtn').addEventListener('click', async function(){
 +'}';
 
 
-  // Build parts — add ALL screenshots
+  // Build parts array for Gemini (screenshots + prompt)
   var parts=[];
-  screenshots.forEach(function(ss, idx){
+  screenshots.forEach(function(ss){
     parts.push({inlineData:{mimeType:ss.mediaType, data:ss.base64}});
   });
   parts.push({text:prompt});
 
-  // Check payload size — large screenshots can exceed limits
-  var payloadStr = JSON.stringify({contents:[{parts:parts}]});
-  var payloadMB = (payloadStr.length / 1024 / 1024).toFixed(1);
-  if(payloadStr.length > 18 * 1024 * 1024){
-    showError('⚠️ Screenshots are too large ('+payloadMB+'MB). Please reduce to fewer or smaller images (max ~15MB total).');
+  // Quick size check
+  var approxMB = JSON.stringify(parts).length / 1024 / 1024;
+  if(approxMB > 18){
+    showError('⚠️ Screenshots are too large ('+approxMB.toFixed(1)+'MB). Please use fewer or smaller images.');
     btn.disabled=false;
     btn.innerHTML='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Generate Bug Report';
     return;
   }
 
   try{
-    // ── Route to correct provider ──────────────────────
     if(currentProvider==='openrouter'){
       await generateWithOpenRouter(key, prompt, btn);
+    } else if(currentProvider==='claude'){
+      await generateWithClaude(prompt, parts, btn);
     } else {
       await generateWithGemini(key, parts, btn);
     }
@@ -871,6 +961,7 @@ $('generateBtn').addEventListener('click', async function(){
 
 async function generateWithGemini(key, parts, btn){
     var MODELS=['gemini-2.5-flash','gemini-2.0-flash','gemini-2.0-flash-lite'];
+    var payloadStr=JSON.stringify({contents:[{parts:parts}]});
     var data=null, lastErr='', lastStatus=0;
     for(var mi=0;mi<MODELS.length;mi++){
       var model=MODELS[mi];
@@ -985,6 +1076,49 @@ async function generateWithOpenRouter(key, prompt, btn){
   raw=raw.replace(/```json|```/g,'').trim();
   var match=raw.match(/\{[\s\S]*\}/);
   if(!match) throw new Error('Unexpected response from OpenRouter. Try a different model.');
+  renderReport(JSON.parse(match[0]));
+}
+
+// ── Claude built-in (Anthropic API via claude.ai) ──────
+async function generateWithClaude(prompt, parts, btn){
+  btn.innerHTML='<div class="spin"></div> Asking Claude...';
+
+  // Build content array — images first, then prompt text
+  var userContent=[];
+  parts.forEach(function(part){
+    if(part.inlineData){
+      userContent.push({type:'image',source:{type:'base64',media_type:part.inlineData.mimeType,data:part.inlineData.data}});
+    }
+  });
+  userContent.push({type:'text',text:prompt});
+
+  var resp;
+  try{
+    resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:userContent}]
+      })
+    });
+  }catch(netErr){
+    throw new Error('Claude API unreachable: '+netErr.message+'. Make sure you are using BugAssist inside Claude.ai.');
+  }
+
+  if(!resp.ok){
+    var eb=await resp.json().catch(function(){return {};});
+    var msg=(eb.error&&eb.error.message)||'HTTP '+resp.status;
+    if(resp.status===401) throw new Error('Claude API: Not authorized. This provider only works when BugAssist is open inside Claude.ai.');
+    throw new Error('Claude API error ('+resp.status+'): '+msg);
+  }
+
+  var data=await resp.json();
+  var raw=data.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+  raw=raw.replace(/```json|```/g,'').trim();
+  var match=raw.match(/\{[\s\S]*\}/);
+  if(!match) throw new Error('Unexpected response from Claude. Please try again.');
   renderReport(JSON.parse(match[0]));
 }
 
